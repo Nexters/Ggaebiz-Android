@@ -108,7 +108,7 @@ private fun GgaebizTextTopAppBarPreview() {
                 onClick = {},
                 icon = {
                     Icon(
-                        painter = GgaebizIcon.icBack(),
+                        imageVector = GgaebizIcon.icBack(),
                         contentDescription = null,
                     )
                 },
