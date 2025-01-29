@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.core.designsystem.theme
+package com.ggaebiz.ggaebiz.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.core.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues

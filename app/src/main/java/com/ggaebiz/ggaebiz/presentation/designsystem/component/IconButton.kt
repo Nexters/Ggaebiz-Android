@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.core.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FilledIconButton
@@ -6,8 +6,8 @@ import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
-import com.ggaebiz.ggaebiz.core.designsystem.theme.Black
-import com.ggaebiz.ggaebiz.core.designsystem.theme.Gray50
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Black
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray50
 
 @Composable
 fun GgaebizIconButton(

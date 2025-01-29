@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.core.designsystem.icon
+package com.ggaebiz.ggaebiz.presentation.designsystem.icon
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource

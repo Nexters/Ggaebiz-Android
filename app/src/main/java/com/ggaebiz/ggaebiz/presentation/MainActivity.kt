@@ -17,10 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.core.designsystem.component.GgaebizIconButton
-import com.ggaebiz.ggaebiz.core.designsystem.component.GgaebizTopAppBar
-import com.ggaebiz.ggaebiz.core.designsystem.icon.GgaebizIcon
-import com.ggaebiz.ggaebiz.core.designsystem.theme.GgaebizTheme
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.GgaebizIconButton
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.GgaebizTopAppBar
+import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GgaebizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GgaebizTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
