@@ -1,58 +1,53 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.component
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray800
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
 
 @Composable
 fun GgaebizButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
-    content: @Composable RowScope.() -> Unit,
+    radius: Int = 15,
+    contentColor: Color,
+    containerColor: Color,
+    text: @Composable () -> Unit,
 ) {
     Button(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onBackground,
+        shape = RoundedCornerShape(radius.dp),
+        colors = ButtonColors(
+            contentColor = contentColor,
+            containerColor = containerColor,
+            disabledContentColor = containerColor,
+            disabledContainerColor = contentColor,
         ),
-        contentPadding = contentPadding,
-        content = content,
-    )
-}
-
-@Composable
-fun GgaebizButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    text: @Composable () -> Unit,
-) {
-    GgaebizButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
         content = {
-            GgaebizButtonContent(
-                text = text,
-            )
+            text()
         }
     )
 }
 
+
+@Preview("Button")
 @Composable
-private fun GgaebizButtonContent(
-    text: @Composable () -> Unit,
-) {
-    Box {
-        text()
+private fun GgaebizButtonPreview() {
+    GgaebizButton(
+        onClick = {},
+        contentColor = White,
+        containerColor = Gray800,
+    ) {
+        Text(text = "키키랑 타이머 설정하기")
     }
 }
