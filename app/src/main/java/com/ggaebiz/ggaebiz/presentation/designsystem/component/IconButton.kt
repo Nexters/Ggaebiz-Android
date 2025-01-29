@@ -14,16 +14,16 @@ fun GgaebizIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape? = null,
-    colors: IconButtonColors? = null,
+    shape: Shape = GgaebizIconButtonDefaults.shape,
+    colors: IconButtonColors = GgaebizIconButtonDefaults.iconButtonColors,
     icon: @Composable () -> Unit,
 ) {
     FilledIconButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = shape ?: GgaebizIconButtonDefaults.shape,
-        colors = colors ?: GgaebizIconButtonDefaults.iconButtonColors,
+        shape = shape,
+        colors = colors,
     ) {
         icon()
     }
