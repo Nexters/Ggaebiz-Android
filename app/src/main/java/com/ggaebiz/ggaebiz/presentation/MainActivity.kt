@@ -56,7 +56,7 @@ fun Greeting(
                     onClick = {},
                     icon = {
                         Icon(
-                            imageVector = GgaebizIcon.icBack(),
+                            imageVector = GgaebizIcon.icBack,
                             contentDescription = null,
                         )
                     },
