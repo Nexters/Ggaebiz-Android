@@ -7,18 +7,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.GgaebizIconButton
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.GgaebizTextAppBar
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GgaebizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizTextAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GgaebizTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +39,7 @@ fun Greeting(
     modifier: Modifier = Modifier,
 ) {
     Column {
-        GgaebizTextAppBar(
+        GaeBizTextAppBar(
 //            titleDrawable = R.drawable.ggaebiz_kor,
             titleRes = R.string.setting_title,
             modifier = Modifier,

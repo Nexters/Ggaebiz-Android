@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import com.ggaebiz.ggaebiz.R
 
-object GgaebizIcon {
+object GaeBizIcon {
 
     val icBack: ImageVector
         @Composable

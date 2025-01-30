@@ -10,17 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GgaebizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Black
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray50
 
 @Composable
-fun GgaebizIconButton(
+fun GaeBizIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = GgaebizIconButtonDefaults.shape,
-    colors: IconButtonColors = GgaebizIconButtonDefaults.iconButtonColors,
+    shape: Shape = GaeBizIconButtonDefaults.shape,
+    colors: IconButtonColors = GaeBizIconButtonDefaults.iconButtonColors,
     iconImageVector: ImageVector,
 ) {
     FilledIconButton(
@@ -38,7 +38,7 @@ fun GgaebizIconButton(
     )
 }
 
-object GgaebizIconButtonDefaults {
+object GaeBizIconButtonDefaults {
     val shape: RoundedCornerShape
         @Composable
         get() = CircleShape
@@ -54,9 +54,9 @@ object GgaebizIconButtonDefaults {
 
 @Preview("Icon Button")
 @Composable
-private fun GgaebizIconButtonPreview() {
-    GgaebizIconButton(
+private fun GaeBizIconButtonPreview() {
+    GaeBizIconButton(
         onClick = {},
-        iconImageVector = GgaebizIcon.icBack,
+        iconImageVector = GaeBizIcon.icBack,
     )
 }

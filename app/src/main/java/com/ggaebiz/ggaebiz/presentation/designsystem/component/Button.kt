@@ -15,7 +15,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray800
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
 
 @Composable
-fun GgaebizButton(
+fun GaeBizButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -50,8 +50,8 @@ fun GgaebizButton(
 
 @Preview("Button")
 @Composable
-private fun GgaebizButtonPreview() {
-    GgaebizButton(
+private fun GaeBizButtonPreview() {
+    GaeBizButton(
         onClick = {},
         contentColor = White,
         containerColor = Gray800,

@@ -19,7 +19,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
 
 @Composable
-fun GgaebizLogoAppBar(
+fun GaeBizLogoAppBar(
     modifier: Modifier = Modifier,
     logoDrawable: Int = R.drawable.ggaebiz_kor,
     color: Color = White,
@@ -41,10 +41,10 @@ fun GgaebizLogoAppBar(
     }
 }
 
-@Preview("Image App Bar")
+@Preview("Logo App Bar")
 @Composable
-private fun GgaebizLogoAppBarPreview() {
-    GgaebizLogoAppBar(
+private fun GaeBizLogoAppBarPreview() {
+    GaeBizLogoAppBar(
         logoDrawable = R.drawable.ggaebiz_kor,
     )
 }
