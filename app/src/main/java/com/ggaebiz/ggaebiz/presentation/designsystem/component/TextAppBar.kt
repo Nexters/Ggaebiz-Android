@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GgabizTypography
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTypography
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray800
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
 
@@ -55,7 +55,7 @@ fun GaeBizTextAppBar(
         ) {
             Text(
                 text = stringResource(id = titleRes),
-                style = GgabizTypography.titleLarge,
+                style = GaeBizTypography.titleLarge,
                 color = Gray800,
             )
         }

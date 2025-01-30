@@ -15,7 +15,7 @@ private val DarkColorScheme = darkColorScheme()
 private val LightColorScheme = lightColorScheme()
 
 @Composable
-fun GgaebizTheme(
+fun GaeBizTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -32,7 +32,7 @@ fun GgaebizTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = GgabizTypography,
+        typography = GaeBizTypography,
         content = content
     )
 }

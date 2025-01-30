@@ -14,14 +14,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizTextAppBar
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GgaebizTheme
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            GgaebizTheme {
+            GaeBizTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
                         name = "Android",
@@ -55,7 +55,7 @@ fun Greeting(
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    GgaebizTheme {
+    GaeBizTheme {
         Greeting("Android")
     }
 }

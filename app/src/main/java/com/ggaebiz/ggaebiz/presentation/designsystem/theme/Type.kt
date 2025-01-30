@@ -8,7 +8,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
 
- val GgaebizFont = FontFamily(
+ val GaeBizFont = FontFamily(
      Font(R.font.pretendard_medium, FontWeight.Medium),
      Font(R.font.pretendard_semibold, FontWeight.SemiBold),
      Font(R.font.pretendard_bold, FontWeight.Bold),
@@ -29,67 +29,67 @@ import com.ggaebiz.ggaebiz.R
   * headlineMedium: 중간 타이머
   * headlineSmall: 작은 타이머
   */
- val GgabizTypography = Typography(
+ val GaeBizTypography = Typography(
      titleLarge = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 20.sp,
          lineHeight = 24.sp,
      ),
 
      bodyLarge = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.Bold,
          fontSize = 16.sp,
          lineHeight = 19.09.sp,
      ),
      bodyMedium = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 14.sp,
          lineHeight = 16.71.sp,
      ),
      bodySmall = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 12.sp,
          lineHeight = 14.32.sp,
      ),
 
      labelLarge = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 16.sp,
          lineHeight = 24.sp,
      ),
      labelMedium = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.Bold,
          fontSize = 20.sp,
          lineHeight = 20.sp,
      ),
      labelSmall = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 16.sp,
          lineHeight = 20.sp,
      ),
 
      headlineLarge = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.Bold,
          fontSize = 80.sp,
          lineHeight = 84.sp,
          letterSpacing = 4.sp,
      ),
      headlineMedium = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.SemiBold,
          fontSize = 52.sp,
          lineHeight = 57.2.sp,
      ),
      headlineSmall = TextStyle(
-         fontFamily = GgaebizFont,
+         fontFamily = GaeBizFont,
          fontWeight = FontWeight.Medium,
          fontSize = 40.sp,
          lineHeight = 44.sp,
