@@ -3,10 +3,13 @@ package com.ggaebiz.ggaebiz.presentation.designsystem.component
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.tooling.preview.Preview
+import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GgaebizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Black
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray50
 
@@ -42,4 +45,18 @@ object GgaebizIconButtonDefaults {
             disabledContentColor = Black,
             disabledContainerColor = Gray50,
         )
+}
+
+@Preview("Icon Button")
+@Composable
+private fun GgaebizIconButtonPreview() {
+    GgaebizIconButton(
+        onClick = {},
+        icon = {
+            Icon(
+                imageVector = GgaebizIcon.icBack,
+                contentDescription = null,
+            )
+        },
+    )
 }
