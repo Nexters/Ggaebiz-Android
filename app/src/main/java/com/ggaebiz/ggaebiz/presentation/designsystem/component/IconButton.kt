@@ -8,6 +8,7 @@ import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GgaebizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Black
@@ -20,7 +21,7 @@ fun GgaebizIconButton(
     enabled: Boolean = true,
     shape: Shape = GgaebizIconButtonDefaults.shape,
     colors: IconButtonColors = GgaebizIconButtonDefaults.iconButtonColors,
-    icon: @Composable () -> Unit,
+    iconImageVector: ImageVector,
 ) {
     FilledIconButton(
         onClick = onClick,
@@ -28,9 +29,13 @@ fun GgaebizIconButton(
         enabled = enabled,
         shape = shape,
         colors = colors,
-    ) {
-        icon()
-    }
+        content = {
+            Icon(
+                imageVector = iconImageVector,
+                contentDescription = null,
+            )
+        },
+    )
 }
 
 object GgaebizIconButtonDefaults {
@@ -52,11 +57,6 @@ object GgaebizIconButtonDefaults {
 private fun GgaebizIconButtonPreview() {
     GgaebizIconButton(
         onClick = {},
-        icon = {
-            Icon(
-                imageVector = GgaebizIcon.icBack,
-                contentDescription = null,
-            )
-        },
+        iconImageVector = GgaebizIcon.icBack,
     )
 }

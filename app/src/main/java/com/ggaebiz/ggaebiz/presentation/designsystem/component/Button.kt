@@ -3,10 +3,12 @@ package com.ggaebiz.ggaebiz.presentation.designsystem.component
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray800
@@ -20,7 +22,9 @@ fun GgaebizButton(
     radius: Int = 15,
     contentColor: Color,
     containerColor: Color,
-    text: @Composable () -> Unit,
+    text: String,
+    style: TextStyle,
+    textColor: Color,
 ) {
     Button(
         onClick = onClick,
@@ -34,7 +38,11 @@ fun GgaebizButton(
             disabledContainerColor = contentColor,
         ),
         content = {
-            text()
+            Text(
+                text = text,
+                style = style,
+                color = textColor,
+            )
         }
     )
 }
@@ -47,7 +55,8 @@ private fun GgaebizButtonPreview() {
         onClick = {},
         contentColor = White,
         containerColor = Gray800,
-    ) {
-        Text(text = "키키랑 타이머 설정하기")
-    }
+        text = "키키랑 타이머 설정하기",
+        style = LocalTextStyle.current,
+        textColor = White,
+    )
 }
