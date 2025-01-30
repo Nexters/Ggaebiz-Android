@@ -46,12 +46,7 @@ fun GgaebizTextAppBar(
         ) {
             GgaebizIconButton(
                 onClick = iconOnClick,
-                icon = {
-                    Icon(
-                        imageVector = iconImageVector,
-                        contentDescription = null,
-                    )
-                },
+                iconImageVector = iconImageVector,
             )
         }
         
