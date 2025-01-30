@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,8 +28,9 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
 fun GgaebizTextAppBar(
     modifier: Modifier = Modifier,
     @StringRes titleRes: Int,
-    navigationIcon: @Composable () -> Unit = {},
     color: Color = White,
+    iconImageVector: ImageVector = GgaebizIcon.icBack,
+    iconOnClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -42,7 +44,15 @@ fun GgaebizTextAppBar(
                 vertical = 12.dp,
             ),
         ) {
-            navigationIcon()
+            GgaebizIconButton(
+                onClick = iconOnClick,
+                icon = {
+                    Icon(
+                        imageVector = iconImageVector,
+                        contentDescription = null,
+                    )
+                },
+            )
         }
         
         Box(
@@ -63,16 +73,6 @@ fun GgaebizTextAppBar(
 private fun GgaebizTextAppBarPreview() {
     GgaebizTextAppBar(
         titleRes = R.string.setting_title,
-        navigationIcon = {
-            GgaebizIconButton(
-                onClick = {},
-                icon = {
-                    Icon(
-                        imageVector = GgaebizIcon.icBack,
-                        contentDescription = null,
-                    )
-                },
-            )
-        },
+        iconOnClick = {},
     )
 }

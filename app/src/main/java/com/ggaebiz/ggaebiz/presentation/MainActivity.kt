@@ -48,18 +48,7 @@ fun Greeting(
 //            titleDrawable = R.drawable.ggaebiz_kor,
             titleRes = R.string.setting_title,
             modifier = Modifier,
-            navigationIcon = {
-                GgaebizIconButton(
-                    modifier = Modifier.size(48.dp),
-                    onClick = {},
-                    icon = {
-                        Icon(
-                            imageVector = GgaebizIcon.icBack,
-                            contentDescription = null,
-                        )
-                    },
-                )
-            },
+            iconOnClick = {},
         )
         Text(
             text = "Hello $name!",
