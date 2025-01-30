@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.component
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.runtime.Composable
@@ -30,11 +31,15 @@ fun GgaebizIconButton(
 }
 
 object GgaebizIconButtonDefaults {
-    val shape = CircleShape
-    val iconButtonColors = IconButtonColors(
-        contentColor = Black,
-        containerColor = Gray50,
-        disabledContentColor = Black,
-        disabledContainerColor = Gray50,
-    )
+    val shape: RoundedCornerShape
+        @Composable
+        get() = CircleShape
+    val iconButtonColors: IconButtonColors
+        @Composable
+        get() = IconButtonColors(
+            contentColor = Black,
+            containerColor = Gray50,
+            disabledContentColor = Black,
+            disabledContainerColor = Gray50,
+        )
 }
