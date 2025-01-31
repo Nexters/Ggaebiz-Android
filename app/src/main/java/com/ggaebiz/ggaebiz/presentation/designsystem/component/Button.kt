@@ -3,7 +3,6 @@ package com.ggaebiz.ggaebiz.presentation.designsystem.component
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,8 +10,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray800
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.White
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
 fun GaeBizButton(
@@ -47,16 +45,15 @@ fun GaeBizButton(
     )
 }
 
-
 @Preview("Button")
 @Composable
 private fun GaeBizButtonPreview() {
     GaeBizButton(
         onClick = {},
-        contentColor = White,
-        containerColor = Gray800,
+        contentColor = GaeBizTheme.colors.white,
+        containerColor = GaeBizTheme.colors.gray800,
         text = "키키랑 타이머 설정하기",
-        style = LocalTextStyle.current,
-        textColor = White,
+        style = GaeBizTheme.typography.bodySemiBold,
+        textColor = GaeBizTheme.colors.white,
     )
 }
