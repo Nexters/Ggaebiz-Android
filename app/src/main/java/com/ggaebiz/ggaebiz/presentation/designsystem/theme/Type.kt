@@ -1,6 +1,8 @@
- package com.ggaebiz.ggaebiz.presentation.designsystem.theme
+package com.ggaebiz.ggaebiz.presentation.designsystem.theme
 
-import androidx.compose.material3.Typography
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -8,90 +10,170 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
 
- val GaeBizFont = FontFamily(
-     Font(R.font.pretendard_medium, FontWeight.Medium),
-     Font(R.font.pretendard_semibold, FontWeight.SemiBold),
-     Font(R.font.pretendard_bold, FontWeight.Bold),
- )
 
- /**
-  * titleLarge: 상단바 제목 텍스트
-  *
-  * bodyLarge: 버튼 텍스트
-  * bodyMedium: 선택된 레벨 / 시간, 분
-  * bodySmall: 미선택 레벨
-  *
-  * labelLarge: 캐릭터 말풍선
-  * labelMedium: 캐릭터 이름
-  * labelSmall: 캐릭터 특성
-  * 
-  * headlineLarge: 큰 타이머
-  * headlineMedium: 중간 타이머
-  * headlineSmall: 작은 타이머
-  */
- val GaeBizTypography = Typography(
-     titleLarge = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 20.sp,
-         lineHeight = 24.sp,
-     ),
+@Immutable
+data class GaeBizTypography(
+    val titleBold : TextStyle,
+    val titleSemiBold : TextStyle,
+    val bodyBold : TextStyle,
+    val bodySemiBold : TextStyle,
+    val bodyMedium : TextStyle,
+    val body2Bold : TextStyle,
+    val body2SemiBold : TextStyle,
+    val body2Medium  : TextStyle,
+    val label1 : TextStyle,
+    val label2 : TextStyle,
+    val label3 : TextStyle,
+    val timer1 : TextStyle,
+    val timer2 : TextStyle,
+    val timer3 : TextStyle
+)
 
-     bodyLarge = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.Bold,
-         fontSize = 16.sp,
-         lineHeight = 19.09.sp,
-     ),
-     bodyMedium = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 14.sp,
-         lineHeight = 16.71.sp,
-     ),
-     bodySmall = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 12.sp,
-         lineHeight = 14.32.sp,
-     ),
+val LocalGaeBizTypography = staticCompositionLocalOf {
+    GaeBizTypography(
+        titleBold = TextStyle.Default,
+        titleSemiBold = TextStyle.Default,
+        bodyBold = TextStyle.Default,
+        bodySemiBold = TextStyle.Default,
+        bodyMedium = TextStyle.Default,
+        body2Bold = TextStyle.Default,
+        body2SemiBold = TextStyle.Default,
+        body2Medium = TextStyle.Default,
+        label1 = TextStyle.Default,
+        label2 = TextStyle.Default,
+        label3 = TextStyle.Default,
+        timer1 = TextStyle.Default,
+        timer2 = TextStyle.Default,
+        timer3 = TextStyle.Default,
+    )
+}
 
-     labelLarge = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 16.sp,
-         lineHeight = 24.sp,
-     ),
-     labelMedium = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.Bold,
-         fontSize = 20.sp,
-         lineHeight = 20.sp,
-     ),
-     labelSmall = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 16.sp,
-         lineHeight = 20.sp,
-     ),
+val GaeBizFont = FontFamily(
+    Font(R.font.pretendard_medium, FontWeight.Medium),
+    Font(R.font.pretendard_semibold, FontWeight.SemiBold),
+    Font(R.font.pretendard_bold, FontWeight.Bold),
+)
 
-     headlineLarge = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.Bold,
-         fontSize = 80.sp,
-         lineHeight = 84.sp,
-         letterSpacing = 4.sp,
-     ),
-     headlineMedium = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.SemiBold,
-         fontSize = 52.sp,
-         lineHeight = 57.2.sp,
-     ),
-     headlineSmall = TextStyle(
-         fontFamily = GaeBizFont,
-         fontWeight = FontWeight.Medium,
-         fontSize = 40.sp,
-         lineHeight = 44.sp,
-     ),
- )
+val Typography = GaeBizTypography(
+    titleBold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    titleSemiBold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 24.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    bodyBold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 16.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    bodySemiBold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    body2Bold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    body2SemiBold = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    body2Medium = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    label1 = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    label2 = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    label3 =TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    timer1 = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 80.sp,
+        lineHeight = 84.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    timer2 = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 52.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    ),
+    timer3 = TextStyle(
+        fontFamily = GaeBizFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 40.sp,
+        platformStyle = PlatformTextStyle(
+            includeFontPadding = false,
+        )
+    )
+)
