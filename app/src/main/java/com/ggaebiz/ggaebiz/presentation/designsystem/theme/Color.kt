@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 
 @Immutable
 data class GaeBizColors(
-    val primaryOrange : Color,
+    val primaryOrange: Color,
 
     val white: Color,
     val white8: Color,

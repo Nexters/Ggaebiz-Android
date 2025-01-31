@@ -7,13 +7,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun GaeBizTheme(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider (
+    CompositionLocalProvider(
         LocalGaeBizColor provides GaeBizColorScheme,
         LocalGaeBizTypography provides Typography
 
-    ){
+    ) {
         MaterialTheme(
             colorScheme = lightColorScheme(background = GaeBizTheme.colors.gray25),
             content = content
@@ -21,12 +21,12 @@ fun GaeBizTheme(
     }
 }
 
-object GaeBizTheme{
-    val colors : GaeBizColors
+object GaeBizTheme {
+    val colors: GaeBizColors
         @Composable
         get() = LocalGaeBizColor.current
 
-    val typography : GaeBizTypography
+    val typography: GaeBizTypography
         @Composable
         get() = LocalGaeBizTypography.current
 }
