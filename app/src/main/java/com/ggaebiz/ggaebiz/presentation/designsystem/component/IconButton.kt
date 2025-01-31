@@ -11,8 +11,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Black
-import com.ggaebiz.ggaebiz.presentation.designsystem.theme.Gray50
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
+
 
 @Composable
 fun GaeBizIconButton(
@@ -45,10 +45,10 @@ object GaeBizIconButtonDefaults {
     val iconButtonColors: IconButtonColors
         @Composable
         get() = IconButtonColors(
-            contentColor = Black,
-            containerColor = Gray50,
-            disabledContentColor = Black,
-            disabledContainerColor = Gray50,
+            contentColor = GaeBizTheme.colors.black,
+            containerColor = GaeBizTheme.colors.gray50,
+            disabledContentColor = GaeBizTheme.colors.black,
+            disabledContainerColor = GaeBizTheme.colors.gray50,
         )
 }
 

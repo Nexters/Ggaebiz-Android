@@ -1,38 +1,32 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.theme
 
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-
-private val DarkColorScheme = darkColorScheme()
-
-private val LightColorScheme = lightColorScheme()
+import androidx.compose.runtime.CompositionLocalProvider
 
 @Composable
 fun GaeBizTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    CompositionLocalProvider(
+        LocalGaeBizColor provides GaeBizColorScheme,
+        LocalGaeBizTypography provides Typography
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    ) {
+        MaterialTheme(
+            colorScheme = lightColorScheme(background = GaeBizTheme.colors.gray25),
+            content = content
+        )
     }
+}
 
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = GaeBizTypography,
-        content = content
-    )
+object GaeBizTheme {
+    val colors: GaeBizColors
+        @Composable
+        get() = LocalGaeBizColor.current
+
+    val typography: GaeBizTypography
+        @Composable
+        get() = LocalGaeBizTypography.current
 }
