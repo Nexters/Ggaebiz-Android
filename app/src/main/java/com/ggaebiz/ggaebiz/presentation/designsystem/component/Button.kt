@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.component
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -37,6 +38,10 @@ fun GaeBizButton(
         ),
         content = {
             Text(
+                modifier = Modifier.padding(
+                    horizontal = 20.dp,
+                    vertical = 12.dp,
+                ),
                 text = text,
                 style = style,
                 color = textColor,
