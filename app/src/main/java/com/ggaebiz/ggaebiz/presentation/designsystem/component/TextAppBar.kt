@@ -19,7 +19,6 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
-
 @Composable
 fun GaeBizTextAppBar(
     modifier: Modifier = Modifier,
@@ -43,6 +42,7 @@ fun GaeBizTextAppBar(
                 iconImageVector = iconImageVector,
             )
         }
+        
         Box(
             modifier = modifier.fillMaxWidth().height(72.dp),
             contentAlignment = Alignment.Center,
@@ -60,7 +60,7 @@ fun GaeBizTextAppBar(
 @Composable
 private fun GaeBizTextAppBarPreview() {
     GaeBizTextAppBar(
-        titleRes = R.string.setting_title,
+        titleRes = R.string.setting_title_text,
         iconOnClick = {},
     )
 }

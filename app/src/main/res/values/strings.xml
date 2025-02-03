@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">Ggaebiz</string>
-    <string name="setting_title">타이머 설정</string>
+    <string name="setting_title_text">타이머 설정</string>
+    <string name="setting_button_text">키키랑 타이머 설정하기</string>
+    <string name="time_text">시간</string>
+    <string name="minute_text">분</string>
+    <string name="level_text">LV.%1$d</string>
+    <string name="kiki_tag1_text">까불이</string>
+    <string name="kiki_ment1_text">A yo!! 나는 너의 게으름을 정복해 !</string>
+    <string name="slider_anim_label">Slider Animation</string>
+    <string name="slide_icon_description">Slide</string>
+    <string name="logo_img_description">Title Image</string>
 </resources>
