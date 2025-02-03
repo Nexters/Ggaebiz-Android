@@ -47,7 +47,7 @@ fun GaeBizTag(
     }
 }
 
-@Preview("Point Text")
+@Preview("Tag")
 @Composable
 private fun GaeBizTagPreview() {
     GaeBizTag(
