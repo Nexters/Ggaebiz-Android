@@ -39,9 +39,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import kotlinx.coroutines.launch
@@ -60,7 +62,7 @@ fun GaeBizSlideButton(
     val animatedOffsetX by animateFloatAsState(
         targetValue = offsetX,
         animationSpec = spring(stiffness = Spring.StiffnessMedium),
-        label = "Slider Animation"
+        label = stringResource(R.string.slider_anim_label)
     )
 
     val coroutineScope = rememberCoroutineScope()
@@ -161,7 +163,7 @@ fun GaeBizSlideButton(
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = slideIcon,
-                    contentDescription = "Slide",
+                    contentDescription = stringResource(R.string.slide_icon_description),
                     tint = iconColor,
                 )
             }
@@ -177,7 +179,7 @@ enum class SliderButtonState {
 @Composable
 fun GaeBizSlideButtonPreview() {
     GaeBizSlideButton(
-        text = "타이머 끝내기",
+        text = stringResource(R.string.setting_title_text),
         onSlideComplete = { },
     )
 }

@@ -13,10 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.getString
+import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizPicker
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.rememberPickerState
@@ -68,7 +72,7 @@ fun GaeBizTimePicker(
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "시간",
+                    text = stringResource(R.string.time_text),
                     modifier = Modifier.fillMaxWidth(),
                     color = GaeBizTheme.colors.gray400,
                     textAlign = TextAlign.Center,
@@ -103,7 +107,7 @@ fun GaeBizTimePicker(
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    text = "분",
+                    text = stringResource(R.string.minute_text),
                     modifier = Modifier.fillMaxWidth(),
                     color = GaeBizTheme.colors.gray400,
                     textAlign = TextAlign.Center,

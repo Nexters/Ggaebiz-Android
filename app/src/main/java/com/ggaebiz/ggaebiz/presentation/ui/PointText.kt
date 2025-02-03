@@ -10,9 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
@@ -49,7 +51,7 @@ fun GaeBizPointText(
 @Composable
 private fun GaeBizPointTextPreview() {
     GaeBizPointText(
-        text = "까불이",
+        text = stringResource(R.string.kiki_tag1_text),
         textStyle = GaeBizTheme.typography.bodySemiBold,
     )
 }

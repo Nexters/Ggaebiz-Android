@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -21,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizTextAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
@@ -65,7 +63,7 @@ fun Greeting(
 //            logoDrawable = R.drawable.ggaebiz_kor,
 //        )
         GaeBizTextAppBar(
-            titleRes = R.string.setting_title,
+            titleRes = R.string.setting_title_text,
             iconOnClick = {},
         )
 

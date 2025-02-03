@@ -60,7 +60,7 @@ fun GaeBizTextAppBar(
 @Composable
 private fun GaeBizTextAppBarPreview() {
     GaeBizTextAppBar(
-        titleRes = R.string.setting_title,
+        titleRes = R.string.setting_title_text,
         iconOnClick = {},
     )
 }
