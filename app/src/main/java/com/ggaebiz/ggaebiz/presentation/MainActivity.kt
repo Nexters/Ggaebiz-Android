@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
@@ -28,7 +29,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizLevelSlider
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSlideButton
-import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSpeechText
+import com.ggaebiz.ggaebiz.presentation.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTimePicker
 
 class MainActivity : ComponentActivity() {
@@ -85,8 +86,8 @@ fun Greeting(
 //        )
         
         Spacer(modifier = Modifier.height(8.dp))
-        GaeBizSpeechText(
-            text = "키키랑 타이머 설정하기",
+        GaeBizMent(
+            text = stringResource(R.string.kiki_ment1_text),
             textStyle = GaeBizTheme.typography.bodySemiBold,
         )
 
