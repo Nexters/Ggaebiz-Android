@@ -13,13 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat.getString
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizPicker
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
@@ -29,8 +27,8 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 @Composable
 fun GaeBizTimePicker(
     modifier: Modifier = Modifier,
-    hourPickerState: PickerState = rememberPickerState(),
-    minutePickerState: PickerState = rememberPickerState(),
+    hourPickerState: PickerState,
+    minutePickerState: PickerState,
     startIndex: Int = 0,
     visibleItemsCount: Int = 3,
     centerTextStyle: TextStyle = GaeBizTheme.typography.timer2,
@@ -40,7 +38,7 @@ fun GaeBizTimePicker(
     dividerHeight: Int = 2,
     normalDividerColor: Color = GaeBizTheme.colors.gray75,
     pressedDividerColor: Color = GaeBizTheme.colors.primaryOrange,
-    onScrollFinished: (String) -> Unit = {},
+    onScrollFinished: () -> Unit = {},
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -121,5 +119,11 @@ fun GaeBizTimePicker(
 @Preview("Time Picker")
 @Composable
 private fun GaeBizTimePickerPreview() {
-    GaeBizTimePicker()
+    val hourPickerState: PickerState = rememberPickerState()
+    val minutePickerState: PickerState = rememberPickerState()
+    
+    GaeBizTimePicker(
+        hourPickerState = hourPickerState,
+        minutePickerState = minutePickerState,
+    )
 }

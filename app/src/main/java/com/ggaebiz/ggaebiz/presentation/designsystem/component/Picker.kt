@@ -52,14 +52,13 @@ fun GaeBizPicker(
     dividerHeight: Int,
     normalDividerColor: Color,
     pressedDividerColor: Color,
-    onScrollFinished: (String) -> Unit,
+    onScrollFinished: () -> Unit,
 ) {
     val listScrollCount = Integer.MAX_VALUE
     val listScrollMiddle = listScrollCount / 2
 
     val visibleItemsMiddle = visibleItemsCount / 2
     val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + startIndex
-    val selectedIndex = remember { mutableStateOf(listStartIndex + visibleItemsMiddle) }
 
     val coroutineScope = rememberCoroutineScope()
     var dividerColor by remember { mutableStateOf(normalDividerColor) }
@@ -88,10 +87,9 @@ fun GaeBizPicker(
             .map { (index, offset) -> index + visibleItemsMiddle to offset }
             .distinctUntilChanged()
             .collect { (index, offset) ->
-                selectedIndex.value = index
                 pickerState.selectedItem = list[index % list.size]
-
-                if (offset == 0) onScrollFinished(pickerState.selectedItem)
+                
+                if (offset == 0) onScrollFinished()
 
                 if (offset > 0) {
                     coroutineScope.launch {
@@ -119,7 +117,7 @@ fun GaeBizPicker(
         ) {
             items(listScrollCount) { index ->
                 val item = list[index % list.size]
-                val isSelected = index == selectedIndex.value
+                val isSelected = item == pickerState.selectedItem
                 val color = if (isSelected) centerTextColor else normalTextColor
                 val textStyle = if (isSelected) centerTextStyle else normalTextStyle
 
