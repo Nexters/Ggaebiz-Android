@@ -18,7 +18,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
-fun GaeBizPointText(
+fun GaeBizTag(
     modifier: Modifier = Modifier,
     text: String,
     textStyle: TextStyle,
@@ -49,8 +49,8 @@ fun GaeBizPointText(
 
 @Preview("Point Text")
 @Composable
-private fun GaeBizPointTextPreview() {
-    GaeBizPointText(
+private fun GaeBizTagPreview() {
+    GaeBizTag(
         text = stringResource(R.string.kiki_tag1_text),
         textStyle = GaeBizTheme.typography.bodySemiBold,
     )

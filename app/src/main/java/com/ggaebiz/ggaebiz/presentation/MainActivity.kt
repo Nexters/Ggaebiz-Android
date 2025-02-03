@@ -26,7 +26,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.rememberPickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizLevelSlider
-import com.ggaebiz.ggaebiz.presentation.ui.GaeBizPointText
+import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSlideButton
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSpeechText
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTimePicker
@@ -91,7 +91,7 @@ fun Greeting(
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        GaeBizPointText(
+        GaeBizTag(
             text = "까불이",
             textStyle = GaeBizTheme.typography.bodySemiBold,
         )
