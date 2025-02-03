@@ -81,10 +81,8 @@ fun GaeBizTimePicker(
                     text = ":",
                     style = GaeBizTheme.typography.timer2,
                 )
-                Spacer(Modifier.height(12.dp))
-                Text(
-                    text = "",
-                    style = GaeBizTheme.typography.body2SemiBold,
+                Spacer(
+                    Modifier.height(GaeBizTheme.typography.body2SemiBold.fontSize.value.dp + 12.dp),
                 )
             }
 
