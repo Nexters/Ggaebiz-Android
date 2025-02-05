@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz
+package com.ggaebiz.ggaebiz.presentation.ui.timer
 
 import android.net.Uri
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -13,8 +13,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.data.model.Character
-import com.ggaebiz.ggaebiz.presentation.TimerSideEffect
-import com.ggaebiz.ggaebiz.presentation.TimerViewModel
 import org.koin.androidx.compose.koinViewModel
 
 

@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation
+package com.ggaebiz.ggaebiz.presentation.ui.timer
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
