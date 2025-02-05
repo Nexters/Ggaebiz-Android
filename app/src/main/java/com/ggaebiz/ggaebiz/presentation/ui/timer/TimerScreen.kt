@@ -25,8 +25,9 @@ fun TimerScreen(viewModel: TimerViewModel = koinViewModel()) {
             when (effect) {
                 is TimerSideEffect.PlayAudio -> {
                     ExoPlayer.Builder(context).build().apply {
+                        val resInt = context.getRawResId(effect.resId)
                         val mediaItem = MediaItem.fromUri(
-                            Uri.parse("android.resource://${context.packageName}/${effect.resId}")
+                            Uri.parse("android.resource://${context.packageName}/${resInt}")
                         )
                         setMediaItem(mediaItem)
                         prepare()

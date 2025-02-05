@@ -18,7 +18,7 @@ data class TimerState(
 )
 
 sealed interface TimerSideEffect {
-    data class PlayAudio(val resId: Int) : TimerSideEffect
+    data class PlayAudio(val resId: String) : TimerSideEffect
 }
 
 class TimerViewModel(
@@ -37,7 +37,7 @@ class TimerViewModel(
         level: Int,
     ) = viewModelScope.launch {
         val resIds = getAudioResIdUseCase(character, level, 0)
-        _uiState.update { it.copy("타이머 울리는 중") }
+        _uiState.update { it.copy(text = "타이머 울리는 중") }
         _sideEffects.send(TimerSideEffect.PlayAudio(resIds))
     }
 }

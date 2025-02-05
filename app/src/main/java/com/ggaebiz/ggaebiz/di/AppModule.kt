@@ -13,7 +13,7 @@ import org.koin.dsl.module
 val appModule = module {
     single { androidContext().audioDataStore }
     single { AudioDataStore(get()) }
-    single<AudioRepository> { AudioRepositoryImpl(androidContext(), get()) }
+    single<AudioRepository> { AudioRepositoryImpl(get()) }
     single { GetAudioResIdUseCase(get()) }
     viewModel { TimerViewModel(get()) }
 }
