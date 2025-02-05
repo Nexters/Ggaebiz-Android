@@ -1,0 +1,33 @@
+{
+  "kiki": {
+    "level1": [],
+    "level2": [],
+    "level3": ["raw/kiki_level3_1"],
+    "level4": []
+  },
+  "bobo": {
+    "level1": [],
+    "level2": [],
+    "level3": [],
+    "level4": []
+  },
+  "nana": {
+    "level1": [],
+    "level2": [],
+    "level3": [],
+    "level4": []
+  },
+  "chacha": {
+    "level1": [],
+    "level2": [],
+    "level3": [],
+    "level4": []
+  },
+  "booboo": {
+    "level1": [],
+    "level2": [],
+    "level3": [],
+    "level4": []
+  }
+}
+

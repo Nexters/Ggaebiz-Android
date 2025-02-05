@@ -27,9 +27,9 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.rememberPickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizLevelSlider
-import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTag
-import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSlideButton
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizMent
+import com.ggaebiz.ggaebiz.presentation.ui.GaeBizSlideButton
+import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.ui.GaeBizTimePicker
 
 class MainActivity : ComponentActivity() {
@@ -43,6 +43,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.padding(),
                     context = this,
                 )
+                //TimerScreen()
             }
         }
     }
@@ -57,7 +58,7 @@ fun Greeting(
     var selectedLevel by remember { mutableIntStateOf(1) }
     val hourPickerState: PickerState = rememberPickerState()
     val minutePickerState: PickerState = rememberPickerState()
-    
+
     Column {
 //        GaeBizLogoAppBar(
 //            modifier = Modifier,
@@ -76,7 +77,7 @@ fun Greeting(
                 Toast.makeText(context, "현재 slider = ${newValue}", LENGTH_SHORT).show()
             },
         )
-        
+
 //        GaeBizTimePicker(
 //            initHour = 5,
 //            initMinute = 30,
@@ -84,7 +85,7 @@ fun Greeting(
 //                Toast.makeText(context, "$hour : $minute", LENGTH_SHORT).show()
 //            },
 //        )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
         GaeBizMent(
             text = stringResource(R.string.kiki_ment1_text),
@@ -96,13 +97,17 @@ fun Greeting(
             text = "까불이",
             textStyle = GaeBizTheme.typography.bodySemiBold,
         )
-        
+
         Spacer(modifier = Modifier.height(8.dp))
         GaeBizTimePicker(
             hourPickerState = hourPickerState,
             minutePickerState = minutePickerState,
             onScrollFinished = {
-                Toast.makeText(context, "${hourPickerState.selectedItem} : ${minutePickerState.selectedItem}", LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "${hourPickerState.selectedItem} : ${minutePickerState.selectedItem}",
+                    LENGTH_SHORT
+                ).show()
             }
         )
 
