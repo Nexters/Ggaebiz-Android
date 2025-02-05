@@ -4,6 +4,8 @@ import android.app.Application
 import com.ggaebiz.ggaebiz.data.datastore.AudioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject
 import com.ggaebiz.ggaebiz.di.appModule
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.getKoin
@@ -19,7 +21,7 @@ class GgaeBizApp : Application() {
             modules(appModule)
         }
 
-        GlobalScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             val audioDataStore: AudioDataStore = getKoin().get()
             DataStoreObject.initialize(this@GgaeBizApp, audioDataStore)
         }

@@ -11,22 +11,19 @@ import kotlinx.coroutines.flow.map
 
 class AudioDataStore(private val dataStore: DataStore<Preferences>) {
 
-    companion object {
-        private val AUDIO_KEY = stringPreferencesKey("audio_data")
-    }
+    private val audioKey = stringPreferencesKey("audio_data")
 
     fun getAudioMap(): Flow<Map<Character, Map<Int, List<String>>>> {
         return dataStore.data.map { preferences ->
-            preferences[AUDIO_KEY]?.let { json ->
+            preferences[audioKey]?.let { json ->
                 parseJsonToMap(json)
             } ?: emptyMap()
         }
     }
 
-
     suspend fun saveAudioData(json: String) {
         dataStore.edit { preferences ->
-            preferences[AUDIO_KEY] = json
+            preferences[audioKey] = json
         }
     }
 }
