@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable

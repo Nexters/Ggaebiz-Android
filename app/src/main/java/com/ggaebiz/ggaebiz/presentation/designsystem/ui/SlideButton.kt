@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
 import androidx.compose.animation.core.EaseOutCubic
 import androidx.compose.animation.core.Spring
@@ -44,7 +44,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import kotlinx.coroutines.launch
 

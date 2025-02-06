@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

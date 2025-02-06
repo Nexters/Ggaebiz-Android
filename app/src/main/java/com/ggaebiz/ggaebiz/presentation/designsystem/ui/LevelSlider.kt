@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,14 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizSlider
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.slider.GaeBizSlider
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable

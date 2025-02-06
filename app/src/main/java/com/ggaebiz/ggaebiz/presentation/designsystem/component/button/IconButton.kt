@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component.button
 
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 
