@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -59,11 +61,12 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     // Media3
     implementation(libs.androidx.media3.exoplayer)
     implementation(libs.androidx.media3.datasource)
-
 
     //datastore
     implementation(libs.androidx.datastore.preferences)
@@ -73,8 +76,7 @@ dependencies {
     implementation(libs.insert.koin.koin.android)
     implementation(libs.koin.androidx.compose)
 
-
-
+    // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
