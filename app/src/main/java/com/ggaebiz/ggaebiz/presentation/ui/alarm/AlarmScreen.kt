@@ -13,31 +13,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.data.model.Character
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.getRawResId
 import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
 fun AlarmScreen(viewModel: AlarmViewModel = koinViewModel()) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    LaunchedEffect(Unit) {
-        viewModel.sideEffects.collect { effect ->
-            when (effect) {
-                is AlarmSideEffect.PlayAudio -> {
-                    ExoPlayer.Builder(context).build().apply {
-                        val resInt = context.getRawResId(effect.resId)
-                        val mediaItem = MediaItem.fromUri(
-                            Uri.parse("android.resource://${context.packageName}/${resInt}")
-                        )
-                        setMediaItem(mediaItem)
-                        prepare()
-                        play()
-                    }
+
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            is AlarmSideEffect.PlayAudio -> {
+                ExoPlayer.Builder(context).build().apply {
+                    val resInt = context.getRawResId(effect.resId)
+                    val mediaItem = MediaItem.fromUri(
+                        Uri.parse("android.resource://${context.packageName}/${resInt}")
+                    )
+                    setMediaItem(mediaItem)
+                    prepare()
+                    play()
                 }
             }
         }
     }
+
     Button(
         modifier = Modifier.systemBarsPadding(),
         onClick = { viewModel.startTimer(Character.KIKI, 3) }
