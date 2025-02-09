@@ -22,15 +22,13 @@ fun GaeBizLogoAppBar(
     logoDrawable: Int = R.drawable.ggaebiz_kor,
 ) {
     Box(
-        modifier = modifier
-            .wrapContentSize(align = Alignment.Center)
-            .statusBarsPadding(),
+        modifier = modifier.wrapContentSize(align = Alignment.Center)
     ) {
         Image(
             modifier = modifier
                 .fillMaxWidth()
-                .height(72.dp)
-                .padding(vertical = 26.dp),
+                .height(64.dp)
+                .padding(vertical = 22.dp),
             painter = painterResource(id = logoDrawable),
             contentDescription = stringResource(R.string.logo_img_description),
         )

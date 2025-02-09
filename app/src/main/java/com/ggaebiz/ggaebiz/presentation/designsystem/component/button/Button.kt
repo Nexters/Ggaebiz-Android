@@ -23,9 +23,10 @@ fun GaeBizButton(
     radius: Int = 15,
     contentColor: Color,
     containerColor: Color,
+    disabledContentColor: Color,
+    disabledContainerColor: Color,
     text: String,
     style: TextStyle,
-    textColor: Color,
 ) {
     Button(
         onClick = onClick,
@@ -35,8 +36,8 @@ fun GaeBizButton(
         colors = ButtonColors(
             contentColor = contentColor,
             containerColor = containerColor,
-            disabledContentColor = containerColor,
-            disabledContainerColor = contentColor,
+            disabledContentColor = disabledContentColor,
+            disabledContainerColor = disabledContainerColor,
         ),
         content = {
             Text(
@@ -46,7 +47,11 @@ fun GaeBizButton(
                 ),
                 text = text,
                 style = style,
-                color = textColor,
+                color = if (enabled) {
+                    contentColor
+                } else {
+                    disabledContentColor
+                },
             )
         }
     )
@@ -59,8 +64,9 @@ private fun GaeBizButtonPreview() {
         onClick = {},
         contentColor = GaeBizTheme.colors.white,
         containerColor = GaeBizTheme.colors.gray800,
+        disabledContentColor = GaeBizTheme.colors.gray400,
+        disabledContainerColor = GaeBizTheme.colors.gray100,
         text = stringResource(R.string.setting_button_text),
         style = GaeBizTheme.typography.bodySemiBold,
-        textColor = GaeBizTheme.colors.white,
     )
 }

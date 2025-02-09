@@ -29,7 +29,6 @@ fun GaeBizTimePicker(
     modifier: Modifier = Modifier,
     hourPickerState: PickerState,
     minutePickerState: PickerState,
-    startIndex: Int = 0,
     visibleItemsCount: Int = 3,
     centerTextStyle: TextStyle = GaeBizTheme.typography.timer2,
     centerTextColor: Color = GaeBizTheme.colors.gray900,
@@ -45,7 +44,7 @@ fun GaeBizTimePicker(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.wrapContentSize(),
     ) {
-        val hours = (0..6).toList().map { it.toString().padStart(2, '0') }
+        val hours = (0..5).toList().map { it.toString().padStart(2, '0') }
         val minutes = (0..59).toList().map { it.toString().padStart(2, '0') }
 
         Row(
@@ -57,7 +56,6 @@ fun GaeBizTimePicker(
                 GaeBizPicker(
                     pickerState = hourPickerState,
                     list = hours,
-                    startIndex = startIndex,
                     visibleItemsCount = visibleItemsCount,
                     centerTextStyle = centerTextStyle,
                     centerTextColor = centerTextColor,
@@ -92,7 +90,6 @@ fun GaeBizTimePicker(
                 GaeBizPicker(
                     pickerState = minutePickerState,
                     list = minutes,
-                    startIndex = startIndex,
                     visibleItemsCount = visibleItemsCount,
                     centerTextStyle = centerTextStyle,
                     centerTextColor = centerTextColor,
