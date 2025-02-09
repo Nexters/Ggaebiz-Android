@@ -94,7 +94,7 @@ fun HomeScreen(
 
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-            text = stringResource(selectedCharacter.nameResId),
+            text = stringResource(selectedCharacter.wholeNameResId),
             style = GaeBizTheme.typography.titleSemiBold
         )
         

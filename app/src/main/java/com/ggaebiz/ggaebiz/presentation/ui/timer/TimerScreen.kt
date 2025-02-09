@@ -1,5 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.ui.timer
 
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -38,10 +41,17 @@ fun TimerScreen(
     minute: Int,
     level: Int,
 ) {
+    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val imageWidth = screenWidth / 3 * 2
     var remainingSeconds by remember { mutableIntStateOf(hour * 3600 + minute * 60) }
+
+    if (remainingSeconds >= 3600) {
+        Toast.makeText(context, stringResource(R.string.timer_time_minute_toast_text, stringResource(CHARACTER_LIST[selectedCharacterIndex].nameResId), hour, minute), LENGTH_SHORT).show()
+    } else {
+        Toast.makeText(context, stringResource(R.string.timer_minute_toast_text, stringResource(CHARACTER_LIST[selectedCharacterIndex].nameResId), minute), LENGTH_SHORT).show()
+    }
 
     LaunchedEffect(remainingSeconds) {
         if (remainingSeconds > 0) {

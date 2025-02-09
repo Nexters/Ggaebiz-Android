@@ -12,7 +12,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Character(
     @StringRes val nameResId: Int,
-    @StringRes  val initMentResId: Int,
+    @StringRes val wholeNameResId: Int,
+    @StringRes val initMentResId: Int,
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
     @StringRes  val traitsResIdList: PersistentList<Int>,
@@ -20,7 +21,8 @@ data class Character(
     companion object {
         val CHARACTER_LIST = listOf(
             Character(
-                nameResId = R.string.kiki_name_text,
+                nameResId = R.string.kiki_name,
+                wholeNameResId = R.string.kiki_name_text,
                 initMentResId = R.string.kiki_init_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_kiki_level1,
@@ -39,7 +41,8 @@ data class Character(
                 ),
             ),
             Character(
-                nameResId = R.string.bobo_name_text,
+                nameResId = R.string.bobo_name,
+                wholeNameResId = R.string.bobo_name_text,
                 initMentResId = R.string.bobo_init_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_bobo_level1,
@@ -58,7 +61,8 @@ data class Character(
                 ),
             ),
             Character(
-                nameResId = R.string.nana_name_text,
+                nameResId = R.string.nana_name,
+                wholeNameResId = R.string.nana_name_text,
                 initMentResId = R.string.nana_init_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_nana_level1,
@@ -77,7 +81,8 @@ data class Character(
                 ),
             ),
             Character(
-                nameResId = R.string.chacha_name_text,
+                nameResId = R.string.chacha_name,
+                wholeNameResId = R.string.chacha_name_text,
                 initMentResId = R.string.chacha_init_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_chacha_level1,
@@ -96,7 +101,8 @@ data class Character(
                 ),
             ),
             Character(
-                nameResId = R.string.booboo_name_text,
+                nameResId = R.string.booboo_name,
+                wholeNameResId = R.string.booboo_name_text,
                 initMentResId = R.string.booboo_init_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_booboo_level1,
