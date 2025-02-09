@@ -1,13 +1,53 @@
 <resources>
     <string name="app_name">Ggaebiz</string>
     <string name="setting_title_text">타이머 설정</string>
+
     <string name="setting_button_text">키키랑 타이머 설정하기</string>
+    <string name="start_button_text">타이머 시작하기</string>
+    <string name="end_button_text">타이머 끝내기</string>
+
     <string name="time_text">시간</string>
     <string name="minute_text">분</string>
     <string name="level_text">LV.%1$d</string>
-    <string name="kiki_tag1_text">까불이</string>
-    <string name="kiki_ment1_text">A yo!! 나는 너의 게으름을 정복해 !</string>
+
+    <string name="kiki_name_text">KIKI 키키</string>
+    <string name="kiki_tag_text1">까불이</string>
+    <string name="kiki_tag_text2">미워할 수 없음</string>
+    <string name="kiki_tag_text3">시끄러움</string>
+    <string name="kiki_init_ment_text">A yo!! 나는 너의 게으름을 정복해!</string>
+
+    <string name="bobo_name_text">BOBO 보보</string>
+    <string name="bobo_tag_text1">능글맞음</string>
+    <string name="bobo_tag_text2">설렘</string>
+    <string name="bobo_tag_text3">플러팅 장인</string>
+    <string name="bobo_init_ment_text">아름다운 그대, 이제 그만 미루고 나 좀 봐줘요.</string>
+
+    <string name="nana_name_text">NANA 나나</string>
+    <string name="nana_tag_text1">이미 속 터짐</string>
+    <string name="nana_tag_text2">은근 다정</string>
+    <string name="nana_tag_text3">사투리</string>
+    <string name="nana_init_ment_text">계속 이래 있으면 어캐 되는지 알제?</string>
+
+    <string name="chacha_name_text">CHACHA 차차</string>
+    <string name="chacha_tag_text1">T 할머니</string>
+    <string name="chacha_tag_text2">잔소리</string>
+    <string name="chacha_tag_text3">보채기</string>
+    <string name="chacha_init_ment_text">너 깨우려고 할미가 이 늙은 몸을 이끌고 왔단다!</string>
+
+    <string name="booboo_name_text">BOOBOO 부부</string>
+    <string name="booboo_tag_text1">킹받음</string>
+    <string name="booboo_tag_text2">인터넷말투</string>
+    <string name="booboo_tag_text3">능청</string>
+    <string name="booboo_init_ment_text">아ㅋㅋ 레알 갓생 살 준비 가보자고.</string>
+
+    <string name="setting_ment_text1">순한 맛으로 살짝 깨워줄게!🥛</string>
+    <string name="setting_ment_text2">중간 맛🔥 딱 정신 차리기 좋을거야!</string>
+    <string name="setting_ment_text3">화끈한 매운맛! 안 일어나곤 못 버틸걸?🌋</string>
+
+    <!--  label & description  -->
     <string name="slider_anim_label">Slider Animation</string>
     <string name="slide_icon_description">Slide</string>
     <string name="logo_img_description">Title Image</string>
+
+    <string name="title_activity_home_screen">HomeScreen</string>
 </resources>
