@@ -9,7 +9,7 @@ sealed interface Route  {
 
     @Serializable data class Setting(val selectedCharacterIndex: Int) : Route
 
-    @Serializable data object Timer : Route
+    @Serializable data class Timer(val selectedCharacterIndex: Int, val hour: Int, val minute: Int, val level: Int) : Route
 
     @Serializable data object Alarm : Route
 

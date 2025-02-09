@@ -34,8 +34,8 @@ class NavigatorState(
         navController.navigate(Route.Setting(selectedCharacterIndex).toNavRoute())
     }
 
-    fun navigateTimer() {
-        navController.navigate(Route.Timer)
+    fun navigateTimer(selectedCharacterIndex: Int, hour: Int, minute: Int, level: Int) {
+        navController.navigate(Route.Timer(selectedCharacterIndex, hour, minute, level).toNavRoute())
     }
 
     fun navigateAlarm() {
