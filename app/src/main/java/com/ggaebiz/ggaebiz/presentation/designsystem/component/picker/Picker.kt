@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component.picker
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring

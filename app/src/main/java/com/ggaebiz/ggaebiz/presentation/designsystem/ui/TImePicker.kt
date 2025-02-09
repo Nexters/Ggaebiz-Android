@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,9 +19,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.GaeBizPicker
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.PickerState
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.rememberPickerState
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.GaeBizPicker
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.PickerState
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.rememberPickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable

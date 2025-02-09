@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component.slider
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectDragGestures

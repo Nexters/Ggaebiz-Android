@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component.header
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
@@ -16,7 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.designsystem.icon.GaeBizIcon
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizIconButton
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable

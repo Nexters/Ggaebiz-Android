@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.component
+package com.ggaebiz.ggaebiz.presentation.designsystem.component.button
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
