@@ -22,11 +22,15 @@ fun GaeBizNavHost(
     ) {
         composable<Route.Splash> {
             SplashScreen(
-                navigateHome = {navigator.navigateHome()}
+                navigateHome = { navigator.navigateHome() }
             )
         }
         composable<Route.Home> {
-            HomeScreen()
+            HomeScreen(
+                navigateSetting = { selectedCharacterIndex ->
+                    navigator.navigateSetting(selectedCharacterIndex)
+                }
+            )
         }
         composable<Route.Setting> {
             SettingScreen()
