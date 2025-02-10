@@ -58,4 +58,9 @@
     <string name="logo_img_description">Title Image</string>
 
     <string name="title_activity_home_screen">HomeScreen</string>
+
+
+    <string name="alarm_default_timer_text">00</string>
+    <string name="alarm_finish_timer_btn_text">타이머 끄기</string>
+    <string name="alarm_snooze_timer_btn_text">5분 뒤 다시 알림</string>
 </resources>
