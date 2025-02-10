@@ -88,7 +88,7 @@ fun GaeBizPicker(
             .collect { (index, offset) ->
                 pickerState.selectedItem = list[index % list.size]
                 
-                if (offset == 0) onScrollFinished()
+                onScrollFinished()
 
                 if (offset > 0) {
                     coroutineScope.launch {
