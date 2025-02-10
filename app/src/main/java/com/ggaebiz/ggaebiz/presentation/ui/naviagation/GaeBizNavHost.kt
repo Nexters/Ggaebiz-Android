@@ -1,18 +1,14 @@
 package com.ggaebiz.ggaebiz.presentation.ui.naviagation
 
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashScreen
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerScreen
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun GaeBizNavHost(
@@ -40,26 +36,10 @@ fun GaeBizNavHost(
                 navigateTimer = { navigator.navigateTimer() },
             )
         }
-        composable(
-            route = "Timer/{selectedCharacterIndex}/{hour}/{minute}/{level}",
-            arguments = listOf(
-                navArgument("selectedCharacterIndex") { type = NavType.IntType },
-                navArgument("hour") { type = NavType.IntType },
-                navArgument("minute") { type = NavType.IntType },
-                navArgument("level") { type = NavType.IntType },
-            )
-        ) { backStackEntry ->
-            val selectedCharacterIndex = backStackEntry.arguments?.getInt("selectedCharacterIndex") ?: 0
-            val hour = backStackEntry.arguments?.getInt("hour") ?: 0
-            val minute = backStackEntry.arguments?.getInt("minute") ?: 0
-            val level = backStackEntry.arguments?.getInt("level") ?: 0
+        composable<Route.Timer> {
             TimerScreen(
                 navigateHome = { navigator.navigateHome() },
                 navigateAlarm = { navigator.navigateAlarm() },
-                selectedCharacterIndex = selectedCharacterIndex,
-                hour = hour,
-                minute = minute,
-                level = level,
             )
         }
         composable<Route.Alarm> {
