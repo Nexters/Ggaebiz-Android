@@ -92,7 +92,7 @@ fun SettingScreen(
         GaeBizButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, bottom = 56.dp),
+                .padding(start = 20.dp, end = 20.dp),
             enabled = buttonEnabled,
             onClick = { navigateTimer(hourPickerState.selectedItem.toInt(), minutePickerState.selectedItem.toInt(), selectedLevel) },
             contentColor = GaeBizTheme.colors.white,
@@ -102,5 +102,7 @@ fun SettingScreen(
             text = stringResource(R.string.start_button_text),
             style = GaeBizTheme.typography.bodySemiBold,
         )
+        Spacer(modifier = Modifier.height(12.dp))
+
     }
 }
