@@ -23,8 +23,8 @@ fun GaeBizButton(
     radius: Int = 15,
     contentColor: Color,
     containerColor: Color,
-    disabledContentColor: Color,
-    disabledContainerColor: Color,
+    disabledContentColor: Color = GaeBizTheme.colors.gray400,
+    disabledContainerColor: Color = GaeBizTheme.colors.gray100,
     text: String,
     style: TextStyle,
 ) {

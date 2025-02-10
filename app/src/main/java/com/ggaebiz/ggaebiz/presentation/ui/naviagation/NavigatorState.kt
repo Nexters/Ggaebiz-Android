@@ -24,7 +24,7 @@ class NavigatorState(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Route.Splash
+    val startDestination = Route.Home
 
     fun navigateHome() {
         navController.navigate(Route.Home)
@@ -42,6 +42,13 @@ class NavigatorState(
         navController.navigate(Route.Alarm)
     }
 
+    // 모든 화면을 제거하고 Home으로
+    fun navigateToMainClearingBackStack() {
+        navController.navigate(Route.Home) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
     fun popBackStack() {
         navController.popBackStack()
     }

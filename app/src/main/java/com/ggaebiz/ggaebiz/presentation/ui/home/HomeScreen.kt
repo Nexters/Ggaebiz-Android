@@ -72,7 +72,7 @@ fun HomeScreen(
         GaeBizMent(
             text = stringResource(selectedCharacter.initMentResId),
         )
-        
+
         Spacer(modifier = Modifier.height(30.dp))
         HorizontalPager(
             state = pagerState,
@@ -97,7 +97,7 @@ fun HomeScreen(
             text = stringResource(selectedCharacter.wholeNameResId),
             style = GaeBizTheme.typography.titleSemiBold
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             selectedCharacter.traitsResIdList.forEach { trait ->
@@ -129,7 +129,7 @@ fun HomeScreen(
         GaeBizButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, bottom = 56.dp),
+                .padding(start = 20.dp, end = 20.dp),
             onClick = { navigateSetting(selectedCharacterIndex) },
             contentColor = GaeBizTheme.colors.white,
             containerColor = GaeBizTheme.colors.gray800,
@@ -138,6 +138,7 @@ fun HomeScreen(
             text = stringResource(R.string.setting_button_text),
             style = GaeBizTheme.typography.bodySemiBold,
         )
+        Spacer(modifier = Modifier.height(12.dp))
     }
 }
 

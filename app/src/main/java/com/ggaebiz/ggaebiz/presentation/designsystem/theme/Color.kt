@@ -37,6 +37,8 @@ data class GaeBizColors(
     val gray700: Color,
     val gray800: Color,
     val gray900: Color,
+
+    val red600 : Color
 )
 
 val LocalGaeBizColor = staticCompositionLocalOf {
@@ -71,7 +73,9 @@ val LocalGaeBizColor = staticCompositionLocalOf {
         gray600 = Color.Unspecified,
         gray700 = Color.Unspecified,
         gray800 = Color.Unspecified,
-        gray900 = Color.Unspecified
+        gray900 = Color.Unspecified,
+
+        red600 = Color.Unspecified
     )
 }
 
@@ -105,5 +109,7 @@ val GaeBizColorScheme = GaeBizColors(
     gray600 = Color(0xFF666971),
     gray700 = Color(0xFF505258),
     gray800 = Color(0xFF3E3F44),
-    gray900 = Color(0xFF2F3034)
+    gray900 = Color(0xFF2F3034),
+
+    red600 = Color(0xFFE41D17)
 )
