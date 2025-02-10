@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.naviagation
 
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavType
@@ -11,6 +12,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashScreen
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerScreen
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun GaeBizNavHost(
@@ -75,7 +77,9 @@ fun GaeBizNavHost(
             )
         }
         composable<Route.Alarm> {
-            AlarmScreen()
+            AlarmScreen(
+                navigateStart = { navigator.navigateToMainClearingBackStack()}
+            )
         }
     }
 }
