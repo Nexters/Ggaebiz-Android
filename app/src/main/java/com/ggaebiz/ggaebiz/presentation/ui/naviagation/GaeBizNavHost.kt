@@ -31,9 +31,7 @@ fun GaeBizNavHost(
         }
         composable<Route.Home> {
             HomeScreen(
-                navigateSetting = { selectedCharacterIndex ->
-                    navigator.navigateSetting(selectedCharacterIndex)
-                }
+                navigateSetting = { navigator.navigateSetting() }
             )
         }
         composable(
