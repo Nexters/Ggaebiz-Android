@@ -10,6 +10,9 @@ object DataStoreObject {
     private const val AUDIOS_DATASTORE_NAME = "audios_preferences"
     val Context.audioDataStore by preferencesDataStore(AUDIOS_DATASTORE_NAME)
 
+    private const val TIMER_DATASTORE_NAME = "timer_preferences"
+    val Context.timerDataStore by preferencesDataStore(TIMER_DATASTORE_NAME)
+
     // 최초 1회 호출.
     suspend fun initialize(context: Context, audioDataStore: AudioDataStore) {
         val existingData = audioDataStore.getAudioMap().firstOrNull()
