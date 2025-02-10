@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.GaeBizPicker
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.PickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.rememberPickerState
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.TimerSmallColon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
@@ -76,15 +78,9 @@ fun GaeBizTimePicker(
                 )
             }
 
-            Column(modifier = Modifier.padding(horizontal = 8.dp)) {
-                Text(
-                    text = ":",
-                    style = GaeBizTheme.typography.timer2,
-                )
-                Spacer(
-                    Modifier.height(GaeBizTheme.typography.body2SemiBold.fontSize.value.dp + 12.dp),
-                )
-            }
+            TimerSmallColon(
+                modifier = Modifier.padding(bottom = GaeBizTheme.typography.body2SemiBold.fontSize.value.dp + 12.dp)
+            )
 
             Column(modifier = Modifier.weight(0.5f)) {
                 GaeBizPicker(

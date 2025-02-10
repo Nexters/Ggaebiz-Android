@@ -17,4 +17,8 @@ object GaeBizIcon {
     val icPolygon: ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_polygon)
+
+    val icColon : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.icon_colon)
 }

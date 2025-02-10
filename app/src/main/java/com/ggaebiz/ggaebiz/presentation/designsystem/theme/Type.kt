@@ -128,12 +128,14 @@ val Typography = GaeBizTypography(
         fontFamily = ZuumeFont,
         fontWeight = FontWeight.Bold,
         fontSize = 80.sp,
-        lineHeight = 84.sp
+        lineHeight = 84.sp,
+        letterSpacing = 4.sp
     ),
     timer2 = TextStyle(
         fontFamily = ZuumeFont,
         fontWeight = FontWeight.SemiBold,
-        fontSize = 52.sp
+        fontSize = 52.sp,
+        letterSpacing = (0.5).sp
     ),
     timer3 = TextStyle(
         fontFamily = ZuumeFont,
