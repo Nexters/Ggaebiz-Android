@@ -19,6 +19,7 @@
     <string name="kiki_tag_text2">미워할 수 없음</string>
     <string name="kiki_tag_text3">시끄러움</string>
     <string name="kiki_init_ment_text">A yo!! 나는 너의 게으름을 정복해!</string>
+    <string name="kiki_timer_ment_text">우와~ 시간 천천히 가라~!</string>
 
     <string name="bobo_name">보보</string>
     <string name="bobo_name_text">BOBO 보보</string>
@@ -26,6 +27,7 @@
     <string name="bobo_tag_text2">설렘</string>
     <string name="bobo_tag_text3">플러팅 장인</string>
     <string name="bobo_init_ment_text">아름다운 그대, 이제 그만 미루고 나 좀 봐줘요.</string>
+    <string name="bobo_timer_ment_text">시간 멈추고 싶다, 너랑. 💫</string>
 
     <string name="nana_name">나나</string>
     <string name="nana_name_text">NANA 나나</string>
@@ -33,6 +35,7 @@
     <string name="nana_tag_text2">은근 다정</string>
     <string name="nana_tag_text3">사투리</string>
     <string name="nana_init_ment_text">계속 이래 있으면 어캐 되는지 알제?</string>
+    <string name="nana_timer_ment_text">쉬는 것도 능력이다, 알제? 🤨</string>
 
     <string name="chacha_name">차차</string>
     <string name="chacha_name_text">CHACHA 차차</string>
@@ -40,6 +43,7 @@
     <string name="chacha_tag_text2">잔소리</string>
     <string name="chacha_tag_text3">보채기</string>
     <string name="chacha_init_ment_text">너 깨우려고 할미가 이 늙은 몸을 이끌고 왔단다!</string>
+    <string name="chacha_timer_ment_text">어허~ 이 짧은 시간도 소중한겨!</string>
 
     <string name="booboo_name">부부</string>
     <string name="booboo_name_text">BOOBOO 부부</string>
@@ -47,6 +51,7 @@
     <string name="booboo_tag_text2">인터넷말투</string>
     <string name="booboo_tag_text3">능청</string>
     <string name="booboo_init_ment_text">아ㅋㅋ 레알 갓생 살 준비 가보자고.</string>
+    <string name="booboo_timer_ment_text">개큰 휴식~ 달다 달아~</string>
 
     <string name="setting_ment_text1">순한 맛으로 살짝 깨워줄게!🥛</string>
     <string name="setting_ment_text2">중간 맛🔥 딱 정신 차리기 좋을거야!</string>
