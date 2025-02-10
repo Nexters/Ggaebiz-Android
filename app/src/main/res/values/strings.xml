@@ -2,7 +2,7 @@
     <string name="app_name">Ggaebiz</string>
     <string name="setting_title_text">타이머 설정</string>
 
-    <string name="setting_button_text">키키랑 타이머 설정하기</string>
+    <string name="setting_button_text">%s랑 타이머 설정하기</string>
     <string name="start_button_text">타이머 시작하기</string>
     <string name="end_button_text">타이머 끝내기</string>
 
