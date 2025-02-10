@@ -69,7 +69,7 @@ fun GaeBizPicker(
     val centerItemHeightPixels = remember { mutableStateOf(0) }
     val centerIemHeightDp = pixelsToDp(centerItemHeightPixels.value)
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { listState.isScrollInProgress }
             .distinctUntilChanged()
             .collect {
@@ -81,7 +81,7 @@ fun GaeBizPicker(
             }
     }
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
             .map { (index, offset) -> index + visibleItemsMiddle to offset }
             .distinctUntilChanged()

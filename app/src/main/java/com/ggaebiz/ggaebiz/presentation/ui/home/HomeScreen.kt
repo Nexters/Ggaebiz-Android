@@ -56,7 +56,7 @@ fun HomeScreen(
     val imageWidth = screenWidth / 3 * 2
     val sideOffset = screenWidth / 6
 
-    LaunchedEffect(pagerState.currentPage) {
+    LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             selectedCharacterIndex = page
         }
