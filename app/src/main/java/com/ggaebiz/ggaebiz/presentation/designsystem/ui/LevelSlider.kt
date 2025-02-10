@@ -33,7 +33,7 @@ fun GaeBizLevelSlider(
 ) {
     val levels = List(maxLevel) { it + 1 }
 
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(horizontal = 20.dp)) {
         GaeBizSlider(
             modifier = Modifier.fillMaxWidth(),
             maxLevel = maxLevel,

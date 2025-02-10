@@ -43,7 +43,6 @@ fun GaeBizPicker(
     modifier: Modifier = Modifier,
     pickerState: PickerState,
     list: List<String>,
-    startIndex: Int,
     visibleItemsCount: Int,
     centerTextStyle: TextStyle,
     centerTextColor: Color,
@@ -58,7 +57,7 @@ fun GaeBizPicker(
     val listScrollMiddle = listScrollCount / 2
 
     val visibleItemsMiddle = visibleItemsCount / 2
-    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + startIndex
+    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(pickerState.selectedItem)
 
     val coroutineScope = rememberCoroutineScope()
     var dividerColor by remember { mutableStateOf(normalDividerColor) }
@@ -70,7 +69,7 @@ fun GaeBizPicker(
     val centerItemHeightPixels = remember { mutableStateOf(0) }
     val centerIemHeightDp = pixelsToDp(centerItemHeightPixels.value)
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { listState.isScrollInProgress }
             .distinctUntilChanged()
             .collect {
@@ -82,7 +81,7 @@ fun GaeBizPicker(
             }
     }
 
-    LaunchedEffect(listState) {
+    LaunchedEffect(Unit) {
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
             .map { (index, offset) -> index + visibleItemsMiddle to offset }
             .distinctUntilChanged()
@@ -168,10 +167,10 @@ fun GaeBizPicker(
 private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
 @Composable
-fun rememberPickerState() = remember { PickerState() }
+fun rememberPickerState(defaultValue: String = "") = remember { PickerState(defaultValue) }
 
-class PickerState {
-    var selectedItem by mutableStateOf("")
+class PickerState(defaultValue: String) {
+    var selectedItem by mutableStateOf(defaultValue)
 }
 
 @Preview("Picker")
@@ -183,7 +182,6 @@ private fun GaeBizPickerPreview() {
     GaeBizPicker(
         pickerState = hourPickerState,
         list = hours,
-        startIndex = 0,
         visibleItemsCount = 3,
         centerTextStyle = GaeBizTheme.typography.timer2,
         centerTextColor = GaeBizTheme.colors.gray900,

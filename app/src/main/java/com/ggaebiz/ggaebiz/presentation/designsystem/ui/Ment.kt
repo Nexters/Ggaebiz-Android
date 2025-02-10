@@ -25,10 +25,11 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 fun GaeBizMent(
     modifier: Modifier = Modifier,
     text: String,
-    textStyle: TextStyle,
+    textStyle: TextStyle = GaeBizTheme.typography.bodySemiBold,
     textColor: Color = GaeBizTheme.colors.gray800,
     radius: Int = 16,
     backgroundColor: Color = GaeBizTheme.colors.white,
+    hasBelowArrow: Boolean = true,
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
@@ -51,12 +52,14 @@ fun GaeBizMent(
                 style = textStyle,
             )
         }
-        Icon(
-            modifier = Modifier.offset(y = (-9).dp),
-            imageVector = GaeBizIcon.icPolygon,
-            tint = backgroundColor,
-            contentDescription = null,
-        )
+        if (hasBelowArrow) {
+            Icon(
+                modifier = Modifier.offset(y = (-9).dp),
+                imageVector = GaeBizIcon.icPolygon,
+                tint = backgroundColor,
+                contentDescription = null,
+            )
+        }
     }
 }
 
@@ -64,7 +67,7 @@ fun GaeBizMent(
 @Composable
 private fun GaeBizMentPreview() {
     GaeBizMent(
-        text = stringResource(R.string.kiki_ment1_text),
+        text = stringResource(R.string.kiki_init_ment_text),
         textStyle = GaeBizTheme.typography.titleSemiBold,
     )
 }

@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -17,7 +15,6 @@ import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifec
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.getRawResId
 import org.koin.androidx.compose.koinViewModel
-
 
 @Composable
 fun AlarmScreen(viewModel: AlarmViewModel = koinViewModel()) {
