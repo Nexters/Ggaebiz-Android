@@ -30,8 +30,8 @@ class NavigatorState(
         navController.navigate(Route.Home)
     }
 
-    fun navigateSetting(selectedCharacterIndex: Int) {
-        navController.navigate(Route.Setting(selectedCharacterIndex).toNavRoute())
+    fun navigateSetting() {
+        navController.navigate(Route.Setting)
     }
 
     fun navigateTimer(selectedCharacterIndex: Int, hour: Int, minute: Int, level: Int) {

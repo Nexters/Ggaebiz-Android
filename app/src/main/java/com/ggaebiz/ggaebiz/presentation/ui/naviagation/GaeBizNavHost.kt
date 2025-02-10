@@ -34,22 +34,10 @@ fun GaeBizNavHost(
                 navigateSetting = { navigator.navigateSetting() }
             )
         }
-        composable(
-            route = "Setting/{selectedCharacterIndex}",
-            arguments = listOf(navArgument("selectedCharacterIndex") { type = NavType.IntType }),
-        ) { backStackEntry ->
-            val selectedCharacterIndex = backStackEntry.arguments?.getInt("selectedCharacterIndex") ?: 0
+        composable<Route.Setting> {
             SettingScreen(
-                selectedCharacterIndex = selectedCharacterIndex,
                 navigator = navigator,
-                navigateTimer = { hour, minute, level ->
-                    navigator.navigateTimer(
-                        selectedCharacterIndex,
-                        hour,
-                        minute,
-                        level,
-                    )
-                }
+                navigateTimer = { navigator.navigateTimer() },
             )
         }
         composable(
