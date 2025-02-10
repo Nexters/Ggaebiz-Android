@@ -5,6 +5,7 @@ import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.audioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.timerDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
 import com.ggaebiz.ggaebiz.data.repository.AudioRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
@@ -20,6 +21,8 @@ val appModule = module {
     single { TimerDataStore(get()) }
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
+    single<TimerRepository> { TimerRepositoryImpl(get()) }
+
     factory { GetAudioResIdUseCase(get()) }
     viewModel { AlarmViewModel(get()) }
 }
