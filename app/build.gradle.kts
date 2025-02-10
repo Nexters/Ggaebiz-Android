@@ -77,6 +77,8 @@ dependencies {
     implementation(libs.insert.koin.koin.android)
     implementation(libs.koin.androidx.compose)
 
+    implementation (libs.accompanist.systemuicontroller) // 최신 버전 확인
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
