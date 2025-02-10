@@ -72,7 +72,7 @@ fun HomeScreen(
         GaeBizMent(
             text = stringResource(selectedCharacter.initMentResId),
         )
-        
+
         Spacer(modifier = Modifier.height(30.dp))
         HorizontalPager(
             state = pagerState,
@@ -97,7 +97,7 @@ fun HomeScreen(
             text = stringResource(selectedCharacter.wholeNameResId),
             style = GaeBizTheme.typography.titleSemiBold
         )
-        
+
         Spacer(modifier = Modifier.height(16.dp))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             selectedCharacter.traitsResIdList.forEach { trait ->

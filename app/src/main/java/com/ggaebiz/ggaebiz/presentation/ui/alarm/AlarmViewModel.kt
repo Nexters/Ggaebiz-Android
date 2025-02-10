@@ -9,9 +9,9 @@ import java.util.Locale
 
 data class AlarmState(
     // TODO :: ment, image 연동
-    val ment : String = "A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야",
-    val plusSeconds : String = "+ 00:00",
-    val backGroundImgRes : Int = R.drawable.fullpage_kiki_lev_1
+    val ment: String = "A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야",
+    val plusSeconds: String = "+ 00:00",
+    val backGroundImgRes: Int = R.drawable.fullpage_kiki_lev_1,
 )
 
 sealed interface AlarmSideEffect {
@@ -22,7 +22,7 @@ sealed interface AlarmSideEffect {
 
 class AlarmViewModel(
     private val getAudioResIdUseCase: GetAudioResIdUseCase,
-) : BaseViewModel<AlarmState,Nothing,AlarmSideEffect>(AlarmState()) {
+) : BaseViewModel<AlarmState, Nothing, AlarmSideEffect>(AlarmState()) {
 
     init {
         startIncreaseSeconds()
@@ -33,7 +33,7 @@ class AlarmViewModel(
         level: Int,
     ) = launch {
         val resIds = getAudioResIdUseCase(character, level, 0)
-        updateState{ it.copy(ment = "타이머 울리는 중") }
+        updateState { it.copy(ment = "타이머 울리는 중") }
         postSideEffect(AlarmSideEffect.PlayAudio(resIds))
     }
 
@@ -43,24 +43,24 @@ class AlarmViewModel(
             updateState {
                 val (minute, second) = parseTime(it.plusSeconds)
                 val newSecond = second + 1
-                val newPlusSeconds = formatTime(newSecond,minute)
+                val newPlusSeconds = formatTime(newSecond, minute)
                 it.copy(plusSeconds = newPlusSeconds)
             }
         }
     }
 
-    fun finishTimer(){
+    fun finishTimer() {
         postSideEffect(AlarmSideEffect.ClickFinish)
     }
 
-    fun snoozeTimer(){
+    fun snoozeTimer() {
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }
 
-    private fun formatTime(seconds: Int, minute : Int): String {
+    private fun formatTime(seconds: Int, minute: Int): String {
         val newMinute = if (seconds >= 60) minute + 1 else minute
         val newSecondFormatted = seconds % 60
-        return String.format(Locale.KOREA,"+ %02d:%02d", newMinute, newSecondFormatted)
+        return String.format(Locale.KOREA, "+ %02d:%02d", newMinute, newSecondFormatted)
     }
 
     private fun parseTime(time: String): Pair<Int, Int> {

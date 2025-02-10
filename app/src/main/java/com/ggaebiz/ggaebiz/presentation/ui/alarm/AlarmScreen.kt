@@ -7,7 +7,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
-import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.getRawResId
@@ -38,9 +37,11 @@ fun AlarmScreen(
 
                 }
             }
+
             AlarmSideEffect.ClickFinish -> {
                 navigateStart()
             }
+
             AlarmSideEffect.ClickSnooze -> {
                 navigateStart()
             }

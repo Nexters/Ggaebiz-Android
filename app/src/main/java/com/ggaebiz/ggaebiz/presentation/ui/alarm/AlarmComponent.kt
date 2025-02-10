@@ -28,9 +28,9 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
 fun AlarmTopSection(
-    ment : String,
-    plusSecond : String
-){
+    ment: String,
+    plusSecond: String,
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -65,7 +65,7 @@ fun AlarmTopSection(
 
 @Stable
 @Composable
-private fun AlarmDefaultText(){
+private fun AlarmDefaultText() {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
             text = stringResource(R.string.alarm_default_timer_text),
@@ -80,7 +80,6 @@ private fun AlarmDefaultText(){
         )
     }
 }
-
 
 
 @Composable

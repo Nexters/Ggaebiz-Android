@@ -49,7 +49,8 @@ fun SettingScreen(
     }
 
     LaunchedEffect(hourPickerState.selectedItem, minutePickerState.selectedItem) {
-        buttonEnabled = !(hourPickerState.selectedItem == "00" && minutePickerState.selectedItem == "00")
+        buttonEnabled =
+            !(hourPickerState.selectedItem == "00" && minutePickerState.selectedItem == "00")
     }
 
     Column(
@@ -73,7 +74,7 @@ fun SettingScreen(
         GaeBizMent(
             text = stringResource(SETTING_MENT_LIST[selectedLevel - 1]),
         )
-        
+
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizLevelSlider(
             selectedLevel = selectedLevel,
@@ -81,7 +82,7 @@ fun SettingScreen(
                 selectedLevel = newValue
             },
         )
-        
+
         Spacer(modifier = Modifier.height(66.dp))
         GaeBizTimePicker(
             hourPickerState = hourPickerState,
@@ -94,7 +95,13 @@ fun SettingScreen(
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp),
             enabled = buttonEnabled,
-            onClick = { navigateTimer(hourPickerState.selectedItem.toInt(), minutePickerState.selectedItem.toInt(), selectedLevel) },
+            onClick = {
+                navigateTimer(
+                    hourPickerState.selectedItem.toInt(),
+                    minutePickerState.selectedItem.toInt(),
+                    selectedLevel
+                )
+            },
             contentColor = GaeBizTheme.colors.white,
             containerColor = GaeBizTheme.colors.gray800,
             disabledContentColor = GaeBizTheme.colors.gray400,

@@ -16,8 +16,8 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 @Composable
 private fun TimerColon(
     modifier: Modifier = Modifier,
-    isBlack : Boolean = true
-){
+    isBlack: Boolean = true,
+) {
     val tineColor = if (isBlack) GaeBizTheme.colors.black else GaeBizTheme.colors.white
     Box(
         modifier = modifier
@@ -34,11 +34,14 @@ private fun TimerColon(
 @Composable
 fun TimerLargeColon(
     modifier: Modifier = Modifier,
-    isBlack: Boolean = true
+    isBlack: Boolean = true,
 
-){
+    ) {
     TimerColon(
-        modifier = modifier.padding(horizontal = 16.dp).width(13.dp).height(52.dp),
+        modifier = modifier
+            .padding(horizontal = 16.dp)
+            .width(13.dp)
+            .height(52.dp),
         isBlack = isBlack
     )
 }
@@ -46,10 +49,13 @@ fun TimerLargeColon(
 @Composable
 fun TimerSmallColon(
     modifier: Modifier = Modifier,
-    isBlack: Boolean = true
-){
+    isBlack: Boolean = true,
+) {
     TimerColon(
-        modifier = modifier.padding(horizontal = 8.dp).width(8.dp).height(35.dp),
+        modifier = modifier
+            .padding(horizontal = 8.dp)
+            .width(8.dp)
+            .height(35.dp),
         isBlack = isBlack
     )
 }

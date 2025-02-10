@@ -24,7 +24,7 @@ class NavigatorState(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Route.Alarm
+    val startDestination = Route.Home
 
     fun navigateHome() {
         navController.navigate(Route.Home)
