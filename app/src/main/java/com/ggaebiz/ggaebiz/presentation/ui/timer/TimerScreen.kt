@@ -12,11 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -33,7 +29,6 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.GaeBizTimer
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
 import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
-import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -56,7 +51,6 @@ fun TimerScreen(
     TimerContent(
         uiState = uiState,
         processIntent = viewModel::processIntent,
-        endTimer = viewModel::endTimer,
     )
 }
 
@@ -65,25 +59,9 @@ fun TimerContent(
     modifier: Modifier = Modifier,
     uiState: TimerState,
     processIntent: (TimerIntent) -> Unit,
-    endTimer: () -> Unit,
 ) {
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageWidth = screenWidth / 3 * 2
-    var remainingSeconds by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(uiState) {
-        remainingSeconds = uiState.hour * 3600 + uiState.minute * 60
-    }
-
-    LaunchedEffect(remainingSeconds) {
-        if (remainingSeconds > 0) {
-            delay(1000L)
-            remainingSeconds -= 1
-        } else {
-            endTimer()
-        }
-    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -104,7 +82,7 @@ fun TimerContent(
             contentScale = ContentScale.Crop,
         )
 
-        GaeBizTimer(remainingSeconds = remainingSeconds)
+        GaeBizTimer(remainingSeconds = uiState.remainingSeconds)
 
         Spacer(modifier = Modifier.weight(1f))
         GaeBizSlideButton(
@@ -118,8 +96,7 @@ fun TimerContent(
 }
 
 fun showToast(context: Context, uiState: TimerState) {
-    val remainingSeconds = uiState.hour * 3600 + uiState.minute * 60
-    if (remainingSeconds >= 3600) {
+    if (uiState.remainingSeconds >= 3600) {
         Toast.makeText(
             context,
             context.getString(
