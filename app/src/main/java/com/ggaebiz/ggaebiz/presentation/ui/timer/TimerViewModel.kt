@@ -19,7 +19,7 @@ data class TimerState(
 
 sealed interface TimerSideEffect {
     data object ShowToast : TimerSideEffect
-    data class StartService(val seconds: Int , val audioResPath : String) : TimerSideEffect
+    data class StartService(val seconds: Int, val audioResPath: String) : TimerSideEffect
     data object StopService : TimerSideEffect
 }
 
@@ -32,7 +32,7 @@ class TimerViewModel(
     private val endTimerUseCase: EndTimerUseCase,
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
     private val getTimerSettingUseCase: GetTimerSettingUseCase,
-    private val setSnoozeCountUseCase: SetSnoozeCountUseCase
+    private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
 ) : BaseViewModel<TimerState, TimerIntent, TimerSideEffect>(TimerState()) {
 
     init {
@@ -49,7 +49,7 @@ class TimerViewModel(
         val timerSetting = getTimerSettingUseCase()
         val selectedCharacterIdx = getCharacterIdxUseCase()
         val settingSeconds = timerSetting.second * 3600 + timerSetting.third * 60
-        val audioResPath = getAudioResIdUseCase(CharacterName.KIKI,uiState.value.level,0)
+        val audioResPath = getAudioResIdUseCase(CharacterName.KIKI, uiState.value.level, 0)
         updateState {
             it.copy(
                 selectedCharacterIdx = selectedCharacterIdx,
@@ -60,7 +60,7 @@ class TimerViewModel(
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
-        postSideEffect(TimerSideEffect.StartService(settingSeconds,audioResPath))
+        postSideEffect(TimerSideEffect.StartService(settingSeconds, audioResPath))
         startTimeTick()
     }
 

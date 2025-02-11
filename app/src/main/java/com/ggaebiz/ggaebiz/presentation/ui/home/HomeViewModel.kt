@@ -8,12 +8,12 @@ data class HomeState(
 )
 
 sealed interface HomeSideEffect {
-    data object NavigateToSetting: HomeSideEffect
+    data object NavigateToSetting : HomeSideEffect
 }
 
 sealed interface HomeIntent {
-    data class SelectCharacter(val selectCharacterIdx: Int): HomeIntent
-    data object ClickSettingButton: HomeIntent
+    data class SelectCharacter(val selectCharacterIdx: Int) : HomeIntent
+    data object ClickSettingButton : HomeIntent
 }
 
 class HomeViewModel(

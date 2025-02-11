@@ -26,6 +26,7 @@ fun AlarmScreen(
                 timerServiceManager.stopTimerService()
                 navigateStart()
             }
+
             is AlarmSideEffect.ClickSnooze -> {
                 timerServiceManager.stopTimerService()
                 navigateTimer()
@@ -41,18 +42,17 @@ fun AlarmScreen(
 @Composable
 fun AlarmContent(
     uiState: AlarmState,
-    processIntent: (AlarmIntent) -> Unit
+    processIntent: (AlarmIntent) -> Unit,
 ) {
     FullScreen(
         backGroundImage = uiState.backGroundImgRes
     ) {
         AlarmTopSection(
-            ment = uiState.ment,
-            plusSecond = uiState.plusSeconds
+            ment = uiState.ment, plusSecond = uiState.plusSeconds
         )
         AlarmBottomSection(
-            onClickFinishButton = {processIntent(AlarmIntent.ClickFinish)},
-            onClickSnoozeButton = {processIntent(AlarmIntent.ClickSnooze)},
+            onClickFinishButton = { processIntent(AlarmIntent.ClickFinish) },
+            onClickSnoozeButton = { processIntent(AlarmIntent.ClickSnooze) },
             isDisableSnoozeButton = uiState.disableSnoozeButton
         )
     }
@@ -62,6 +62,6 @@ fun AlarmContent(
 @Composable
 fun AlarmScreenPreview() {
     GaeBizTheme {
-        AlarmScreen({},{})
+        AlarmScreen({}, {})
     }
 }

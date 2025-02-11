@@ -87,7 +87,7 @@ fun AlarmBottomSection(
     modifier: Modifier = Modifier,
     onClickFinishButton: () -> Unit,
     onClickSnoozeButton: () -> Unit,
-    isDisableSnoozeButton : Boolean
+    isDisableSnoozeButton: Boolean,
 ) {
     Column(
         modifier = modifier
@@ -105,7 +105,7 @@ fun AlarmBottomSection(
             onClick = onClickFinishButton
         )
         Spacer(Modifier.height(12.dp))
-        if (!isDisableSnoozeButton){
+        if (!isDisableSnoozeButton) {
             Box(
                 modifier = Modifier
                     .height(56.dp)

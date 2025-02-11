@@ -25,7 +25,7 @@ import kotlinx.coroutines.launch
 class TimerService : Service() {
 
     private lateinit var player: ExoPlayer
-    private var audioResPath : String = ""
+    private var audioResPath: String = ""
     private var timerJob: Job? = null
 
     companion object {
@@ -50,7 +50,7 @@ class TimerService : Service() {
             stopSelf()
         } else if (action == ACTION_START) {
             val seconds = intent.getIntExtra(INTENT_KET_TIMER_SECONDS, 0)
-            audioResPath = intent.getStringExtra(INTENT_KET_TIMER_AUDIO)?:""
+            audioResPath = intent.getStringExtra(INTENT_KET_TIMER_AUDIO) ?: ""
             startTimer(seconds)
         }
 

@@ -49,10 +49,10 @@ import org.koin.compose.getKoin
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     navigateSetting: () -> Unit,
-    navigateAlarm: () -> Unit
+    navigateAlarm: () -> Unit,
 ) {
     val timerServiceManager: TimerServiceManager by getKoin().inject()
-    if (timerServiceManager.isTimerServiceRunning(LocalContext.current)){
+    if (timerServiceManager.isTimerServiceRunning(LocalContext.current)) {
         navigateAlarm()
     }
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
@@ -154,7 +154,10 @@ fun HomeContent(
             containerColor = GaeBizTheme.colors.gray800,
             disabledContentColor = GaeBizTheme.colors.gray400,
             disabledContainerColor = GaeBizTheme.colors.gray100,
-            text = stringResource(R.string.setting_button_text, stringResource(selectedCharacter.nameResId)),
+            text = stringResource(
+                R.string.setting_button_text,
+                stringResource(selectedCharacter.nameResId)
+            ),
             style = GaeBizTheme.typography.bodySemiBold,
         )
         Spacer(modifier = Modifier.height(12.dp))
