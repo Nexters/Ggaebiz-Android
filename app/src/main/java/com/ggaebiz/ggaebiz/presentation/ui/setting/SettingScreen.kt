@@ -25,8 +25,8 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizLevelSlider
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTimePicker
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.SETTING_MENT_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.SETTING_MENT_LIST
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.NavigatorState
 import org.koin.androidx.compose.koinViewModel
 

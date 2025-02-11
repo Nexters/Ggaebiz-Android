@@ -28,7 +28,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogo
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.GaeBizTimer
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
