@@ -6,7 +6,6 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.ggaebiz.ggaebiz.presentation.ui.naviagation.Route.Alarm.toNavRoute
 
 @Composable
 fun rememberNavigator(
@@ -30,12 +29,12 @@ class NavigatorState(
         navController.navigate(Route.Home)
     }
 
-    fun navigateSetting(selectedCharacterIndex: Int) {
-        navController.navigate(Route.Setting(selectedCharacterIndex).toNavRoute())
+    fun navigateSetting() {
+        navController.navigate(Route.Setting)
     }
 
-    fun navigateTimer(selectedCharacterIndex: Int, hour: Int, minute: Int, level: Int) {
-        navController.navigate(Route.Timer(selectedCharacterIndex, hour, minute, level).toNavRoute())
+    fun navigateTimer() {
+        navController.navigate(Route.Timer)
     }
 
     fun navigateAlarm() {

@@ -9,12 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -22,71 +17,85 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizTextAppBar
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.PickerState
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.rememberPickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizLevelSlider
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTimePicker
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.SETTING_MENT_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.SETTING_MENT_LIST
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.NavigatorState
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingScreen(
-    modifier: Modifier = Modifier,
+    viewModel: SettingViewModel = koinViewModel(),
     navigator: NavigatorState,
-    navigateTimer: (Int, Int, Int) -> Unit,
-    selectedCharacterIndex: Int,
+    navigateTimer: () -> Unit,
 ) {
-    var selectedLevel by remember { mutableIntStateOf(1) }
-    val hourPickerState: PickerState = rememberPickerState(defaultValue = "00")
-    val minutePickerState: PickerState = rememberPickerState(defaultValue = "30")
-    var buttonEnabled by remember {
-        mutableStateOf(hourPickerState.selectedItem != "00" && minutePickerState.selectedItem != "00")
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            is SettingSideEffect.NavigateToTimer -> navigateTimer()
+        }
     }
 
-    LaunchedEffect(hourPickerState.selectedItem, minutePickerState.selectedItem) {
-        buttonEnabled =
-            !(hourPickerState.selectedItem == "00" && minutePickerState.selectedItem == "00")
-    }
+    SettingContent(
+        uiState = uiState,
+        processIntent = viewModel::processIntent,
+        onClickBackButton = navigator::popBackStack,
+    )
+}
 
+@Composable
+fun SettingContent(
+    uiState: SettingState,
+    processIntent: (SettingIntent) -> Unit,
+    onClickBackButton: () -> Unit,
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         GaeBizTextAppBar(
             titleRes = R.string.setting_title_text,
-            iconOnClick = { navigator.popBackStack() },
+            iconOnClick = { onClickBackButton() },
         )
 
         Spacer(modifier = Modifier.height(21.dp))
         Image(
-            painter = painterResource(CHARACTER_LIST[selectedCharacterIndex].selectedImageResId[selectedLevel - 1]),
+            painter = painterResource(
+                CHARACTER_LIST[uiState.selectedCharacterIdx].selectedImageResId[uiState.level - 1]
+            ),
             contentDescription = null,
             modifier = Modifier.size(125.dp),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizMent(
-            text = stringResource(SETTING_MENT_LIST[selectedLevel - 1]),
+            text = stringResource(SETTING_MENT_LIST[uiState.level - 1]),
         )
 
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizLevelSlider(
-            selectedLevel = selectedLevel,
-            onValueChange = { newValue ->
-                selectedLevel = newValue
+            selectedLevel = uiState.level,
+            onValueChange = { selectedLevel ->
+                processIntent(SettingIntent.SelectLevel(selectedLevel))
             },
         )
 
         Spacer(modifier = Modifier.height(66.dp))
         GaeBizTimePicker(
-            hourPickerState = hourPickerState,
-            minutePickerState = minutePickerState,
+            selectedHour = uiState.hour,
+            selectedMinute = uiState.minute,
+            onScrollFinished = { hour, minute ->
+                processIntent(SettingIntent.SelectTime(hour, minute))
+            },
         )
 
         Spacer(modifier = Modifier.weight(1f))
@@ -94,14 +103,8 @@ fun SettingScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp),
-            enabled = buttonEnabled,
-            onClick = {
-                navigateTimer(
-                    hourPickerState.selectedItem.toInt(),
-                    minutePickerState.selectedItem.toInt(),
-                    selectedLevel
-                )
-            },
+            enabled = uiState.buttonEnabled,
+            onClick = { processIntent(SettingIntent.ClickStartButton) },
             contentColor = GaeBizTheme.colors.white,
             containerColor = GaeBizTheme.colors.gray800,
             disabledContentColor = GaeBizTheme.colors.gray400,
@@ -110,6 +113,5 @@ fun SettingScreen(
             style = GaeBizTheme.typography.bodySemiBold,
         )
         Spacer(modifier = Modifier.height(12.dp))
-
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,7 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GaeBizPicker(
     modifier: Modifier = Modifier,
-    pickerState: PickerState,
+    selectedItem: String,
     list: List<String>,
     visibleItemsCount: Int,
     centerTextStyle: TextStyle,
@@ -51,23 +52,23 @@ fun GaeBizPicker(
     dividerHeight: Int,
     normalDividerColor: Color,
     pressedDividerColor: Color,
-    onScrollFinished: () -> Unit,
+    onScrollFinished: (String) -> Unit,
 ) {
     val listScrollCount = Integer.MAX_VALUE
     val listScrollMiddle = listScrollCount / 2
 
     val visibleItemsMiddle = visibleItemsCount / 2
-    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(pickerState.selectedItem)
+    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(selectedItem)
 
     val coroutineScope = rememberCoroutineScope()
     var dividerColor by remember { mutableStateOf(normalDividerColor) }
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    val normalItemHeightPixels = remember { mutableStateOf(0) }
-    val normalItemHeightDp = pixelsToDp(normalItemHeightPixels.value)
-    val centerItemHeightPixels = remember { mutableStateOf(0) }
-    val centerIemHeightDp = pixelsToDp(centerItemHeightPixels.value)
+    val normalItemHeightPixels = remember { mutableIntStateOf(0) }
+    val normalItemHeightDp = pixelsToDp(normalItemHeightPixels.intValue)
+    val centerItemHeightPixels = remember { mutableIntStateOf(0) }
+    val centerIemHeightDp = pixelsToDp(centerItemHeightPixels.intValue)
 
     LaunchedEffect(Unit) {
         snapshotFlow { listState.isScrollInProgress }
@@ -86,9 +87,7 @@ fun GaeBizPicker(
             .map { (index, offset) -> index + visibleItemsMiddle to offset }
             .distinctUntilChanged()
             .collect { (index, offset) ->
-                pickerState.selectedItem = list[index % list.size]
-                
-                if (offset == 0) onScrollFinished()
+                onScrollFinished(list[index % list.size])
 
                 if (offset > 0) {
                     coroutineScope.launch {
@@ -116,7 +115,7 @@ fun GaeBizPicker(
         ) {
             items(listScrollCount) { index ->
                 val item = list[index % list.size]
-                val isSelected = item == pickerState.selectedItem
+                val isSelected = item == selectedItem
                 val color = if (isSelected) centerTextColor else normalTextColor
                 val textStyle = if (isSelected) centerTextStyle else normalTextStyle
 
@@ -166,21 +165,13 @@ fun GaeBizPicker(
 @Composable
 private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
-@Composable
-fun rememberPickerState(defaultValue: String = "") = remember { PickerState(defaultValue) }
-
-class PickerState(defaultValue: String) {
-    var selectedItem by mutableStateOf(defaultValue)
-}
-
 @Preview("Picker")
 @Composable
 private fun GaeBizPickerPreview() {
     val hours = (0..6).toList().map { it.toString().padStart(2, '0') }
-    val hourPickerState = rememberPickerState()
 
     GaeBizPicker(
-        pickerState = hourPickerState,
+        selectedItem = 1.toString().padStart(2, '0'),
         list = hours,
         visibleItemsCount = 3,
         centerTextStyle = GaeBizTheme.typography.timer2,

@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.timer
 
+import android.content.Context
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
 import androidx.compose.foundation.Image
@@ -11,11 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -25,42 +22,46 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.GaeBizTimer
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
-import kotlinx.coroutines.delay
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun TimerScreen(
-    navigateHome: () -> Unit,
-    navigateAlarm: () -> Unit,
-    selectedCharacterIndex: Int,
-    hour: Int,
-    minute: Int,
-    level: Int,
+    viewModel: TimerViewModel = koinViewModel(),
+    navigateHome: () -> Unit = {},
+    navigateAlarm: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
-    val imageWidth = screenWidth / 3 * 2
-    var remainingSeconds by remember { mutableIntStateOf(hour * 3600 + minute * 60) }
-
-    if (remainingSeconds >= 3600) {
-        Toast.makeText(context, stringResource(R.string.timer_time_minute_toast_text, stringResource(CHARACTER_LIST[selectedCharacterIndex].nameResId), hour, minute), LENGTH_SHORT).show()
-    } else {
-        Toast.makeText(context, stringResource(R.string.timer_minute_toast_text, stringResource(CHARACTER_LIST[selectedCharacterIndex].nameResId), minute), LENGTH_SHORT).show()
-    }
-
-    LaunchedEffect(remainingSeconds) {
-        if (remainingSeconds > 0) {
-            delay(1000L)
-            remainingSeconds -= 1
-        } else {
-            navigateAlarm()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            is TimerSideEffect.NavigateToHome -> navigateHome()
+            is TimerSideEffect.NavigateToAlarm -> navigateAlarm()
+            is TimerSideEffect.ShowToast -> showToast(context, uiState)
         }
     }
+
+    TimerContent(
+        uiState = uiState,
+        processIntent = viewModel::processIntent,
+    )
+}
+
+@Composable
+fun TimerContent(
+    modifier: Modifier = Modifier,
+    uiState: TimerState,
+    processIntent: (TimerIntent) -> Unit,
+) {
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
+    val imageWidth = screenWidth / 3 * 2
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -70,18 +71,18 @@ fun TimerScreen(
 
         Spacer(modifier = Modifier.height(58.dp))
         GaeBizMent(
-            text = stringResource(CHARACTER_LIST[selectedCharacterIndex].initMentResId),
+            text = stringResource(CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId),
         )
-        
+
         Spacer(modifier = Modifier.height(30.dp))
         Image(
-            painter = painterResource(CHARACTER_LIST[selectedCharacterIndex].imageResId[level - 1]),
+            painter = painterResource(CHARACTER_LIST[uiState.selectedCharacterIdx].imageResId[uiState.level - 1]),
             contentDescription = null,
             modifier = Modifier.size(imageWidth),
             contentScale = ContentScale.Crop,
         )
-        
-        GaeBizTimer(remainingSeconds = remainingSeconds)
+
+        GaeBizTimer(remainingSeconds = uiState.remainingSeconds)
 
         Spacer(modifier = Modifier.weight(1f))
         GaeBizSlideButton(
@@ -89,7 +90,32 @@ fun TimerScreen(
                 .fillMaxWidth()
                 .padding(start = 58.dp, end = 58.dp, bottom = 96.dp),
             text = stringResource(R.string.end_button_text),
-            onSlideComplete = navigateHome,
+            onSlideComplete = { processIntent(TimerIntent.StopTimer) },
         )
+    }
+}
+
+fun showToast(context: Context, uiState: TimerState) {
+    if (uiState.remainingSeconds >= 3600) {
+        Toast.makeText(
+            context,
+            context.getString(
+                R.string.timer_time_minute_toast_text,
+                context.getString(CHARACTER_LIST[uiState.selectedCharacterIdx].nameResId),
+                uiState.hour,
+                uiState.minute
+            ),
+            LENGTH_SHORT,
+        ).show()
+    } else {
+        Toast.makeText(
+            context,
+            context.getString(
+                R.string.timer_minute_toast_text,
+                context.getString(CHARACTER_LIST[uiState.selectedCharacterIdx].nameResId),
+                uiState.minute,
+            ),
+            LENGTH_SHORT,
+        ).show()
     }
 }

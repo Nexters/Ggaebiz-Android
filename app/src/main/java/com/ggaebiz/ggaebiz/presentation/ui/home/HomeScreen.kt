@@ -21,10 +21,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,30 +31,44 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
-import com.ggaebiz.ggaebiz.presentation.feature.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel = koinViewModel(),
+    navigateSetting: () -> Unit = {},
+) {
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            is HomeSideEffect.NavigateToSetting -> navigateSetting()
+        }
+    }
+
+    HomeContent(processIntent = viewModel::processIntent)
+}
+
+@Composable
+fun HomeContent(
     modifier: Modifier = Modifier,
-    navigateSetting: (Int) -> Unit = { },
+    processIntent: (HomeIntent) -> Unit,
 ) {
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { CHARACTER_LIST.size })
-    var selectedCharacterIndex by remember { mutableIntStateOf(pagerState.currentPage) }
     val selectedCharacter = CHARACTER_LIST[pagerState.currentPage]
 
-    val configuration = LocalConfiguration.current
-    val screenWidth = configuration.screenWidthDp.dp
+    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageWidth = screenWidth / 3 * 2
     val sideOffset = screenWidth / 6
 
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            selectedCharacterIndex = page
+            processIntent(HomeIntent.SelectCharacter(page))
         }
     }
 
@@ -87,7 +97,7 @@ fun HomeScreen(
                     painter = painterResource(CHARACTER_LIST[page].imageResId[0]),
                     contentDescription = null,
                     modifier = Modifier.size(imageWidth),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
                 )
             }
         }
@@ -95,7 +105,7 @@ fun HomeScreen(
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = stringResource(selectedCharacter.wholeNameResId),
-            style = GaeBizTheme.typography.titleSemiBold
+            style = GaeBizTheme.typography.titleSemiBold,
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -120,7 +130,7 @@ fun HomeScreen(
                                 GaeBizTheme.colors.gray200
                             },
                             shape = RoundedCornerShape(50),
-                        )
+                        ),
                 )
             }
         }
@@ -130,12 +140,12 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp),
-            onClick = { navigateSetting(selectedCharacterIndex) },
+            onClick = { processIntent(HomeIntent.ClickSettingButton) },
             contentColor = GaeBizTheme.colors.white,
             containerColor = GaeBizTheme.colors.gray800,
             disabledContentColor = GaeBizTheme.colors.gray400,
             disabledContainerColor = GaeBizTheme.colors.gray100,
-            text = stringResource(R.string.setting_button_text),
+            text = stringResource(R.string.setting_button_text, stringResource(selectedCharacter.nameResId)),
             style = GaeBizTheme.typography.bodySemiBold,
         )
         Spacer(modifier = Modifier.height(12.dp))
