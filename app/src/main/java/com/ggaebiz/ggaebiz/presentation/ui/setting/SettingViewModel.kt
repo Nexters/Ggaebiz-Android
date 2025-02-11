@@ -9,8 +9,9 @@ data class SettingState(
     val level: Int = 1,
     val hour: Int = 0,
     val minute: Int = 30,
-    val buttonEnabled: Boolean = true
-)
+) {
+    val buttonEnabled: Boolean = hour != 0 || minute != 0
+}
 
 sealed interface SettingSideEffect {
     data object NavigateToTimer: SettingSideEffect
@@ -53,7 +54,6 @@ class SettingViewModel(
             it.copy(
                 hour = hour,
                 minute = minute,
-                buttonEnabled = hour != 0 || minute != 0,
             )
         }
     }
