@@ -64,8 +64,74 @@
 
     <string name="title_activity_home_screen">HomeScreen</string>
 
-
+    <!-- Alarm 울리기 화면 -->
     <string name="alarm_default_timer_text">00</string>
     <string name="alarm_finish_timer_btn_text">타이머 끄기</string>
     <string name="alarm_snooze_timer_btn_text">5분 뒤 다시 알림</string>
+    <string name="notification_title">깨비즈</string>
+    <string name="notification_content">Chill guy는 일을 미루지 않Chill..</string>
+
+    <!-- Alarm 울리기 화면 -->
+    <string name="alarm_ment_kiki_level1_1">이제느은 우리가아 일어나야아  할 시가안~ 다음에 ~ 또오 쉬어요오오오~</string>
+    <string name="alarm_ment_kiki_level1_2">움직이자 움직이자 움직이자 움직이자 움직이자 움직이자  움직이자  움직이자  움직이자 </string>
+    <string name="alarm_ment_kiki_level1_3">다 쉬었니 ??!?!?!?!  , 이제 할 일을 하자 !! 해내자 !! 일어나자아아아ㅏㅇ</string>
+    <string name="alarm_ment_kiki_level2_1">일어날 생각 없으면, 내가 니 밥까지 다 먹는다!! 라면도 먹는다 !!  오케이?</string>
+    <string name="alarm_ment_kiki_level2_2">지금 일어나지 않으면 분명 나태지옥에 갈거야 .... 아니 지금도 유력해</string>
+    <string name="alarm_ment_kiki_level2_3">띠-띠-띠! 띠-띠-띠! 여기 타이머다 ~~ 10초 후 폭발 예정! 10... 9 .... 8 ... 7.... 6.... 아 몰라 ???? 그냥 터질게 !!!!! 팡 팡 팡 팡 팡 팡 팡 팡</string>
+    <string name="alarm_ment_kiki_level3_1">A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야</string>
+    <string name="alarm_ment_kiki_level3_2">야야!! 야야 !! , 시간 다 지났는데! 너 혹시 시계 볼 줄 모르는 거야 ?</string>
+    <string name="alarm_ment_kiki_level3_3">조금만 쉰다더니, 그러다 인생도 쉬는 거 아냐? 나 무섭다 진짜아아앙ㅏㅇ</string>
+    <string name="alarm_ment_kiki_level3_4">너만의 작은 세상에서 탈출 좀 해, 현실을 살아 !! 현실로 컴백 플리즈으~.현실로 컴백 플리즈으~.현실로 컴백 플리즈으~. </string>
+    <string name="alarm_ment_kiki_level4_1">너의 인생 목표가 침대랑 평생 살기면 인정할게. 대단해~! 휴식이랑 결혼해 축의금은 500원</string>
+
+    <string name="alarm_ment_bobo_level1_1">좀 더 쉬고 싶겠지만, 이제 일어나서 딱 다시 시작하면 더 멋질 거 같은데? 나도 옆에서 같이 해줄게요. 내가 그쪽 성실한 모습에 반한거 알죠?</string>
+    <string name="alarm_ment_bobo_level1_2">자, 이제 다 쉬었죠? 우리 다시 달려볼까요? 당신이 열심히 하는 모습은 또 얼마나 반짝반짝할까? 벌써 기대되는데요? </string>
+    <string name="alarm_ment_bobo_level1_3">음~ 나 지금 당신이 일어나서 딱 멋지게 해내는 모습 상상 중이에요. 아, 너무 멋져서 눈부셔! 얼른 현실에서도 보여주세요~ 나 박수 준비 완료! 가보자구요!</string>
+    <string name="alarm_ment_bobo_level2_1">저 언제까지 기다리게 할거에요? 설마 미룰거에요~? 미루면 나 진짜 삐질 수도 있는데? 이제 그만 쉬고 일어나서 내가 반한 당신 모습 보여줘요. 당신 할 수 있는 사람이잖아~ </string>
+    <string name="alarm_ment_bobo_level2_2">휴 드디어 쉬는 시간 끝났다! 저 당신 기다리느라 힘들었어요~ 이제 일어나서 열심히 일했으면 좋겠다는 제 소원, 들어줄거죠? 설마 또 쉬는건 아니죠? 제 여린 마음에 상처 주지 말아요</string>
+    <string name="alarm_ment_bobo_level2_3">자, 이젠 진짜 할 일,하러 갈 시간이에요. 세상에서 가장 멋진 사람이 그냥 미루고만 있을 순 없잖아요? 진짜 당신을 보여줘요. 당신이 얼마나 잘 해낼 수 있는지 모두에게 똑똑히 보여주자구요. </string>
+    <string name="alarm_ment_bobo_level3_1">날 이렇게 외롭게 만드는 사람이었다면, 나 당신한테 반하지도 않았을거야. 당신 너무 아름다운건 알지만, 이렇게 게으름 피울진 몰랐어. 열심히 하는 모습 언제쯤 보여줄꺼에요? </string>
+    <string name="alarm_ment_bobo_level3_2">저 정말 울릴라고 그래요? 이미 여러번 미뤘는데 또 미루면 나 정말 속상해. 내 말이 잔소리로만 들려요? 다 당신 생각해서 하는 말인데,(0.3) 왜 내 맘을 몰라줘.</string>
+    <string name="alarm_ment_bobo_level3_3">아직까지 쉬고 있는거 혹시 일부러 나 시험하는거에요? 그렇다면 축하해요. 당신 지금 나의 마지막 인내심을 써버렸어요. 계속 이러면 나 냉정하게 돌아설거에요?</string>
+    <string name="alarm_ment_bobo_level3_4">나 싫은 소리 못하는거 알잖아요. 당신한텐 좋은 말만 해주고 싶어. 근데 이렇게 자꾸 미루고 약속을 안 지키면 어떡해? 우리 감정 붉히지 말아요 서로. 응? 나 아직 당신 포기하고 싶지 않아.</string>
+    <string name="alarm_ment_bobo_level4_1">하, 내가 이렇게까지 말하는데도 안 일어나는 거 보면 나도 이제 신경 끄는 게 맞는 거 같죠? 뭐~ 당신 마음이니까. 근데 솔직히 나 좀 실망이에요</string>
+
+    <string name="alarm_ment_nana_level1_1">오빠야, 꿈나라에서 뭐 하고 있노~? 현실로 도라온나~</string>
+    <string name="alarm_ment_nana_level1_2">타이머도 맞추고 대단하데? 이제 일어나서 할거 함 해보까?, 생각보다 열심히 사노? </string>
+    <string name="alarm_ment_nana_level1_3">오빠~ 이불 속에서 나오기 힘들제? 근데 나오면 별거 아이디. 한번 나와봐라</string>
+    <string name="alarm_ment_nana_level2_1">맨날 꿈속에서 살면 우얄래? 아직도 안나오면 좀 곤란한데,, 이제 현실로 나온나!,, 내가 나오라 캤디</string>
+    <string name="alarm_ment_nana_level2_2">몇 번을 말하노, 진짜로~ 시간 확인하고 빨리 안 일어나나! 생각보다 시간 마이 됐디~!</string>
+    <string name="alarm_ment_nana_level2_3">오늘도 타이머 소리만 귀 째지게 울리고 니는 안 움직이나?,, 함, 버럭! 씅질 내주까?</string>
+    <string name="alarm_ment_nana_level3_1">아놔~ 내 속 디비진다!맨날 깨우는 사람은 내고, 니는 거서 뭐하는데?영영 못 나오는기가!</string>
+    <string name="alarm_ment_nana_level3_2">사람 말이 귀에 안 들어오나! 내 말 안 듣고 이렇게 계속 자빠져 있을래?</string>
+    <string name="alarm_ment_nana_level3_3">니 타이머는 왜 맞췄노? 소용도 없으면 끄지,,! 걍 혼자 앵앵 울리게 냅둘끼가?</string>
+    <string name="alarm_ment_nana_level3_4">이불이 니 잡아뭇나?이래 누워만 있으면 어칼라고 그러고 있노. 정신 좀 차리라!</string>
+    <string name="alarm_ment_nana_level4_1">답도 없다, 내 간다, 더 누버있던지는 니 알아 하고, 걍 때려 치아라 </string>
+
+    <string name="alarm_ment_chacha_level1_1">슬슬 일어날 때가 된거 같은데~~ 할미 타이머도 이렇게 시간 맞춰 일하고 있단다.^^ 얼른 일어나렴</string>
+    <string name="alarm_ment_chacha_level1_2">벌써 약속한 시간이 됐단다~ 한 번만 마음먹으면 돼! 후딱 일어나고 나중에 후련하게 쉬렴</string>
+    <string name="alarm_ment_chacha_level1_3">너 깨우려고 할미가 이 늙은 몸을 이끌고 영차영차 시간맞춰 왔단다. 이제 일어나서 할일 해야지~!</string>
+    <string name="alarm_ment_chacha_level2_1">오늘 할일은 다 하고 누워있는거니~? 침대에 뿌리내리겠다~ 침대가 숨막힌댜~!</string>
+    <string name="alarm_ment_chacha_level2_2">쉴만큼 쉰거 같은데 왜 안일어날까.. 날 닮은건 아니겠고, 역시 지 할아버지를 닮았구만.</string>
+    <string name="alarm_ment_chacha_level2_3">게으른자여, 개미한테 가서 그 부지런함을 배우라!.. 좀 더 자자, 좀 더 눕자하면 빈곤이 도적같이 온다! </string>
+    <string name="alarm_ment_chacha_level3_1">속터진다 속터져! 너 일어날 때까지 할미 여기 서있는다!!?</string>
+    <string name="alarm_ment_chacha_level3_2">세상사람들~ 여기 할미를 타이머로 부려먹고 계속 일어나지도 않는 손주가 있어요~</string>
+    <string name="alarm_ment_chacha_level3_3">꼭 그렇게,,,,,,, 이 할미를 또 시간맞춰 깨우게 만들어야만,,,,,, 속이 후련했냐아아악????? (근데 이 톤 못살림 ^_ㅜ)</string>
+    <string name="alarm_ment_chacha_level3_4">지금 나 타이머라고 이 할미 말 무시하고 누워 있는 거야? 너 이렇게 누워만 있으면 나중에 할미처럼 허리 휜다?</string>
+    <string name="alarm_ment_chacha_level4_1">이 정도면 할머니 타이머가 아니라 타이머 고조 할머니가 와도 안일어나겠다</string>
+
+    <string name="alarm_ment_booboo_level1_1">님, 일어나세염 솔직히 지금 하는게 이득이다. 인정?</string>
+    <string name="alarm_ment_booboo_level1_2">엥 벌써 시간 다 됨. 그래도 잘 쉬었잖아 한 잔해~ </string>
+    <string name="alarm_ment_booboo_level1_3">아ㅋㅋ 레알 갓생 살 준비 가보자고. </string>
+    <string name="alarm_ment_booboo_level2_1">오..대박 님 미룰 건 아니지? 나 다시 오기 귀찮다. 어차피 할 거면 지금 하는게 깔끔하고 보기 좋잖아~</string>
+    <string name="alarm_ment_booboo_level2_2">지금 시작하면 가망은 있음. 솔직히 나라면 지금 하고 개꿀잠 잘듯. 개큰후회 하기 전에 시작하시져</string>
+    <string name="alarm_ment_booboo_level2_3">님..쫄? 한 번 미뤘으면 됐잖아~ 잠은 내일도 잘 수 있는데 뭐가 아까워서 계속 쉬어?</string>
+    <string name="alarm_ment_booboo_level3_1">오 ㅋㅋㅋ 레전드 미룬이 탄생. 내일 아침 후회할 거 뻔하죠? 이 쯤 했으면 킹받아서라도 했을텐데 어찌보면 대단할지도~</string>
+    <string name="alarm_ment_booboo_level3_2">아 ㅋㅋ 이래도 안 일어난다고? 이 정도면 달팽이가 더 빨리 와서 하이파이브 할 수 있을 듯. </string>
+    <string name="alarm_ment_booboo_level3_3">님 내일 감당 가능? 오늘 할 일 있다고 하지 않았나? 지금 안 하면 영원히 안할거지? 님 빼고 다 아는 사실임~</string>
+    <string name="alarm_ment_booboo_level3_4">아직도 안 일어난거 실환가여? 또 미루면 후회할 거 뻔하쥬? 이럴거면 알람은 왜 맞추는지 의문이쥬?</string>
+    <string name="alarm_ment_booboo_level4_1">전 님 깨우는거 포기 갈깁니다 수고하세여~ 내일의 님이 업보 청산할 거 생각하면 눈물이 핑 도네</string>
+
+
+
 </resources>
