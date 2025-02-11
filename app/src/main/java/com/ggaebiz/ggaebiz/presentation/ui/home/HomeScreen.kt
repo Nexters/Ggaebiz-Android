@@ -21,16 +21,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
@@ -38,19 +41,25 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    navigateSetting: () -> Unit = {},
+    navigateSetting: () -> Unit,
+    navigateAlarm: () -> Unit
 ) {
+    val timerServiceManager: TimerServiceManager by getKoin().inject()
+    if (timerServiceManager.isTimerServiceRunning(LocalContext.current)){
+        navigateAlarm()
+    }
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
         }
     }
-
     HomeContent(processIntent = viewModel::processIntent)
 }
 
@@ -156,6 +165,8 @@ fun HomeContent(
 @Composable
 fun GreetingPreview2() {
     GaeBizTheme {
-        HomeScreen()
+        HomeScreen(
+            navigateAlarm = {},
+            navigateSetting = {})
     }
 }

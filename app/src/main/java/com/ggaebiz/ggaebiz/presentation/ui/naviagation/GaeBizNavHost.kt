@@ -21,13 +21,13 @@ fun GaeBizNavHost(
         modifier = modifier,
     ) {
         composable<Route.Splash> {
-            SplashScreen(
-                navigateHome = { navigator.navigateHome() }
+            SplashScreen(navigateHome = { navigator.navigateHome() }
             )
         }
         composable<Route.Home> {
             HomeScreen(
-                navigateSetting = { navigator.navigateSetting() }
+                navigateSetting = { navigator.navigateSetting() },
+                navigateAlarm = { navigator.navigateAlarm() }
             )
         }
         composable<Route.Setting> {
@@ -38,13 +38,13 @@ fun GaeBizNavHost(
         }
         composable<Route.Timer> {
             TimerScreen(
-                navigateHome = { navigator.navigateHome() },
-                navigateAlarm = { navigator.navigateAlarm() },
+                navigateHome = { navigator.navigateHome() }
             )
         }
         composable<Route.Alarm> {
             AlarmScreen(
-                navigateStart = { navigator.navigateToMainClearingBackStack()}
+                navigateStart = { navigator.navigateToMainClearingBackStack() },
+                navigateTimer = {navigator.navigateTimer()}
             )
         }
     }
