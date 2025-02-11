@@ -1,7 +1,7 @@
 package com.ggaebiz.ggaebiz.data.model
 
 
-enum class Character(val key: String) {
+enum class CharacterName(val key: String) {
     KIKI("kiki"),
     BOBO("bobo"),
     NANA("nana"),
@@ -9,7 +9,7 @@ enum class Character(val key: String) {
     BOOBOO("booboo");
 
     companion object {
-        fun fromKey(key: String): Character? {
+        fun fromKey(key: String): CharacterName? {
             return entries.find { it.key == key }
         }
     }

@@ -1,7 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.data.model.Character
+import com.ggaebiz.ggaebiz.data.model.CharacterName
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -29,10 +29,10 @@ class AlarmViewModel(
     }
 
     fun startTimer(
-        character: Character,
+        characterName: CharacterName,
         level: Int,
     ) = launch {
-        val resIds = getAudioResIdUseCase(character, level, 0)
+        val resIds = getAudioResIdUseCase(characterName, level, 0)
         updateState { it.copy(ment = "타이머 울리는 중") }
         postSideEffect(AlarmSideEffect.PlayAudio(resIds))
     }
