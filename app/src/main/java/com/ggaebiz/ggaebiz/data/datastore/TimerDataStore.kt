@@ -15,6 +15,7 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     private val levelKey = intPreferencesKey("level_data")
     private val hourKey = intPreferencesKey("hour_data")
     private val minuteKey = intPreferencesKey("minute_data")
+    private val snoozeCountKey = intPreferencesKey("snooze_count_data")
 
     companion object {
         const val DEFAULT_IS_SETTING_TIMER = false
@@ -22,6 +23,7 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
         const val DEFAULT_LEVEL = 1
         const val DEFAULT_HOUR = 0
         const val DEFAULT_MINUTE = 30
+        const val DEFAULT_SNOOZE_COUNT = 0
     }
     
     fun getIsSettingTimer(): Flow<Boolean> {
@@ -81,6 +83,18 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun setMinute(minute: Int) {
         dataStore.edit { preferences ->
             preferences[minuteKey] = minute
+        }
+    }
+
+    fun getSnoozeCount(): Flow<Int> {
+        return dataStore.data.map { preferences ->
+            preferences[snoozeCountKey] ?: DEFAULT_SNOOZE_COUNT
+        }
+    }
+
+    suspend fun setSnoozeCount(count: Int) {
+        dataStore.edit { preferences ->
+            preferences[snoozeCountKey] = count
         }
     }
 }
