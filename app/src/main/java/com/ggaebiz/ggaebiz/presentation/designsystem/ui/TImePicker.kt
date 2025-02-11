@@ -1,6 +1,5 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.ui
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,16 +20,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.GaeBizPicker
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.PickerState
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.picker.rememberPickerState
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.TimerSmallColon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
 fun GaeBizTimePicker(
     modifier: Modifier = Modifier,
-    hourPickerState: PickerState,
-    minutePickerState: PickerState,
+//    hourPickerState: PickerState,
+//    minutePickerState: PickerState,
+    selectedHour: Int,
+    selectedMinute: Int,
     visibleItemsCount: Int = 3,
     centerTextStyle: TextStyle = GaeBizTheme.typography.timer2,
     centerTextColor: Color = GaeBizTheme.colors.gray900,
@@ -39,7 +38,7 @@ fun GaeBizTimePicker(
     dividerHeight: Int = 2,
     normalDividerColor: Color = GaeBizTheme.colors.gray75,
     pressedDividerColor: Color = GaeBizTheme.colors.primaryOrange,
-    onScrollFinished: () -> Unit = {},
+    onScrollFinished: (Int, Int) -> Unit = { _, _ -> },
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -56,7 +55,7 @@ fun GaeBizTimePicker(
         ) {
             Column(modifier = Modifier.weight(0.5f)) {
                 GaeBizPicker(
-                    pickerState = hourPickerState,
+                    selectedItem = selectedHour.toString().padStart(2, '0'),
                     list = hours,
                     visibleItemsCount = visibleItemsCount,
                     centerTextStyle = centerTextStyle,
@@ -66,7 +65,7 @@ fun GaeBizTimePicker(
                     dividerHeight = dividerHeight,
                     normalDividerColor = normalDividerColor,
                     pressedDividerColor = pressedDividerColor,
-                    onScrollFinished = onScrollFinished,
+                    onScrollFinished = { newHour -> onScrollFinished(newHour.toInt(), selectedMinute) },
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
@@ -84,7 +83,7 @@ fun GaeBizTimePicker(
 
             Column(modifier = Modifier.weight(0.5f)) {
                 GaeBizPicker(
-                    pickerState = minutePickerState,
+                    selectedItem = selectedMinute.toString().padStart(2, '0'),
                     list = minutes,
                     visibleItemsCount = visibleItemsCount,
                     centerTextStyle = centerTextStyle,
@@ -94,7 +93,7 @@ fun GaeBizTimePicker(
                     dividerHeight = dividerHeight,
                     normalDividerColor = normalDividerColor,
                     pressedDividerColor = pressedDividerColor,
-                    onScrollFinished = onScrollFinished,
+                    onScrollFinished = { newMinute -> onScrollFinished(selectedHour, newMinute.toInt()) }
                 )
                 Spacer(Modifier.height(12.dp))
                 Text(
@@ -112,11 +111,8 @@ fun GaeBizTimePicker(
 @Preview("Time Picker")
 @Composable
 private fun GaeBizTimePickerPreview() {
-    val hourPickerState: PickerState = rememberPickerState()
-    val minutePickerState: PickerState = rememberPickerState()
-    
     GaeBizTimePicker(
-        hourPickerState = hourPickerState,
-        minutePickerState = minutePickerState,
+        selectedHour = 4,
+        selectedMinute = 40,
     )
 }
