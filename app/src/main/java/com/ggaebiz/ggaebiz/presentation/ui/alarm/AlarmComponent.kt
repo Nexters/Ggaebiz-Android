@@ -87,6 +87,7 @@ fun AlarmBottomSection(
     modifier: Modifier = Modifier,
     onClickFinishButton: () -> Unit,
     onClickSnoozeButton: () -> Unit,
+    isDisableSnoozeButton : Boolean
 ) {
     Column(
         modifier = modifier
@@ -104,18 +105,20 @@ fun AlarmBottomSection(
             onClick = onClickFinishButton
         )
         Spacer(Modifier.height(12.dp))
-        Box(
-            modifier = Modifier
-                .height(56.dp)
-                .clickable { onClickSnoozeButton() },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.alarm_snooze_timer_btn_text),
-                style = GaeBizTheme.typography.bodyMedium,
-                color = GaeBizTheme.colors.gray100,
-            )
+        if (!isDisableSnoozeButton){
+            Box(
+                modifier = Modifier
+                    .height(56.dp)
+                    .clickable { onClickSnoozeButton() },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.alarm_snooze_timer_btn_text),
+                    style = GaeBizTheme.typography.bodyMedium,
+                    color = GaeBizTheme.colors.gray100,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
         }
-        Spacer(Modifier.height(12.dp))
     }
 }

@@ -1,40 +1,53 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
+import android.util.Log
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.data.model.CharacterName
-import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import kotlinx.coroutines.delay
 import java.util.Locale
 
 data class AlarmState(
-    // TODO :: ment, image 연동
     val ment: String = "A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야",
-    val plusSeconds: String = "+ 00:00",
     val backGroundImgRes: Int = R.drawable.fullpage_kiki_lev_1,
-)
+    val plusSeconds: String = "+ 00:00",
+    var snoozeCount: Int = 0,
+) {
+    val disableSnoozeButton: Boolean = snoozeCount >= 2
+}
+
+sealed interface AlarmIntent {
+    data object ClickSnooze : AlarmIntent
+    data object ClickFinish : AlarmIntent
+}
 
 sealed interface AlarmSideEffect {
-    data class PlayAudio(val resId: String) : AlarmSideEffect
     data object ClickSnooze : AlarmSideEffect
     data object ClickFinish : AlarmSideEffect
 }
 
 class AlarmViewModel(
-    private val getAudioResIdUseCase: GetAudioResIdUseCase,
+    private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
+    private val getTimerSettingUseCase: GetTimerSettingUseCase,
+    private val setTimerSettingUseCase: SetTimerSettingUseCase,
+    private val getSnoozeCountUseCase: GetSnoozeCountUseCase,
+    private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
 ) : BaseViewModel<AlarmState, Nothing, AlarmSideEffect>(AlarmState()) {
 
     init {
         startIncreaseSeconds()
+        getTimerInfo()
     }
 
-    fun startTimer(
-        characterName: CharacterName,
-        level: Int,
-    ) = launch {
-        val resIds = getAudioResIdUseCase(characterName, level, 0)
-        updateState { it.copy(ment = "타이머 울리는 중") }
-        postSideEffect(AlarmSideEffect.PlayAudio(resIds))
+    fun processIntent(intent: AlarmIntent) {
+        when (intent) {
+            AlarmIntent.ClickFinish -> finishTimer()
+            AlarmIntent.ClickSnooze -> snoozeTimer()
+        }
     }
 
     private fun startIncreaseSeconds() = launch {
@@ -49,11 +62,29 @@ class AlarmViewModel(
         }
     }
 
-    fun finishTimer() {
+    private fun getTimerInfo() = launch {
+        val snoozeCount = getSnoozeCountUseCase()
+        Log.d("VIewModel", "현재 스누즈 카운트 : ${snoozeCount}")
+
+        updateState { it.copy(snoozeCount = snoozeCount) }
+        // TODO :: 멘트/음원 데이터 가져오기 구현
+    }
+
+    private fun finishTimer() = launch {
+        setSnoozeCountUseCase.invoke(0)
         postSideEffect(AlarmSideEffect.ClickFinish)
     }
 
-    fun snoozeTimer() {
+    private fun snoozeTimer() = launch {
+        setSnoozeCountUseCase.invoke((getSnoozeCountUseCase()) + 1)
+        val level = getTimerSettingUseCase().first
+
+        setTimerSettingUseCase(
+            level = level + 1,
+            hour = 0,
+            minute = 5,
+            snoozeCount = (uiState.value.snoozeCount) + 1
+        )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }
 
