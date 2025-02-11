@@ -11,12 +11,15 @@ import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -31,6 +34,7 @@ val appModule = module {
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
     single<TimerRepository> { TimerRepositoryImpl(get()) }
+    single { TimerServiceManager(androidContext()) }
 
     factory { GetAudioResIdUseCase(get()) }
     factory { SelectCharacterIdxUseCase(get()) }
@@ -38,9 +42,11 @@ val appModule = module {
     factory { SetTimerSettingUseCase(get()) }
     factory { EndTimerUseCase(get()) }
     factory { GetTimerSettingUseCase(get()) }
+    factory { SetSnoozeCountUseCase(get()) }
+    factory { GetSnoozeCountUseCase(get()) }
 
     viewModel { HomeViewModel(get()) }
     viewModel { SettingViewModel(get(), get()) }
-    viewModel { TimerViewModel(get(), get(), get()) }
-    viewModel { AlarmViewModel(get()) }
+    viewModel { TimerViewModel(get(), get(), get(),get(), get()) }
+    viewModel { AlarmViewModel(get(), get(), get(), get(), get())}
 }
