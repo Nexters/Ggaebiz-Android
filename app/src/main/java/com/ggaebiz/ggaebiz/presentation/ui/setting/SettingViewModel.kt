@@ -63,6 +63,7 @@ class SettingViewModel(
             level = uiState.value.level,
             hour = uiState.value.hour,
             minute = uiState.value.minute,
+            snoozeCount = 0
         )
         postSideEffect(SettingSideEffect.NavigateToTimer)
     }

@@ -98,4 +98,23 @@ class TimerRepositoryImpl(
             Log.e("TimerRepositoryImpl", "Error updating timer data", e)
         }
     }
+
+    override suspend fun getSnoozeCount(): Int {
+        return try {
+            timerDataStore.getSnoozeCount().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun setSnoozeCount(count: Int) {
+        try {
+            timerDataStore.setSnoozeCount(count)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
 }
+
+
+
