@@ -194,6 +194,7 @@ fun GreetingPreview2() {
     GaeBizTheme {
         HomeScreen(
             navigateAlarm = {},
-            navigateSetting = {},
+            navigateSetting = {}
+        )
     }
 }

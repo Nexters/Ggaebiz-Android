@@ -1,6 +1,5 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
-import com.ggaebiz.ggaebiz.domain.usecase.GetTimerStateUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 
