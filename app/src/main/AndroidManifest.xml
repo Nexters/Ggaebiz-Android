@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     >
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+
+
     <application
         android:name=".GgaeBizApp"
         android:allowBackup="true"
@@ -27,6 +32,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".presentation.service.TimerService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
     </application>
 
 </manifest>

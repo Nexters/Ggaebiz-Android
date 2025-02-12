@@ -1,76 +1,59 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
-import com.ggaebiz.ggaebiz.presentation.common.extension.getRawResId
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.FullScreen
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
 
 @Composable
 fun AlarmScreen(
     navigateStart: () -> Unit,
+    navigateTimer: () -> Unit,
     viewModel: AlarmViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val timerServiceManager: TimerServiceManager by getKoin().inject()
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
-            is AlarmSideEffect.PlayAudio -> {
-                // TODO :: 분리 필요
-                ExoPlayer.Builder(context).build().apply {
-                    val resInt = context.getRawResId(effect.resId)
-                    val mediaItem = MediaItem.fromUri(
-                        Uri.parse("android.resource://${context.packageName}/${resInt}")
-                    )
-                    setMediaItem(mediaItem)
-                    prepare()
-                    play()
-
-                }
-            }
-
-            AlarmSideEffect.ClickFinish -> {
+            is AlarmSideEffect.ClickFinish -> {
+                timerServiceManager.stopTimerService()
                 navigateStart()
             }
 
-            AlarmSideEffect.ClickSnooze -> {
-                navigateStart()
+            is AlarmSideEffect.ClickSnooze -> {
+                timerServiceManager.stopTimerService()
+                navigateTimer()
             }
         }
     }
     AlarmContent(
         uiState = uiState,
-        onClickFinishButton = { viewModel.finishTimer() },
-        onClickSnoozeButton = { viewModel.snoozeTimer() }
+        processIntent = viewModel::processIntent,
     )
 }
-
 
 @Composable
 fun AlarmContent(
     uiState: AlarmState,
-    onClickFinishButton: () -> Unit,
-    onClickSnoozeButton: () -> Unit,
+    processIntent: (AlarmIntent) -> Unit,
 ) {
     FullScreen(
         backGroundImage = uiState.backGroundImgRes
     ) {
         AlarmTopSection(
-            ment = uiState.ment,
-            plusSecond = uiState.plusSeconds
+            ment = uiState.ment, plusSecond = uiState.plusSeconds
         )
         AlarmBottomSection(
-            onClickFinishButton = onClickFinishButton,
-            onClickSnoozeButton = onClickSnoozeButton,
+            onClickFinishButton = { processIntent(AlarmIntent.ClickFinish) },
+            onClickSnoozeButton = { processIntent(AlarmIntent.ClickSnooze) },
+            isDisableSnoozeButton = uiState.disableSnoozeButton
         )
     }
 }
@@ -79,6 +62,6 @@ fun AlarmContent(
 @Composable
 fun AlarmScreenPreview() {
     GaeBizTheme {
-        AlarmScreen({})
+        AlarmScreen({}, {})
     }
 }

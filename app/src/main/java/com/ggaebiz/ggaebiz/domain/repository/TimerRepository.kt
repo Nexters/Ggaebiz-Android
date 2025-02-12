@@ -16,4 +16,7 @@ interface TimerRepository {
 
     suspend fun getMinute(): Int
     suspend fun setMinute(minute: Int)
+
+    suspend fun getSnoozeCount() : Int
+    suspend fun setSnoozeCount(count : Int)
 }

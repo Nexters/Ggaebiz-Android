@@ -29,7 +29,10 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.GaeBizTimer
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.getKoin
+
 
 @Composable
 fun TimerScreen(
@@ -39,12 +42,19 @@ fun TimerScreen(
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    
+    val timerServiceManager: TimerServiceManager by getKoin().inject()
+
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
-            is TimerSideEffect.NavigateToHome -> navigateHome()
-            is TimerSideEffect.NavigateToAlarm -> navigateAlarm()
             is TimerSideEffect.ShowToast -> showToast(context, uiState)
+            is TimerSideEffect.StartService -> {
+                timerServiceManager.startTimerService(effect.seconds, effect.audioResPath)
+            }
+
+            is TimerSideEffect.StopService -> {
+                timerServiceManager.stopTimerService()
+                navigateHome()
+            }
         }
     }
 
