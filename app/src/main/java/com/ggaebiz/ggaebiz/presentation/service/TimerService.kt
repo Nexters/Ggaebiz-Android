@@ -1,6 +1,8 @@
 package com.ggaebiz.ggaebiz.presentation.service
 
 import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
@@ -34,6 +36,7 @@ class TimerService : Service() {
         const val INTENT_KET_TIMER_SECONDS = "TIMER_SECONDS"
         const val INTENT_KET_TIMER_AUDIO = "TIMER_AUDIO"
         const val REQUEST_CODE = 1004
+        const val NOTIFICATION_CHANNEL_ID = "timer_channel"
     }
 
     override fun onCreate() {
@@ -74,7 +77,6 @@ class TimerService : Service() {
     }
 
     private fun onTimerFinished() {
-        Log.d("TimerService", "onTimerFinished() 타이머 종료")
         navigateToTargetScreen()
         startForegroundService()
         playAudio() // 음원 재생
@@ -92,7 +94,6 @@ class TimerService : Service() {
     }
 
     private fun playAudio() {
-        Log.d("TimerService", "playAudio() 재생")
         val mediaItem =
             MediaItem.fromUri(Uri.parse("android.resource://$packageName/${audioResPath}"))
         player.setMediaItem(mediaItem)
@@ -109,7 +110,13 @@ class TimerService : Service() {
     }
 
     private fun createNotification(): Notification {
-        val channelId = "timer_channel"
+        val channelId = NOTIFICATION_CHANNEL_ID
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "Timer Service", NotificationManager.IMPORTANCE_LOW)
+            val manager = getSystemService(NotificationManager::class.java)
+            manager.createNotificationChannel(channel)
+        }
+
         val notificationIntent = Intent(this, MainActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this, REQUEST_CODE, notificationIntent,
