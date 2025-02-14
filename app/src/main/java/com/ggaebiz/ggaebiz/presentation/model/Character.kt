@@ -20,8 +20,6 @@ data class Character(
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
     @StringRes val traitsResIdList: PersistentList<Int>,
-    @DrawableRes val alarmBackgroundImageList: PersistentList<Int>,
-    val alarmMentList: List<List<Int>>,
 ) {
     companion object {
         val CHARACTER_LIST = listOf(
@@ -35,43 +33,18 @@ data class Character(
                     R.drawable.ic_kiki_level1,
                     R.drawable.ic_kiki_level2,
                     R.drawable.ic_kiki_level3,
+                    R.drawable.ic_kiki_level3
                 ),
                 selectedImageResId = persistentListOf(
                     R.drawable.ic_selected_kiki_level1,
                     R.drawable.ic_selected_kiki_level2,
+                    R.drawable.ic_selected_kiki_level3,
                     R.drawable.ic_selected_kiki_level3,
                 ),
                 traitsResIdList = persistentListOf(
                     R.string.kiki_tag_text1,
                     R.string.kiki_tag_text2,
                     R.string.kiki_tag_text3,
-                ),
-                alarmBackgroundImageList = persistentListOf(
-                    R.drawable.fullpage_kiki_lev_1,
-                    R.drawable.fullpage_kiki_lev_24,
-                    R.drawable.fullpage_kiki_lev_3,
-                    R.drawable.fullpage_kiki_lev_24
-                ),
-                alarmMentList = listOf(
-                    listOf(
-                        R.string.alarm_ment_kiki_level1_1,
-                        R.string.alarm_ment_kiki_level1_2,
-                        R.string.alarm_ment_kiki_level1_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_kiki_level2_1,
-                        R.string.alarm_ment_kiki_level2_2,
-                        R.string.alarm_ment_kiki_level2_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_kiki_level3_1,
-                        R.string.alarm_ment_kiki_level3_2,
-                        R.string.alarm_ment_kiki_level3_3,
-                        R.string.alarm_ment_kiki_level3_4
-                    ),
-                    listOf(
-                        R.string.alarm_ment_kiki_level4_1,
-                    )
                 )
             ),
             Character(
@@ -84,43 +57,18 @@ data class Character(
                     R.drawable.ic_bobo_level1,
                     R.drawable.ic_bobo_level2,
                     R.drawable.ic_bobo_level3,
+                    R.drawable.ic_bobo_level3
                 ),
                 selectedImageResId = persistentListOf(
                     R.drawable.ic_selected_bobo_level1,
                     R.drawable.ic_selected_bobo_level2,
                     R.drawable.ic_selected_bobo_level3,
+                    R.drawable.ic_selected_bobo_level3
                 ),
                 traitsResIdList = persistentListOf(
                     R.string.bobo_tag_text1,
                     R.string.bobo_tag_text2,
                     R.string.bobo_tag_text3,
-                ),
-                alarmBackgroundImageList = persistentListOf(
-                    R.drawable.fullpage_kiki_lev_1,
-                    R.drawable.fullpage_kiki_lev_24,
-                    R.drawable.fullpage_kiki_lev_3,
-                    R.drawable.fullpage_kiki_lev_24
-                ),
-                alarmMentList = listOf(
-                    listOf(
-                        R.string.alarm_ment_bobo_level1_1,
-                        R.string.alarm_ment_bobo_level1_2,
-                        R.string.alarm_ment_bobo_level1_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_bobo_level2_1,
-                        R.string.alarm_ment_bobo_level2_2,
-                        R.string.alarm_ment_bobo_level2_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_bobo_level3_1,
-                        R.string.alarm_ment_bobo_level3_2,
-                        R.string.alarm_ment_bobo_level3_3,
-                        R.string.alarm_ment_bobo_level3_4
-                    ),
-                    listOf(
-                        R.string.alarm_ment_bobo_level4_1,
-                    )
                 )
             ),
             Character(
@@ -133,43 +81,18 @@ data class Character(
                     R.drawable.ic_nana_level1,
                     R.drawable.ic_nana_level2,
                     R.drawable.ic_nana_level3,
+                    R.drawable.ic_nana_level3
                 ),
                 selectedImageResId = persistentListOf(
                     R.drawable.ic_selected_nana_level1,
                     R.drawable.ic_selected_nana_level2,
                     R.drawable.ic_selected_nana_level3,
+                    R.drawable.ic_selected_nana_level3
                 ),
                 traitsResIdList = persistentListOf(
                     R.string.nana_tag_text1,
                     R.string.nana_tag_text2,
                     R.string.nana_tag_text3,
-                ),
-                alarmBackgroundImageList = persistentListOf(
-                    R.drawable.fullpage_kiki_lev_1,
-                    R.drawable.fullpage_kiki_lev_24,
-                    R.drawable.fullpage_kiki_lev_3,
-                    R.drawable.fullpage_kiki_lev_24
-                ),
-                alarmMentList = listOf(
-                    listOf(
-                        R.string.alarm_ment_nana_level1_1,
-                        R.string.alarm_ment_nana_level1_2,
-                        R.string.alarm_ment_nana_level1_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_nana_level2_1,
-                        R.string.alarm_ment_nana_level2_2,
-                        R.string.alarm_ment_nana_level2_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_nana_level3_1,
-                        R.string.alarm_ment_nana_level3_2,
-                        R.string.alarm_ment_nana_level3_3,
-                        R.string.alarm_ment_nana_level3_4
-                    ),
-                    listOf(
-                        R.string.alarm_ment_nana_level4_1,
-                    )
                 )
             ),
             Character(
@@ -182,43 +105,18 @@ data class Character(
                     R.drawable.ic_chacha_level1,
                     R.drawable.ic_chacha_level2,
                     R.drawable.ic_chacha_level3,
+                    R.drawable.ic_chacha_level3
                 ),
                 selectedImageResId = persistentListOf(
                     R.drawable.ic_selected_chacha_level1,
                     R.drawable.ic_selected_chacha_level2,
                     R.drawable.ic_selected_chacha_level3,
+                    R.drawable.ic_selected_chacha_level3
                 ),
                 traitsResIdList = persistentListOf(
                     R.string.chacha_tag_text1,
                     R.string.chacha_tag_text2,
                     R.string.chacha_tag_text3,
-                ),
-                alarmBackgroundImageList = persistentListOf(
-                    R.drawable.fullpage_kiki_lev_1,
-                    R.drawable.fullpage_kiki_lev_24,
-                    R.drawable.fullpage_kiki_lev_3,
-                    R.drawable.fullpage_kiki_lev_24
-                ),
-                alarmMentList = listOf(
-                    listOf(
-                        R.string.alarm_ment_chacha_level1_1,
-                        R.string.alarm_ment_chacha_level1_2,
-                        R.string.alarm_ment_chacha_level1_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_chacha_level2_1,
-                        R.string.alarm_ment_chacha_level2_2,
-                        R.string.alarm_ment_chacha_level2_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_chacha_level3_1,
-                        R.string.alarm_ment_chacha_level3_2,
-                        R.string.alarm_ment_chacha_level3_3,
-                        R.string.alarm_ment_chacha_level3_4
-                    ),
-                    listOf(
-                        R.string.alarm_ment_chacha_level4_1,
-                    )
                 )
             ),
             Character(
@@ -231,43 +129,18 @@ data class Character(
                     R.drawable.ic_booboo_level1,
                     R.drawable.ic_booboo_level2,
                     R.drawable.ic_booboo_level3,
+                    R.drawable.ic_booboo_level3
                 ),
                 selectedImageResId = persistentListOf(
                     R.drawable.ic_selected_booboo_level1,
                     R.drawable.ic_selected_booboo_level2,
                     R.drawable.ic_selected_booboo_level3,
+                    R.drawable.ic_selected_booboo_level3
                 ),
                 traitsResIdList = persistentListOf(
                     R.string.booboo_tag_text1,
                     R.string.booboo_tag_text2,
                     R.string.booboo_tag_text3,
-                ),
-                alarmBackgroundImageList = persistentListOf(
-                    R.drawable.fullpage_kiki_lev_1,
-                    R.drawable.fullpage_kiki_lev_24,
-                    R.drawable.fullpage_kiki_lev_3,
-                    R.drawable.fullpage_kiki_lev_24
-                ),
-                alarmMentList = listOf(
-                    listOf(
-                        R.string.alarm_ment_booboo_level1_1,
-                        R.string.alarm_ment_booboo_level1_2,
-                        R.string.alarm_ment_booboo_level1_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_booboo_level2_1,
-                        R.string.alarm_ment_booboo_level2_2,
-                        R.string.alarm_ment_booboo_level2_3
-                    ),
-                    listOf(
-                        R.string.alarm_ment_booboo_level3_1,
-                        R.string.alarm_ment_booboo_level3_2,
-                        R.string.alarm_ment_booboo_level3_3,
-                        R.string.alarm_ment_booboo_level3_4
-                    ),
-                    listOf(
-                        R.string.alarm_ment_booboo_level4_1,
-                    )
                 )
             ),
         )
