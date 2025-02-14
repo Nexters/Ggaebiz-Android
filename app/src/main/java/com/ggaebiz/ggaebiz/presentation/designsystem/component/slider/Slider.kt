@@ -1,11 +1,12 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.component.slider
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,10 +48,10 @@ fun GaeBizSlider(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .size(40.dp)
             .pointerInput(Unit) {
-                detectDragGestures { change, _ ->
-                    change.consume()
-                    val newLevel = ((change.position.x / sliderWidth) * (maxLevel - 1))
+                detectTapGestures { offset ->
+                    val newLevel = ((offset.x / sliderWidth) * (maxLevel - 1))
                         .roundToInt()
                         .coerceIn(0, maxLevel - 1)
 
@@ -67,6 +68,7 @@ fun GaeBizSlider(
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 16.dp)
                 .height(trackHeight)
                 .align(Alignment.CenterStart),
         ) {
@@ -87,7 +89,7 @@ fun GaeBizSlider(
         val thumbX = with(density) { (selectedLevel * levelSpacing).toDp() }
         Canvas(
             modifier = Modifier
-                .offset(x = thumbX - (thumbSize / 2))
+                .offset(x = thumbX - (thumbSize / 2), y = 9.dp)
                 .size(thumbSize),
         ) {
             drawCircle(
