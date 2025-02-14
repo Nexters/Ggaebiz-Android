@@ -7,11 +7,7 @@ import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 data class SettingState(
     val selectedCharacterIdx: Int = 0,
     val level: Int = 1,
-    val hour: Int = 0,
-    val minute: Int = 30,
-) {
-    val buttonEnabled: Boolean = hour != 0 || minute != 0
-}
+)
 
 sealed interface SettingSideEffect {
     data object NavigateToTimer: SettingSideEffect
@@ -19,8 +15,7 @@ sealed interface SettingSideEffect {
 
 sealed interface SettingIntent {
     data class SelectLevel(val level: Int): SettingIntent
-    data class SelectTime(val hour: Int, val minute: Int): SettingIntent
-    data object ClickStartButton: SettingIntent
+    data class ClickStartButton(val hour: Int, val minute: Int): SettingIntent
 }
 
 class SettingViewModel(
@@ -40,8 +35,7 @@ class SettingViewModel(
     fun processIntent(intent: SettingIntent) = launch {
         when (intent) {
             is SettingIntent.SelectLevel -> selectLevel(level = intent.level)
-            is SettingIntent.SelectTime -> selectTime(hour = intent.hour, minute = intent.minute)
-            is SettingIntent.ClickStartButton -> startTimer()
+            is SettingIntent.ClickStartButton -> startTimer(intent.hour, intent.minute)
         }
     }
 
@@ -49,20 +43,11 @@ class SettingViewModel(
         updateState { it.copy(level = level) }
     }
 
-    private fun selectTime(hour: Int, minute: Int) = launch {
-        updateState {
-            it.copy(
-                hour = hour,
-                minute = minute,
-            )
-        }
-    }
-
-    private fun startTimer() = launch {
+    private fun startTimer(hour: Int, minute: Int) = launch {
         setTimerSettingUseCase(
             level = uiState.value.level,
-            hour = uiState.value.hour,
-            minute = uiState.value.minute,
+            hour = hour,
+            minute = minute,
             snoozeCount = 0
         )
         postSideEffect(SettingSideEffect.NavigateToTimer)

@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GaeBizPicker(
     modifier: Modifier = Modifier,
-    selectedItem: String,
+    pickerState: PickerState,
     list: List<String>,
     visibleItemsCount: Int,
     centerTextStyle: TextStyle,
@@ -52,13 +52,12 @@ fun GaeBizPicker(
     dividerHeight: Int,
     normalDividerColor: Color,
     pressedDividerColor: Color,
-    onScrollFinished: (String) -> Unit,
 ) {
     val listScrollCount = Integer.MAX_VALUE
     val listScrollMiddle = listScrollCount / 2
 
     val visibleItemsMiddle = visibleItemsCount / 2
-    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(selectedItem)
+    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(pickerState.selectedItem)
 
     val coroutineScope = rememberCoroutineScope()
     var dividerColor by remember { mutableStateOf(normalDividerColor) }
@@ -87,7 +86,7 @@ fun GaeBizPicker(
             .map { (index, offset) -> index + visibleItemsMiddle to offset }
             .distinctUntilChanged()
             .collect { (index, offset) ->
-                onScrollFinished(list[index % list.size])
+                pickerState.selectedItem = list[index % list.size]
 
                 if (offset > 0) {
                     coroutineScope.launch {
@@ -115,7 +114,7 @@ fun GaeBizPicker(
         ) {
             items(listScrollCount) { index ->
                 val item = list[index % list.size]
-                val isSelected = item == selectedItem
+                val isSelected = item == pickerState.selectedItem
                 val color = if (isSelected) centerTextColor else normalTextColor
                 val textStyle = if (isSelected) centerTextStyle else normalTextStyle
 
@@ -165,13 +164,20 @@ fun GaeBizPicker(
 @Composable
 private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
+@Composable
+fun rememberPickerState(defaultValue: String = "") = remember { PickerState(defaultValue) }
+
+class PickerState(defaultValue: String) {
+    var selectedItem by mutableStateOf(defaultValue)
+}
+
 @Preview("Picker")
 @Composable
 private fun GaeBizPickerPreview() {
     val hours = (0..6).toList().map { it.toString().padStart(2, '0') }
 
     GaeBizPicker(
-        selectedItem = 1.toString().padStart(2, '0'),
+        pickerState = PickerState(""),
         list = hours,
         visibleItemsCount = 3,
         centerTextStyle = GaeBizTheme.typography.timer2,
@@ -181,6 +187,5 @@ private fun GaeBizPickerPreview() {
         dividerHeight = 2,
         normalDividerColor = GaeBizTheme.colors.gray75,
         pressedDividerColor = GaeBizTheme.colors.primaryOrange,
-        onScrollFinished = { },
     )
 }
