@@ -8,4 +8,10 @@ class GetTimerSettingUseCase(private val repository: TimerRepository) {
             return Triple(getLevel(), getHour(), getMinute())
         }
     }
+
+    suspend fun getLevelIdx(): Int {
+        repository.run {
+            return getLevelIdx()
+        }
+    }
 }
