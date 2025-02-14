@@ -28,7 +28,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
 fun AlarmTopSection(
-    ment: String,
+    ment: Int,
     plusSecond: String,
 ) {
     Column(
@@ -54,7 +54,8 @@ fun AlarmTopSection(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = ment,
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = stringResource(ment),
                 color = GaeBizTheme.colors.white,
                 style = GaeBizTheme.typography.bodyBold,
                 textAlign = TextAlign.Center

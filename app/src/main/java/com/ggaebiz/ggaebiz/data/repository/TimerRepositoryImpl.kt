@@ -114,6 +114,14 @@ class TimerRepositoryImpl(
             Log.e("TimerRepositoryImpl", "Error updating timer data", e)
         }
     }
+
+    override suspend fun getLevelIdx(): Int {
+        return try {
+            timerDataStore.getLevelIdx().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
 }
 
 

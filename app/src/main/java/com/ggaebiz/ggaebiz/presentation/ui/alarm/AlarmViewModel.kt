@@ -8,16 +8,18 @@ import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
+import com.ggaebiz.ggaebiz.presentation.common.extension.getCharacterData
 import kotlinx.coroutines.delay
 import java.util.Locale
 
 data class AlarmState(
-    val ment: String = "A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야",
+    val level: Int = 1,
+    val ment: Int = R.string.alarm_ment_kiki_level1_1,
     val backGroundImgRes: Int = R.drawable.fullpage_kiki_lev_1,
     val plusSeconds: String = "+ 00:00",
     var snoozeCount: Int = 0,
 ) {
-    val disableSnoozeButton: Boolean = snoozeCount >= 2
+    val disableSnoozeButton: Boolean = (level >= 4) || (snoozeCount >= 2)
 }
 
 sealed interface AlarmIntent {
@@ -36,11 +38,11 @@ class AlarmViewModel(
     private val setTimerSettingUseCase: SetTimerSettingUseCase,
     private val getSnoozeCountUseCase: GetSnoozeCountUseCase,
     private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
-) : BaseViewModel<AlarmState, Nothing, AlarmSideEffect>(AlarmState()) {
+) : BaseViewModel<AlarmState, AlarmIntent, AlarmSideEffect>(AlarmState()) {
 
     init {
-        startIncreaseSeconds()
         getTimerInfo()
+        startIncreaseSeconds()
     }
 
     fun processIntent(intent: AlarmIntent) {
@@ -64,10 +66,21 @@ class AlarmViewModel(
 
     private fun getTimerInfo() = launch {
         val snoozeCount = getSnoozeCountUseCase()
-        Log.d("VIewModel", "현재 스누즈 카운트 : ${snoozeCount}")
+        val characterIdx = getCharacterIdxUseCase()
+        val (level, _, _) = getTimerSettingUseCase()
+        val levelIdx = getTimerSettingUseCase.getLevelIdx()
 
-        updateState { it.copy(snoozeCount = snoozeCount) }
-        // TODO :: 멘트/음원 데이터 가져오기 구현
+        val data = characterIdx.getCharacterData()
+        if (data != null) {
+            updateState {
+                it.copy(
+                    ment = data.mentAudioList[level-1][levelIdx].ment,
+                    backGroundImgRes = data.alarmBackgroundImageList[level-1],
+                    level = level,
+                    snoozeCount = snoozeCount
+                )
+            }
+        }
     }
 
     private fun finishTimer() = launch {
@@ -77,10 +90,8 @@ class AlarmViewModel(
 
     private fun snoozeTimer() = launch {
         setSnoozeCountUseCase.invoke((getSnoozeCountUseCase()) + 1)
-        val level = getTimerSettingUseCase().first
-
         setTimerSettingUseCase(
-            level = level + 1,
+            level = (uiState.value.level) + 1,
             hour = 0,
             minute = 5,
             snoozeCount = (uiState.value.snoozeCount) + 1
