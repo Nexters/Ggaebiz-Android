@@ -1,17 +1,18 @@
 package com.ggaebiz.ggaebiz.presentation.ui.timer
 
-import com.ggaebiz.ggaebiz.data.model.CharacterName
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
+import com.ggaebiz.ggaebiz.presentation.common.extension.getCharacterData
 import kotlinx.coroutines.delay
 
 data class TimerState(
     val selectedCharacterIdx: Int = 0,
     val level: Int = 1,
+    val levelIdx: Int = 0,
     val hour: Int = 0,
     val minute: Int = 30,
     val remainingSeconds: Int = 0,
@@ -46,21 +47,26 @@ class TimerViewModel(
     }
 
     private fun setTimerSetting() = launch {
-        val timerSetting = getTimerSettingUseCase()
+        val (level, hour, minute) = getTimerSettingUseCase()
         val selectedCharacterIdx = getCharacterIdxUseCase()
-        val settingSeconds = timerSetting.second * 3600 + timerSetting.third * 60
-        val audioResPath = getAudioResIdUseCase(CharacterName.KIKI, uiState.value.level, 0)
+        val leveIdx = getTimerSettingUseCase.getLevelIdx()
+
+        val data = selectedCharacterIdx.getCharacterData()
+        val audioPath = (data?.mentAudioList?.get(level - 1)?.get(leveIdx)?.audioPath) ?: ""
+        val settingSeconds = 3
+
         updateState {
             it.copy(
                 selectedCharacterIdx = selectedCharacterIdx,
-                level = timerSetting.first,
-                hour = timerSetting.second,
-                minute = timerSetting.third,
+                level = level,
+                levelIdx = leveIdx,
+                hour = hour,
+                minute = minute,
                 remainingSeconds = settingSeconds
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
-        postSideEffect(TimerSideEffect.StartService(settingSeconds, audioResPath))
+        postSideEffect(TimerSideEffect.StartService(settingSeconds, audioPath))
         startTimeTick()
     }
 
