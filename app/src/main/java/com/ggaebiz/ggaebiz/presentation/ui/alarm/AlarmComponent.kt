@@ -54,6 +54,7 @@ fun AlarmTopSection(
             contentAlignment = Alignment.Center
         ) {
             Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
                 text = stringResource(ment),
                 color = GaeBizTheme.colors.white,
                 style = GaeBizTheme.typography.bodyBold,
