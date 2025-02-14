@@ -23,7 +23,7 @@ class NavigatorState(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Route.Home
+    val startDestination = Route.Splash
 
     fun navigateHome() {
         navController.navigate(Route.Home)

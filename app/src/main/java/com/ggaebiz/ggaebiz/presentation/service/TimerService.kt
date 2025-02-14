@@ -104,6 +104,7 @@ class TimerService : Service() {
 
     private fun navigateToTargetScreen() {
         val intent = Intent(this, MainActivity::class.java).apply {
+            putExtra("EXTRA_LAUNCH_HOME", true)
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         startActivity(intent)
