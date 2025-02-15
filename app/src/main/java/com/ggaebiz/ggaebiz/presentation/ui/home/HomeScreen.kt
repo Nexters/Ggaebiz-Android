@@ -1,8 +1,11 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.Manifest
+import android.app.Activity
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -27,6 +30,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,7 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
@@ -48,6 +53,10 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
 
@@ -57,6 +66,23 @@ fun HomeScreen(
     navigateSetting: () -> Unit,
     navigateAlarm: () -> Unit,
 ) {
+    var backPressedOnce by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    BackHandler(enabled = true) {
+        if (backPressedOnce) {
+            (context as? Activity)?.finish()
+        } else {
+            backPressedOnce = true
+            Toast.makeText(context, R.string.back_provider_toast_text, Toast.LENGTH_SHORT).show()
+
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                backPressedOnce = false
+            }
+        }
+    }
+
     val timerServiceManager: TimerServiceManager by getKoin().inject()
     if (timerServiceManager.isTimerServiceRunning(LocalContext.current)) {
         navigateAlarm()

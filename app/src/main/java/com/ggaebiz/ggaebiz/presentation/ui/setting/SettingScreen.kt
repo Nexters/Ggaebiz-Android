@@ -33,13 +33,12 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTimePicker
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.SETTING_MENT_LIST
-import com.ggaebiz.ggaebiz.presentation.ui.naviagation.NavigatorState
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SettingScreen(
     viewModel: SettingViewModel = koinViewModel(),
-    navigator: NavigatorState,
+    navigatorHome: () -> Unit,
     navigateTimer: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,7 +52,7 @@ fun SettingScreen(
     SettingContent(
         uiState = uiState,
         processIntent = viewModel::processIntent,
-        onClickBackButton = navigator::popBackStack,
+        onClickBackButton = { navigatorHome() },
     )
 }
 
