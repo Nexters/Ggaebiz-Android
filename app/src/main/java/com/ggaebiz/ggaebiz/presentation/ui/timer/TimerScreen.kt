@@ -15,12 +15,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
@@ -72,6 +75,17 @@ fun TimerContent(
 ) {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageWidth = screenWidth / 3 * 2
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(
+            CHARACTER_LIST[uiState.selectedCharacterIdx].lottieResId,
+        ),
+    )
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever,
+        isPlaying = true,
+        restartOnPlay = false,
+    )
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -85,11 +99,10 @@ fun TimerContent(
         )
 
         Spacer(modifier = Modifier.height(30.dp))
-        Image(
-            painter = painterResource(CHARACTER_LIST[uiState.selectedCharacterIdx].imageResId[uiState.level - 1]),
-            contentDescription = null,
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
             modifier = Modifier.size(imageWidth),
-            contentScale = ContentScale.Crop,
         )
 
         GaeBizTimer(remainingSeconds = uiState.remainingSeconds)
