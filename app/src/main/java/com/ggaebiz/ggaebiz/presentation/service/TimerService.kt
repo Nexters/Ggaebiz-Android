@@ -8,6 +8,7 @@ import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo
 import android.net.Uri
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
@@ -21,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -29,6 +32,11 @@ class TimerService : Service() {
     private lateinit var player: ExoPlayer
     private var audioResPath: String = ""
     private var timerJob: Job? = null
+
+    private val binder = TimerBinder()
+    private val _overSeconds = MutableStateFlow(0)
+    val overSeconds: StateFlow<Int> get() = _overSeconds
+    private var overSecondsJob: Job? = null
 
     companion object {
         const val ACTION_START = "START_TIMER"
@@ -39,8 +47,18 @@ class TimerService : Service() {
         const val NOTIFICATION_CHANNEL_ID = "timer_channel"
     }
 
+    inner class TimerBinder : Binder(){
+        fun getService() : TimerService = this@TimerService
+    }
+
+    override fun onBind(intent: Intent?): IBinder {
+        return binder
+    }
+
+
     override fun onCreate() {
         super.onCreate()
+        Log.d("TimerService","onCreate()")
         player = ExoPlayer.Builder(this).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
         }
@@ -48,6 +66,7 @@ class TimerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val action = intent?.action
+        Log.d("TimerService","onStartCommand() :: action :: ${action}")
 
         if (action == ACTION_STOP) {
             stopSelf()
@@ -66,8 +85,10 @@ class TimerService : Service() {
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             while (isActive) {
                 if (remainingTime > 0) {
+                    Log.d("TimerService","startTimer() :: 현재 숫자  :: ${remainingTime}")
                     remainingTime--
                 } else {
+                    Log.d("TimerService","startTimer() :: 타이머 종료")
                     timerJob?.cancel()
                     onTimerFinished()
                 }
@@ -77,14 +98,28 @@ class TimerService : Service() {
     }
 
     private fun onTimerFinished() {
+        Log.d("TimerService","onTimerFinished()")
+        startOverSecondsJob()
         navigateToTargetScreen()
         startForegroundService()
         playAudio() // 음원 재생
     }
 
-    private fun startForegroundService() {
-        val notification = createNotification()
+    private fun startOverSecondsJob() {
+        overSecondsJob?.cancel()
+        overSecondsJob = CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                delay(1000L) // 1초 대기
+                _overSeconds.value +=1
+                Log.d("TimerService","_overSeconds :: ${overSeconds.value}")
+            }
+        }
+    }
 
+    private fun startForegroundService() {
+        Log.d("TimerService","startForegroundService()")
+
+        val notification = createNotification()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 이상: 추가적인 Foreground Service 유형 필요
             startForeground(1, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
@@ -136,10 +171,10 @@ class TimerService : Service() {
     }
 
     override fun onDestroy() {
+        Log.d("TimerService","onDestroy()")
         timerJob?.cancel()
+        overSecondsJob?.cancel()
         player.release()
         super.onDestroy()
     }
-
-    override fun onBind(intent: Intent?): IBinder? = null
 }
