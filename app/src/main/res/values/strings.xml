@@ -11,6 +11,7 @@
     <string name="start_button_text">타이머 시작하기</string>
     <string name="end_button_text">타이머 끝내기</string>
 
+    <string name="back_provider_toast_text">한 번 더 누르면, 앱을 종료해요!</string>
     <string name="timer_time_minute_toast_text">%s가 %d시간 %d분 뒤에 깨워줄게!</string>
     <string name="timer_minute_toast_text">%s가 %d분 뒤에 깨워줄게!</string>
 
