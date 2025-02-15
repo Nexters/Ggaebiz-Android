@@ -2,7 +2,6 @@ package com.ggaebiz.ggaebiz.presentation.designsystem.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -27,6 +26,7 @@ data class GaeBizTypography(
     val timer1: TextStyle,
     val timer2: TextStyle,
     val timer3: TextStyle,
+    val splash: TextStyle,
 )
 
 val LocalGaeBizTypography = staticCompositionLocalOf {
@@ -45,6 +45,7 @@ val LocalGaeBizTypography = staticCompositionLocalOf {
         timer1 = TextStyle.Default,
         timer2 = TextStyle.Default,
         timer3 = TextStyle.Default,
+        splash = TextStyle.Default,
     )
 }
 
@@ -141,5 +142,12 @@ val Typography = GaeBizTypography(
         fontFamily = ZuumeFont,
         fontWeight = FontWeight.Medium,
         fontSize = 40.sp
+    ),
+    splash = TextStyle(
+        fontFamily = ZuumeFont,
+        fontWeight = FontWeight.Bold,
+        fontSize = 88.sp,
+        lineHeight = 84.sp,
+        letterSpacing = 4.sp
     )
 )
