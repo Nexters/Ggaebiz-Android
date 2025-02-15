@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.splash
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -46,6 +47,8 @@ fun SplashScreen(
     val delayDuration = 800
     var isAnimating by remember { mutableStateOf(false) }
 
+    BackHandler(enabled = true) { }
+    
     val animatedHeight by animateDpAsState(
         targetValue = if (isAnimating) 26.dp else 0.dp,
         animationSpec = tween(durationMillis = animationDuration),

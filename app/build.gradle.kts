@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.collections.immutable)
+    implementation(libs.airbnb.android)
 
     // Media3
     implementation(libs.androidx.media3.exoplayer)

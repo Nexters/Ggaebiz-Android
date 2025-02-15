@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.model
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.RawRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Stable
 import com.ggaebiz.ggaebiz.R
@@ -20,6 +21,7 @@ data class Character(
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
     @StringRes val traitsResIdList: PersistentList<Int>,
+    @RawRes val lottieResId: Int
 ) {
     companion object {
         val CHARACTER_LIST = listOf(
@@ -45,7 +47,8 @@ data class Character(
                     R.string.kiki_tag_text1,
                     R.string.kiki_tag_text2,
                     R.string.kiki_tag_text3,
-                )
+                ),
+                lottieResId = R.raw.kiki_level1,
             ),
             Character(
                 nameResId = R.string.bobo_name,
@@ -69,7 +72,8 @@ data class Character(
                     R.string.bobo_tag_text1,
                     R.string.bobo_tag_text2,
                     R.string.bobo_tag_text3,
-                )
+                ),
+                lottieResId = R.raw.bobo_level1,
             ),
             Character(
                 nameResId = R.string.nana_name,
@@ -93,7 +97,8 @@ data class Character(
                     R.string.nana_tag_text1,
                     R.string.nana_tag_text2,
                     R.string.nana_tag_text3,
-                )
+                ),
+                lottieResId = R.raw.nana_level1,
             ),
             Character(
                 nameResId = R.string.chacha_name,
@@ -117,7 +122,8 @@ data class Character(
                     R.string.chacha_tag_text1,
                     R.string.chacha_tag_text2,
                     R.string.chacha_tag_text3,
-                )
+                ),
+                lottieResId = R.raw.chacha_level1,
             ),
             Character(
                 nameResId = R.string.booboo_name,
@@ -141,7 +147,8 @@ data class Character(
                     R.string.booboo_tag_text1,
                     R.string.booboo_tag_text2,
                     R.string.booboo_tag_text3,
-                )
+                ),
+                lottieResId = R.raw.booboo_level1,
             ),
         )
 

@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +29,7 @@ fun AlarmScreen(
             timerServiceManager.unbindService()
         }
     }
+    BackHandler(enabled = true) { }
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
