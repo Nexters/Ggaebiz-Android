@@ -3,7 +3,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.timer
 import android.content.Context
 import android.widget.Toast
 import android.widget.Toast.LENGTH_SHORT
-import androidx.compose.foundation.Image
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -46,6 +46,8 @@ fun TimerScreen(
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
+
+    BackHandler(enabled = true) { }
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {

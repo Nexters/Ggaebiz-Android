@@ -1,8 +1,8 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
@@ -20,6 +20,8 @@ fun AlarmScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
+
+    BackHandler(enabled = true) { }
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
