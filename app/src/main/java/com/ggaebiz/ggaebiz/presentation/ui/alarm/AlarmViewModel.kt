@@ -19,7 +19,7 @@ data class AlarmState(
     val plusSeconds: String = "+ 00:00",
     var snoozeCount: Int = 0,
 ) {
-    val disableSnoozeButton: Boolean = (level >= 4) || (snoozeCount >= 2)
+    val disableSnoozeButton: Boolean = snoozeCount >= 2
 }
 
 sealed interface AlarmIntent {
@@ -99,12 +99,16 @@ class AlarmViewModel(
     }
 
     private fun snoozeTimer() = launch {
-        setSnoozeCountUseCase.invoke((getSnoozeCountUseCase()) + 1)
+        val nowLevel = uiState.value.level
+        val nowSnooze = uiState.value.snoozeCount
+        val newLevel = if (nowSnooze == 0 && nowLevel == 3) nowLevel else nowLevel + 1
+
+        setSnoozeCountUseCase.invoke((nowSnooze + 1))
         setTimerSettingUseCase(
-            level = (uiState.value.level) + 1,
+            level = newLevel,
             hour = 0,
             minute = 5,
-            snoozeCount = (uiState.value.snoozeCount) + 1
+            snoozeCount = nowSnooze + 1
         )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }
