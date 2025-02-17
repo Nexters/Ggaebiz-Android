@@ -35,7 +35,8 @@ fun GaeBizNavHost(
 
     LaunchedEffect(currentDestination.value) {
         when (currentDestination.value) {
-            Route.Alarm::class.qualifiedName, Route.Splash::class.qualifiedName -> {
+            Route.Splash::class.qualifiedName -> systemUiController.setNavigationBarColor(navigationColor)
+            Route.Alarm::class.qualifiedName -> {
                 systemUiController.setStatusBarColor(primaryColor, darkIcons = false)
                 systemUiController.setNavigationBarColor(navigationColor)
             }

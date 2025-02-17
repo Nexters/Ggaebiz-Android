@@ -62,7 +62,10 @@ fun SplashScreen(
         navigateHome()
     }
 
-    FullScreen(backGroundGradient = GaeBizTheme.colors.gradientOrange) {
+    FullScreen(
+        isSplash = true,
+        backGroundGradient = GaeBizTheme.colors.gradientOrange,
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Spacer(Modifier.weight(1f))
             Column(modifier = Modifier.fillMaxSize()) {
