@@ -120,7 +120,7 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     private fun getNextIdx(level: Int, nowIdx: Int): Int {
         val maxValue = getMaxValueForLevel(level)
         var newIdx = nowIdx
-        if (maxValue == newIdx) {
+        if (newIdx >= maxValue) {
             newIdx = 0
         } else {
             newIdx++

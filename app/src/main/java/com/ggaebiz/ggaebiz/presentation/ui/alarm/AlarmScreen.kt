@@ -1,7 +1,10 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
@@ -21,6 +24,11 @@ fun AlarmScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
 
+    DisposableEffect(Unit) {
+        onDispose {
+            timerServiceManager.unbindService()
+        }
+    }
     BackHandler(enabled = true) { }
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
@@ -29,12 +37,19 @@ fun AlarmScreen(
                 timerServiceManager.stopTimerService()
                 navigateStart()
             }
-
             is AlarmSideEffect.ClickSnooze -> {
                 timerServiceManager.stopTimerService()
                 navigateTimer()
             }
+            is AlarmSideEffect.GetOverCount -> {
+                timerServiceManager.bindService { serviceFlow ->
+                    Log.d("TimerService","LaunchedEffect :: ${serviceFlow.value}")
+                    viewModel.setTimer(serviceFlow)
+                    viewModel.processIntent(AlarmIntent.StartOverCount)
+                }
+            }
         }
+
     }
     AlarmContent(
         uiState = uiState,

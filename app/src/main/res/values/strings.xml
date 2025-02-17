@@ -76,6 +76,8 @@
     <string name="alarm_snooze_timer_btn_text">5분 뒤 다시 알림</string>
     <string name="notification_title">깨비즈</string>
     <string name="notification_content">Chill guy는 일을 미루지 않Chill..</string>
+    <string name="notification_default_content">깨비즈 타이머 실행 중 입니다..</string>
+
 
     <!-- Alarm 울리기 화면 -->
     <string name="alarm_ment_kiki_level1_1">이제느은 우리가아 일어나야아  할 시가안~ 다음에 ~ 또오 쉬어요오오오~</string>
@@ -86,8 +88,8 @@
     <string name="alarm_ment_kiki_level2_3">띠-띠-띠! 띠-띠-띠! 여기 타이머다 ~~ 10초 후 폭발 예정! 10... 9 .... 8 ... 7.... 6.... 아 몰라 ???? 그냥 터질게 !!!!! 팡 팡 팡 팡 팡 팡 팡 팡</string>
     <string name="alarm_ment_kiki_level3_1">A ~~ yo ! ! !  계획만 천재야, 행동은 문제야, 일어나지 않으면 오늘도 넌 패배야</string>
     <string name="alarm_ment_kiki_level3_2">야야!! 야야 !! , 시간 다 지났는데! 너 혹시 시계 볼 줄 모르는 거야 ?</string>
-    <string name="alarm_ment_kiki_level3_3">조금만 쉰다더니, 그러다 인생도 쉬는 거 아냐? 나 무섭다 진짜아아앙ㅏㅇ</string>
-    <string name="alarm_ment_kiki_level3_4">너만의 작은 세상에서 탈출 좀 해, 현실을 살아 !! 현실로 컴백 플리즈으~.현실로 컴백 플리즈으~.현실로 컴백 플리즈으~. </string>
+    <string name="alarm_ment_kiki_level3_3">너만의 작은 세상에서 탈출 좀 해, 현실을 살아 !! 현실로 컴백 플리즈으~.현실로 컴백 플리즈으~.현실로 컴백 플리즈으~. </string>
+    <string name="alarm_ment_kiki_level3_4">조금만 쉰다더니, 그러다 인생도 쉬는 거 아냐? 나 무섭다 진짜아아앙ㅏㅇ</string>
     <string name="alarm_ment_kiki_level4_1">너의 인생 목표가 침대랑 평생 살기면 인정할게. 대단해~! 휴식이랑 결혼해 축의금은 500원</string>
 
     <string name="alarm_ment_bobo_level1_1">이제 일어나서 다시 시작하면 더 멋질 거 같은데? 내가 그쪽 성실한 모습에 반한거 알죠?</string>

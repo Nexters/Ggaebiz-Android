@@ -1,6 +1,5 @@
 package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
-import android.util.Log
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
@@ -10,6 +9,7 @@ import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import com.ggaebiz.ggaebiz.presentation.common.extension.getCharacterData
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
 
 data class AlarmState(
@@ -19,17 +19,19 @@ data class AlarmState(
     val plusSeconds: String = "+ 00:00",
     var snoozeCount: Int = 0,
 ) {
-    val disableSnoozeButton: Boolean = (level >= 4) || (snoozeCount >= 2)
+    val disableSnoozeButton: Boolean = snoozeCount >= 2
 }
 
 sealed interface AlarmIntent {
     data object ClickSnooze : AlarmIntent
     data object ClickFinish : AlarmIntent
+    data object StartOverCount : AlarmIntent
 }
 
 sealed interface AlarmSideEffect {
     data object ClickSnooze : AlarmSideEffect
     data object ClickFinish : AlarmSideEffect
+    data object GetOverCount : AlarmSideEffect
 }
 
 class AlarmViewModel(
@@ -42,14 +44,22 @@ class AlarmViewModel(
 
     init {
         getTimerInfo()
-        startIncreaseSeconds()
+        postSideEffect(AlarmSideEffect.GetOverCount)
     }
 
     fun processIntent(intent: AlarmIntent) {
         when (intent) {
             AlarmIntent.ClickFinish -> finishTimer()
             AlarmIntent.ClickSnooze -> snoozeTimer()
+            AlarmIntent.StartOverCount -> startIncreaseSeconds()
         }
+    }
+
+    fun setTimer(serviceFlow: StateFlow<Int>) = launch {
+        val minutes = (serviceFlow.value / 60)
+        val seconds = (serviceFlow.value % 60)
+        val newPlusSeconds = formatTime(seconds, minutes)
+        updateState { it.copy(plusSeconds = newPlusSeconds) }
     }
 
     private fun startIncreaseSeconds() = launch {
@@ -74,8 +84,8 @@ class AlarmViewModel(
         if (data != null) {
             updateState {
                 it.copy(
-                    ment = data.mentAudioList[level-1][levelIdx].ment,
-                    backGroundImgRes = data.alarmBackgroundImageList[level-1],
+                    ment = data.mentAudioList[level - 1][levelIdx].ment,
+                    backGroundImgRes = data.alarmBackgroundImageList[level - 1],
                     level = level,
                     snoozeCount = snoozeCount
                 )
@@ -89,12 +99,16 @@ class AlarmViewModel(
     }
 
     private fun snoozeTimer() = launch {
-        setSnoozeCountUseCase.invoke((getSnoozeCountUseCase()) + 1)
+        val nowLevel = uiState.value.level
+        val nowSnooze = uiState.value.snoozeCount
+        val newLevel = if (nowSnooze == 0 && nowLevel == 3) nowLevel else nowLevel + 1
+
+        setSnoozeCountUseCase.invoke((nowSnooze + 1))
         setTimerSettingUseCase(
-            level = (uiState.value.level) + 1,
+            level = newLevel,
             hour = 0,
             minute = 5,
-            snoozeCount = (uiState.value.snoozeCount) + 1
+            snoozeCount = nowSnooze + 1
         )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }

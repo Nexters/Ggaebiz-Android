@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -9,15 +10,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
+import com.ggaebiz.ggaebiz.presentation.service.TimerService
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.GaeBizNavHost
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.rememberNavigator
+import org.koin.android.ext.android.inject
+import org.koin.compose.getKoin
 
 class MainActivity : ComponentActivity() {
+    private val timerServiceManager: TimerServiceManager by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        val shouldLaunchHome = intent?.getBooleanExtra("EXTRA_LAUNCH_HOME", false) ?: false
+
+        val shouldLaunchHome = intent?.getBooleanExtra(TimerService.EXTRA_LAUNCH_HOME_ID, false) ?: false
+
         setContent {
             val navigator = rememberNavigator()
             GaeBizTheme {
@@ -30,6 +38,13 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if ( timerServiceManager.isTimerServiceRunning(this)){
+            timerServiceManager.stopTimerService()
         }
     }
 }
