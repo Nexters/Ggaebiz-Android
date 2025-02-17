@@ -23,6 +23,7 @@ fun GaeBizNavHost(
     val defaultColor = GaeBizTheme.colors.gray25
     val navigationColor = GaeBizTheme.colors.black
     val primaryColor = GaeBizTheme.colors.primaryOrange
+    val splashStatusBarColor = GaeBizTheme.colors.splashStatusBarColor
 
     val systemUiController = rememberSystemUiController()
     val currentDestination = remember { mutableStateOf<String?>(null) }
@@ -35,7 +36,10 @@ fun GaeBizNavHost(
 
     LaunchedEffect(currentDestination.value) {
         when (currentDestination.value) {
-            Route.Splash::class.qualifiedName -> systemUiController.setNavigationBarColor(navigationColor)
+            Route.Splash::class.qualifiedName -> {
+                systemUiController.setStatusBarColor(splashStatusBarColor, darkIcons = false)
+                systemUiController.setNavigationBarColor(navigationColor)
+            }
             Route.Alarm::class.qualifiedName -> {
                 systemUiController.setStatusBarColor(primaryColor, darkIcons = false)
                 systemUiController.setNavigationBarColor(navigationColor)

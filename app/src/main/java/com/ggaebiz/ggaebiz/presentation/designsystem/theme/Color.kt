@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 @Immutable
 data class GaeBizColors(
     val primaryOrange: Color,
+    val splashStatusBarColor: Color,
     val gradientOrange: List<Color>,
 
     val white: Color,
@@ -45,6 +46,7 @@ data class GaeBizColors(
 val LocalGaeBizColor = staticCompositionLocalOf {
     GaeBizColors(
         primaryOrange = Color.Unspecified,
+        splashStatusBarColor = Color.Unspecified,
         gradientOrange = listOf(Color.Unspecified, Color.Unspecified),
 
         white = Color.Unspecified,
@@ -83,6 +85,7 @@ val LocalGaeBizColor = staticCompositionLocalOf {
 
 val GaeBizColorScheme = GaeBizColors(
     primaryOrange = Color(0xFFFC6F3D),
+    splashStatusBarColor = Color( 0xFFFD8258),
     gradientOrange = listOf(
         Color(0xFFFF9A76).copy(alpha = 0.5f),
         Color(0xFFFF4646).copy(alpha = 0.5f),
