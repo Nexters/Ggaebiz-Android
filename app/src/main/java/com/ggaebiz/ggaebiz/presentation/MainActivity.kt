@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
+import com.ggaebiz.ggaebiz.presentation.service.TimerService
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.GaeBizNavHost
 import com.ggaebiz.ggaebiz.presentation.ui.naviagation.rememberNavigator
@@ -22,8 +23,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        
-        val shouldLaunchHome = intent?.getBooleanExtra("EXTRA_LAUNCH_HOME", false) ?: false
+
+        val shouldLaunchHome = intent?.getBooleanExtra(TimerService.EXTRA_LAUNCH_HOME_ID, false) ?: false
+
         setContent {
             val navigator = rememberNavigator()
             GaeBizTheme {

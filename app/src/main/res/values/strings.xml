@@ -76,6 +76,8 @@
     <string name="alarm_snooze_timer_btn_text">5분 뒤 다시 알림</string>
     <string name="notification_title">깨비즈</string>
     <string name="notification_content">Chill guy는 일을 미루지 않Chill..</string>
+    <string name="notification_default_content">깨비즈 타이머 실행 중 입니다..</string>
+
 
     <!-- Alarm 울리기 화면 -->
     <string name="alarm_ment_kiki_level1_1">이제느은 우리가아 일어나야아  할 시가안~ 다음에 ~ 또오 쉬어요오오오~</string>
