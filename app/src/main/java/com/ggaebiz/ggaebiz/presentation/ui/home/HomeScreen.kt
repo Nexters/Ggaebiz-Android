@@ -71,7 +71,7 @@ fun HomeScreen(
 
     BackHandler(enabled = true) {
         if (backPressedOnce) {
-            (context as? Activity)?.finish()
+            (context as? Activity)?.finishAffinity()
         } else {
             backPressedOnce = true
             Toast.makeText(context, R.string.back_provider_toast_text, Toast.LENGTH_SHORT).show()
