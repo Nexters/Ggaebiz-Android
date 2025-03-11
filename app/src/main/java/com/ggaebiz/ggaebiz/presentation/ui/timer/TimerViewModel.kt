@@ -22,10 +22,12 @@ sealed interface TimerSideEffect {
     data object ShowToast : TimerSideEffect
     data class StartService(val seconds: Int, val audioResPath: String) : TimerSideEffect
     data object StopService : TimerSideEffect
+    data object NavigateConfig : TimerSideEffect
 }
 
 sealed interface TimerIntent {
     data object StopTimer : TimerIntent
+    data object ClickConfig : TimerIntent
 }
 
 class TimerViewModel(
@@ -43,6 +45,7 @@ class TimerViewModel(
     fun processIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.StopTimer -> stopTimer()
+            TimerIntent.ClickConfig -> postSideEffect(TimerSideEffect.NavigateConfig)
         }
     }
 

@@ -10,6 +10,7 @@ data class HomeState(
 
 sealed interface HomeSideEffect {
     data object NavigateToSetting : HomeSideEffect
+    data object NavigateToConfig : HomeSideEffect
     data object CheckPermission : HomeSideEffect
 }
 
@@ -17,6 +18,7 @@ sealed interface HomeIntent {
     data class SelectCharacter(val selectCharacterIdx: Int) : HomeIntent
     data object ClickSettingButton : HomeIntent
     data class UpdatePermission(val isGranted: Boolean) : HomeIntent
+    data object ClickConfigButton : HomeIntent
 }
 
 class HomeViewModel(
@@ -32,6 +34,7 @@ class HomeViewModel(
             is HomeIntent.ClickSettingButton -> clickSettingButton()
             is HomeIntent.SelectCharacter -> selectCharacter(intent.selectCharacterIdx)
             is HomeIntent.UpdatePermission -> updateState { it.copy(isGranted = intent.isGranted) }
+            HomeIntent.ClickConfigButton -> postSideEffect(HomeSideEffect.NavigateToConfig)
         }
     }
 

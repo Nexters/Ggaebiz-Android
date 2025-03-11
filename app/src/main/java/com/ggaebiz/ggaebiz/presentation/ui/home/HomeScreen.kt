@@ -65,6 +65,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     navigateSetting: () -> Unit,
     navigateAlarm: () -> Unit,
+    navigateConfig: () -> Unit
 ) {
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
@@ -108,6 +109,7 @@ fun HomeScreen(
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+            HomeSideEffect.NavigateToConfig -> navigateConfig()
         }
     }
     HomeContent(processIntent = viewModel::processIntent)
@@ -135,8 +137,7 @@ fun HomeContent(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        GaeBizLogoAppBar()
-
+        GaeBizLogoAppBar(clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
         Spacer(modifier = Modifier.height(58.dp))
         GaeBizMent(
             text = stringResource(selectedCharacter.initMentResId),
@@ -220,7 +221,8 @@ fun GreetingPreview2() {
     GaeBizTheme {
         HomeScreen(
             navigateAlarm = {},
-            navigateSetting = {}
+            navigateSetting = {},
+            navigateConfig = {}
         )
     }
 }
