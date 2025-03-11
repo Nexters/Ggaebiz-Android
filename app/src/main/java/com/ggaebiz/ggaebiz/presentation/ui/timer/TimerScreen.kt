@@ -41,7 +41,7 @@ import org.koin.compose.getKoin
 fun TimerScreen(
     viewModel: TimerViewModel = koinViewModel(),
     navigateHome: () -> Unit = {},
-    navigateAlarm: () -> Unit = {},
+    navigateConfig: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -60,6 +60,8 @@ fun TimerScreen(
                 timerServiceManager.stopTimerService()
                 navigateHome()
             }
+
+            TimerSideEffect.NavigateConfig -> navigateConfig()
         }
     }
 
@@ -93,7 +95,9 @@ fun TimerContent(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        GaeBizLogoAppBar()
+        GaeBizLogoAppBar(
+            clickRightIcon ={ processIntent(TimerIntent.ClickConfig)}
+        )
 
         Spacer(modifier = Modifier.height(58.dp))
         GaeBizMent(
