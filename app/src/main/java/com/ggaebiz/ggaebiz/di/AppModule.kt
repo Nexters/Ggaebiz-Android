@@ -20,6 +20,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
+import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -49,4 +50,6 @@ val appModule = module {
     viewModel { SettingViewModel(get(), get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
+    viewModel { ConfigViewModel() }
+
 }
