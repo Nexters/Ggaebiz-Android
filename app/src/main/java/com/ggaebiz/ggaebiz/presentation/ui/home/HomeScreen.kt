@@ -2,14 +2,21 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,29 +35,39 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
+import com.ggaebiz.ggaebiz.presentation.model.Character
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import kotlinx.coroutines.CoroutineScope
@@ -68,6 +85,7 @@ fun HomeScreen(
 ) {
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {
         if (backPressedOnce) {
@@ -104,6 +122,7 @@ fun HomeScreen(
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
+            is HomeSideEffect.NoticeVolumeOff -> showToast(context, uiState)
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -118,6 +137,9 @@ fun HomeContent(
     modifier: Modifier = Modifier,
     processIntent: (HomeIntent) -> Unit,
 ) {
+    val context = LocalContext.current
+    val exoPlayer = remember { ExoPlayer.Builder(context).build() }
+
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { CHARACTER_LIST.size })
     val selectedCharacter = CHARACTER_LIST[pagerState.currentPage]
 
@@ -148,17 +170,17 @@ fun HomeContent(
             contentPadding = PaddingValues(horizontal = sideOffset),
             modifier = Modifier.fillMaxWidth(),
         ) { page ->
-            Box(
-                modifier = Modifier.wrapContentSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Image(
-                    painter = painterResource(CHARACTER_LIST[page].imageResId[0]),
-                    contentDescription = null,
-                    modifier = Modifier.size(imageWidth),
-                    contentScale = ContentScale.Crop,
-                )
-            }
+            val isActive = page == pagerState.currentPage
+
+            AnimatedCharacterItem(
+                character = CHARACTER_LIST[page],
+                imageWidth = imageWidth,
+                exoPlayer = exoPlayer,
+                isActive = isActive,
+                playMent = {
+                    processIntent(HomeIntent.PlayMentAudio)
+                },
+            )
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -212,6 +234,110 @@ fun HomeContent(
         )
         Spacer(modifier = Modifier.height(12.dp))
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            exoPlayer.release()
+        }
+    }
+}
+
+@Composable
+fun AnimatedCharacterItem(
+    character: Character,
+    imageWidth: Dp,
+    exoPlayer: ExoPlayer,
+    isActive: Boolean,
+    playMent: () -> Unit,
+) {
+    val context = LocalContext.current
+    var isPlaying by remember { mutableStateOf(false) }
+    var isPressed by remember { mutableStateOf(false) }
+    var isAnimating by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed || isAnimating) 0.9f else 1f,
+        animationSpec = spring(stiffness = Spring.StiffnessLow), label = ""
+    )
+
+    val soundUri = Uri.parse("android.resource://${context.packageName}/${character.initMentAudioResId}")
+
+    LaunchedEffect(isActive) {
+        if (!isActive) {
+            exoPlayer.pause()
+            isPlaying = false
+        }
+    }
+    
+    DisposableEffect(exoPlayer) {
+        val listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(state: Int) {
+                if (state == Player.STATE_ENDED) {
+                    isPlaying = false
+                }
+            }
+        }
+        exoPlayer.addListener(listener)
+
+        onDispose {
+            exoPlayer.removeListener(listener)
+        }
+    }
+
+    fun handleTap() {
+        if (isPlaying) {
+            exoPlayer.pause()
+            isPlaying = false
+        } else {
+            playMent.invoke()
+            exoPlayer.setMediaItem(MediaItem.fromUri(soundUri))
+            exoPlayer.prepare()
+            exoPlayer.seekTo(0)
+            exoPlayer.play()
+            isPlaying = true
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .graphicsLayer(scaleX = scale, scaleY = scale)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = {
+                        isPressed = true
+                        tryAwaitRelease()
+                        isPressed = false
+                    },
+                    onTap = {
+                        scope.launch {
+                            isAnimating = true
+                            delay(250)
+                            isAnimating = false
+                        }
+                        handleTap()
+                    },
+                )
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Image(
+            painter = painterResource(id = character.imageResId[0]),
+            contentDescription = null,
+            modifier = Modifier.size(imageWidth),
+            contentScale = ContentScale.Crop,
+        )
+    }
+}
+
+fun showToast(context: Context, uiState: HomeState) {
+    Toast.makeText(
+        context,
+        context.getString(CHARACTER_LIST[uiState.selectCharacterIdx].nameResId) +
+                "가 말 하고 있어요.\n볼륨을 켜주세요.",
+        LENGTH_SHORT,
+    ).show()
 }
 
 @Preview(showBackground = true)
