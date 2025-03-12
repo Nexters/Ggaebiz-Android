@@ -1,5 +1,7 @@
 package com.ggaebiz.ggaebiz.di
 
+import android.content.Context
+import android.media.AudioManager
 import com.ggaebiz.ggaebiz.data.datastore.AudioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.audioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.timerDataStore
@@ -28,6 +30,7 @@ import org.koin.dsl.module
 val appModule = module {
     single { androidContext().audioDataStore }
     single { androidContext().timerDataStore }
+    single { androidContext().getSystemService(Context.AUDIO_SERVICE) as AudioManager }
 
     single { AudioDataStore(get()) }
     single { TimerDataStore(get()) }
@@ -45,7 +48,7 @@ val appModule = module {
     factory { SetSnoozeCountUseCase(get()) }
     factory { GetSnoozeCountUseCase(get()) }
 
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel(get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
