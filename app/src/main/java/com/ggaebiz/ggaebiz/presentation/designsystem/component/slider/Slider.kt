@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.designsystem.component.slider
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,27 +44,65 @@ fun GaeBizSlider(
     var selectedLevel by remember { mutableStateOf(initialLevel - 1) }
     var sliderWidth by remember { mutableStateOf(0f) }
 
+    var isDragging by remember { mutableStateOf(false) }
+    var dragPosition by remember { mutableStateOf(0f) }
+
     val density = LocalDensity.current
     val levelSpacing = if (maxLevel > 1) sliderWidth / (maxLevel - 1) else 0f
+
+    LaunchedEffect(initialLevel) {
+        selectedLevel = initialLevel - 1
+        dragPosition = selectedLevel * levelSpacing
+    }
 
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .size(40.dp)
-            .pointerInput(Unit) {
+            .height(40.dp)
+            .pointerInput(maxLevel, sliderWidth) {
+                detectDragGestures(
+                    onDragStart = { offset ->
+                        isDragging = true
+                        dragPosition = offset.x.coerceIn(0f, sliderWidth)
+                    },
+                    onDrag = { change, _ ->
+                        change.consume()
+
+                        isDragging = true
+                        dragPosition = change.position.x.coerceIn(0f, sliderWidth)
+                    },
+                    onDragEnd = {
+                        val newLevel = ((dragPosition / sliderWidth) * (maxLevel - 1))
+                            .roundToInt()
+                            .coerceIn(0, maxLevel - 1)
+
+                        selectedLevel = newLevel
+                        dragPosition = selectedLevel * levelSpacing
+
+                        onValueChange(newLevel + 1)
+
+                        isDragging = false
+                    },
+                    onDragCancel = {
+                        dragPosition = selectedLevel * levelSpacing
+                        isDragging = false
+                    }
+                )
+            }
+            .pointerInput(maxLevel, sliderWidth) {
                 detectTapGestures { offset ->
                     val newLevel = ((offset.x / sliderWidth) * (maxLevel - 1))
                         .roundToInt()
                         .coerceIn(0, maxLevel - 1)
 
-                    if (newLevel != selectedLevel) {
-                        selectedLevel = newLevel
-                        onValueChange(newLevel + 1)
-                    }
+                    selectedLevel = newLevel
+                    dragPosition = selectedLevel * levelSpacing
+                    onValueChange(newLevel + 1)
                 }
             }
             .onSizeChanged { size ->
                 sliderWidth = size.width.toFloat()
+                dragPosition = selectedLevel * levelSpacing
             },
     ) {
         Canvas(
@@ -78,7 +118,7 @@ fun GaeBizSlider(
                 cornerRadius = CornerRadius(trackHeight.toPx() / 2),
             )
 
-            val activeWidth = selectedLevel * levelSpacing
+            val activeWidth = if (isDragging) dragPosition else selectedLevel * levelSpacing
             drawRoundRect(
                 color = activeTrackColor,
                 size = Size(activeWidth, trackHeight.toPx()),
@@ -86,7 +126,10 @@ fun GaeBizSlider(
             )
         }
 
-        val thumbX = with(density) { (selectedLevel * levelSpacing).toDp() }
+        val thumbX = with(density) {
+            val px = if (isDragging) dragPosition else selectedLevel * levelSpacing
+            px.toDp()
+        }
         Canvas(
             modifier = Modifier
                 .offset(x = thumbX - (thumbSize / 2), y = 9.dp)
