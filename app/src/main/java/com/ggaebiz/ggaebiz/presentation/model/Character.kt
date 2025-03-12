@@ -21,7 +21,8 @@ data class Character(
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
     @StringRes val traitsResIdList: PersistentList<Int>,
-    @RawRes val lottieResId: Int
+    @RawRes val lottieResId: Int,
+    @RawRes val initMentAudioResId: Int,
 ) {
     companion object {
         val CHARACTER_LIST = listOf(
@@ -49,6 +50,7 @@ data class Character(
                     R.string.kiki_tag_text3,
                 ),
                 lottieResId = R.raw.kiki_level1,
+                initMentAudioResId = R.raw.kiki_home,
             ),
             Character(
                 nameResId = R.string.bobo_name,
@@ -74,6 +76,7 @@ data class Character(
                     R.string.bobo_tag_text3,
                 ),
                 lottieResId = R.raw.bobo_level1,
+                initMentAudioResId = R.raw.bobo_home,
             ),
             Character(
                 nameResId = R.string.nana_name,
@@ -99,6 +102,7 @@ data class Character(
                     R.string.nana_tag_text3,
                 ),
                 lottieResId = R.raw.nana_level1,
+                initMentAudioResId = R.raw.nana_home,
             ),
             Character(
                 nameResId = R.string.chacha_name,
@@ -124,6 +128,7 @@ data class Character(
                     R.string.chacha_tag_text3,
                 ),
                 lottieResId = R.raw.chacha_level1,
+                initMentAudioResId = R.raw.chacha_home,
             ),
             Character(
                 nameResId = R.string.booboo_name,
@@ -149,6 +154,7 @@ data class Character(
                     R.string.booboo_tag_text3,
                 ),
                 lottieResId = R.raw.booboo_level1,
+                initMentAudioResId = R.raw.booboo_home,
             ),
         )
 
