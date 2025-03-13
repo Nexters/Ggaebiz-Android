@@ -38,9 +38,10 @@ fun ConfigSliderSection(
     mainText: String,
     isSwitch: Boolean,
     switchValue: Boolean = true,
-    onCheckedChange: () -> Unit,
+    onCheckedChange: () -> Unit = {},
+    isSlider: Boolean = true,
     sliderValue: Int = 3,
-    onSliderChange: () -> Unit,
+    onSliderChange: (Int) -> Unit,
 ) {
     Row(
         modifier = Modifier.padding(vertical = 8.dp)
@@ -69,29 +70,30 @@ fun ConfigSliderSection(
         if (isSwitch) {
             GaeBizSwitch(
                 checked = switchValue,
-                enabled = true,
                 onCheckedChange = { onCheckedChange() },
             )
         }
     }
-    GaeBizSlider(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clip(
-                RoundedCornerShape(16.dp)
-            )
-            .background(GaeBizTheme.colors.gray50)
-            .padding(horizontal = 16.dp, vertical = 4.dp),
-        maxLevel = 10,
-        initialLevel = sliderValue,
-        onValueChange = { onSliderChange() },
-        thumbSize = 18.dp,
-        thumbColor = GaeBizTheme.colors.gray900,
-        trackHeight = 4.dp,
-        activeTrackColor = GaeBizTheme.colors.gray900,
-        inactiveTrackColor = GaeBizTheme.colors.gray75,
-    )
+    if (isSlider) {
+        GaeBizSlider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp)
+                .clip(
+                    RoundedCornerShape(16.dp)
+                )
+                .background(GaeBizTheme.colors.gray50)
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            maxLevel = 10,
+            initialLevel = sliderValue,
+            onValueChange = { selectedLevel -> onSliderChange(selectedLevel) },
+            thumbSize = 18.dp,
+            thumbColor = GaeBizTheme.colors.gray900,
+            trackHeight = 4.dp,
+            activeTrackColor = GaeBizTheme.colors.gray900,
+            inactiveTrackColor = GaeBizTheme.colors.gray75,
+        )
+    }
 }
 
 @Composable

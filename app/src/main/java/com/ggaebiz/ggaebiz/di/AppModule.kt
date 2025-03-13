@@ -1,12 +1,16 @@
 package com.ggaebiz.ggaebiz.di
 
 import com.ggaebiz.ggaebiz.data.datastore.AudioDataStore
+import com.ggaebiz.ggaebiz.data.datastore.ConfigDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.audioDataStore
+import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.configDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.timerDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
 import com.ggaebiz.ggaebiz.data.repository.AudioRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.ConfigRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
+import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
@@ -16,11 +20,11 @@ import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
-import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
-import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -29,12 +33,16 @@ import org.koin.dsl.module
 val appModule = module {
     single { androidContext().audioDataStore }
     single { androidContext().timerDataStore }
+    single { androidContext().configDataStore }
 
     single { AudioDataStore(get()) }
     single { TimerDataStore(get()) }
+    single { ConfigDataStore(get()) }
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
     single<TimerRepository> { TimerRepositoryImpl(get()) }
+    single<ConfigRepository> { ConfigRepositoryImpl(get()) }
+
     single { TimerServiceManager(androidContext()) }
 
     factory { GetAudioResIdUseCase(get()) }
@@ -50,6 +58,6 @@ val appModule = module {
     viewModel { SettingViewModel(get(), get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
-    viewModel { ConfigViewModel() }
+    viewModel { ConfigViewModel(get()) }
 
 }
