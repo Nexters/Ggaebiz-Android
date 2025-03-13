@@ -85,6 +85,7 @@ fun ConfigSliderSection(
                 .background(GaeBizTheme.colors.gray50)
                 .padding(horizontal = 16.dp, vertical = 4.dp),
             maxLevel = 10,
+            minLevel = 1,
             initialLevel = sliderValue,
             onValueChange = { selectedLevel -> onSliderChange(selectedLevel) },
             thumbSize = 18.dp,
