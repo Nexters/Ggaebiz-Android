@@ -53,9 +53,8 @@ fun TimerScreen(
         when (effect) {
             is TimerSideEffect.ShowToast -> showToast(context, uiState)
             is TimerSideEffect.StartService -> {
-                timerServiceManager.startTimerService(effect.seconds, effect.audioResPath)
+                timerServiceManager.startTimerService(effect.seconds, effect.audioResPath, effect.vibration, effect.volume)
             }
-
             is TimerSideEffect.StopService -> {
                 timerServiceManager.stopTimerService()
                 navigateHome()

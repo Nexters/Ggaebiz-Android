@@ -56,7 +56,7 @@ val appModule = module {
 
     viewModel { HomeViewModel(get()) }
     viewModel { SettingViewModel(get(), get()) }
-    viewModel { TimerViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TimerViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
     viewModel { ConfigViewModel(get()) }
 
