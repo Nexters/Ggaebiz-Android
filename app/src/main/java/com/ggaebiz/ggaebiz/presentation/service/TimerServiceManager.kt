@@ -12,11 +12,13 @@ class TimerServiceManager(private val context: Context) {
     private var service: TimerService? = null
     private var serviceConnection: ServiceConnection? = null
 
-    fun startTimerService(seconds: Int, audioResPath: String) {
+    fun startTimerService(seconds: Int, audioResPath: String, vibration : Int, volume : Int) {
         val intent = Intent(context, TimerService::class.java).apply {
             action = TimerService.ACTION_START
-            putExtra(TimerService.INTENT_KET_TIMER_SECONDS, seconds)
-            putExtra(TimerService.INTENT_KET_TIMER_AUDIO, audioResPath)
+            putExtra(TimerService.INTENT_KEY_TIMER_SECONDS, seconds)
+            putExtra(TimerService.INTENT_KEY_TIMER_AUDIO, audioResPath)
+            putExtra(TimerService.INTENT_KEY_VIBRATION, vibration)
+            putExtra(TimerService.INTENT_KEY_VOLUME, volume)
         }
         context.startService(intent)
     }

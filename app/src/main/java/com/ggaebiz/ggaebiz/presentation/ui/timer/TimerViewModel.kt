@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.timer
 
+import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
@@ -20,7 +21,7 @@ data class TimerState(
 
 sealed interface TimerSideEffect {
     data object ShowToast : TimerSideEffect
-    data class StartService(val seconds: Int, val audioResPath: String) : TimerSideEffect
+    data class StartService(val seconds: Int, val audioResPath: String, val vibration : Int, val volume : Int) : TimerSideEffect
     data object StopService : TimerSideEffect
     data object NavigateConfig : TimerSideEffect
 }
@@ -36,6 +37,7 @@ class TimerViewModel(
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
     private val getTimerSettingUseCase: GetTimerSettingUseCase,
     private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
+    private val configRepository: ConfigRepository
 ) : BaseViewModel<TimerState, TimerIntent, TimerSideEffect>(TimerState()) {
 
     init {
@@ -56,7 +58,13 @@ class TimerViewModel(
 
         val data = selectedCharacterIdx.getCharacterData()
         val audioPath = (data?.mentAudioList?.get(level - 1)?.get(leveIdx)?.audioPath) ?: ""
-        val settingSeconds = hour * 3600 + minute * 60
+        val settingSeconds = 3
+
+        val vibration = if(configRepository.getVibrationStatus()){
+            configRepository.getVibrationValue()
+        }else {
+            0
+        }
 
         updateState {
             it.copy(
@@ -69,7 +77,12 @@ class TimerViewModel(
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
-        postSideEffect(TimerSideEffect.StartService(settingSeconds, audioPath))
+        postSideEffect(TimerSideEffect.StartService(
+            settingSeconds,
+            audioPath,
+            vibration,
+            configRepository.getVolumeValue()
+        ))
         startTimeTick()
     }
 

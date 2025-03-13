@@ -13,6 +13,8 @@ import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.PowerManager
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem
@@ -32,6 +34,7 @@ import kotlinx.coroutines.launch
 class TimerService : Service() {
 
     private lateinit var player: ExoPlayer
+    private var vibrator: Vibrator? = null
     private var audioResPath: String = ""
     private var timerJob: Job? = null
 
@@ -47,8 +50,10 @@ class TimerService : Service() {
     companion object {
         const val ACTION_START = "START_TIMER"
         const val ACTION_STOP = "STOP_TIMER"
-        const val INTENT_KET_TIMER_SECONDS = "TIMER_SECONDS"
-        const val INTENT_KET_TIMER_AUDIO = "TIMER_AUDIO"
+        const val INTENT_KEY_TIMER_SECONDS = "TIMER_SECONDS"
+        const val INTENT_KEY_TIMER_AUDIO = "TIMER_AUDIO"
+        const val INTENT_KEY_VIBRATION = "TIMER_VIBRATION"
+        const val INTENT_KEY_VOLUME = "TIMER_VOLUME"
         const val REQUEST_CODE = 1004
         const val NOTIFICATION_CHANNEL_ID = "timer_channel"
         const val NOTIFICATION_ID = 1
@@ -64,7 +69,6 @@ class TimerService : Service() {
         return binder
     }
 
-
     override fun onCreate() {
         super.onCreate()
         Log.d("TimerService", "onCreate()")
@@ -73,11 +77,13 @@ class TimerService : Service() {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TimerService::WakelockTag")
         wakeLock.acquire()
 
+
         // Notification 채널 생성
         _notificationManager = getSystemService(NotificationManager::class.java)
         createNotificationChannel()
 
         // player 초기화
+        vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         player = ExoPlayer.Builder(this).build().apply {
             repeatMode = Player.REPEAT_MODE_ONE
         }
@@ -90,9 +96,11 @@ class TimerService : Service() {
         if (action == ACTION_STOP) {
             stopSelf()
         } else if (action == ACTION_START) {
-            val seconds = intent.getIntExtra(INTENT_KET_TIMER_SECONDS, 0)
-            audioResPath = intent.getStringExtra(INTENT_KET_TIMER_AUDIO) ?: ""
-            startTimer(seconds)
+            val seconds = intent.getIntExtra(INTENT_KEY_TIMER_SECONDS, 0)
+            val vibration = intent.getIntExtra(INTENT_KEY_VIBRATION,3)
+            val volume = intent.getIntExtra(INTENT_KEY_VOLUME, 3)
+            audioResPath = intent.getStringExtra(INTENT_KEY_TIMER_AUDIO) ?: ""
+            startTimer(seconds, vibration, volume)
             // 서비스 실행
             startForegroundService()
         }
@@ -100,7 +108,7 @@ class TimerService : Service() {
         return START_STICKY
     }
 
-    private fun startTimer(times: Int) {
+    private fun startTimer(times: Int, vibration: Int, volume: Int) {
         var remainingTime = times
         timerJob?.cancel()
         timerJob = CoroutineScope(Dispatchers.Main).launch {
@@ -111,19 +119,19 @@ class TimerService : Service() {
                 } else {
                     Log.d("TimerService", "startTimer() :: 타이머 종료")
                     timerJob?.cancel()
-                    onTimerFinished()
+                    onTimerFinished(vibration,volume)
                 }
                 delay(1000L) // 1초 대기
             }
         }
     }
 
-    private fun onTimerFinished() {
+    private fun onTimerFinished(vibration: Int, volume: Int) {
         Log.d("TimerService", "onTimerFinished()")
         updateNotification()
         startOverSecondsJob()
         navigateToTargetScreen()
-        playAudio() // 음원 재생
+        playAudio(vibration,volume) // 음원 재생
     }
 
     private fun startOverSecondsJob() {
@@ -151,12 +159,14 @@ class TimerService : Service() {
         }
     }
 
-    private fun playAudio() {
+    private fun playAudio(vibration: Int, volume: Int) {
         val mediaItem =
             MediaItem.fromUri(Uri.parse("android.resource://$packageName/${audioResPath}"))
         player.setMediaItem(mediaItem)
         player.prepare()
         player.repeatMode = Player.REPEAT_MODE_ONE
+        player.volume = volume.coerceIn(1, 10) / 10f
+        vibrator?.vibratePattern(vibration)
         player.play()
     }
 
@@ -216,7 +226,24 @@ class TimerService : Service() {
         timerJob?.cancel()
         overSecondsJob?.cancel()
         player.release()
+        vibrator?.cancel()
         wakeLock.release()
         super.onDestroy()
+    }
+
+    private fun Vibrator.vibratePattern(strength: Int) {
+        if (strength == 0) {
+            this.cancel()
+            return
+        }
+        val clampedStrength = strength.coerceIn(1, 10) * 25
+        val pattern = longArrayOf(0, 300, 500)
+        val amplitudes = intArrayOf(0, clampedStrength, 0)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            this.vibrate(VibrationEffect.createWaveform(pattern, amplitudes, 0)) // 무한 반복
+        } else {
+            this.vibrate(pattern, 0) // 예전 방식 (강도 조절 불가)
+        }
     }
 }
