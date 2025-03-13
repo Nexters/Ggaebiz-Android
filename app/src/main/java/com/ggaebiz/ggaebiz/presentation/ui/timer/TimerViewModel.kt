@@ -58,7 +58,7 @@ class TimerViewModel(
 
         val data = selectedCharacterIdx.getCharacterData()
         val audioPath = (data?.mentAudioList?.get(level - 1)?.get(leveIdx)?.audioPath) ?: ""
-        val settingSeconds = 3
+        val settingSeconds = hour * 3600 + minute * 60
 
         val vibration = if(configRepository.getVibrationStatus()){
             configRepository.getVibrationValue()
