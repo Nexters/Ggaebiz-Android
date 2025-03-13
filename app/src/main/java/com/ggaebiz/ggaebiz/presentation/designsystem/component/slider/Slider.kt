@@ -35,6 +35,7 @@ fun GaeBizSlider(
     initialLevel: Int,
     onValueChange: (Int) -> Unit,
     maxLevel: Int,
+    minLevel:Int = 0,
     thumbSize: Dp,
     thumbColor: Color,
     trackHeight: Dp,
@@ -50,6 +51,7 @@ fun GaeBizSlider(
     val density = LocalDensity.current
     val levelSpacing = if (maxLevel > 1) sliderWidth / (maxLevel - 1) else 0f
 
+
     LaunchedEffect(initialLevel) {
         selectedLevel = initialLevel - 1
         dragPosition = selectedLevel * levelSpacing
@@ -64,17 +66,24 @@ fun GaeBizSlider(
                     onDragStart = { offset ->
                         isDragging = true
                         dragPosition = offset.x.coerceIn(0f, sliderWidth)
+
+                        if (selectedLevel == minLevel && dragPosition < selectedLevel * levelSpacing) {
+                            dragPosition = selectedLevel * levelSpacing
+                        }
                     },
                     onDrag = { change, _ ->
                         change.consume()
-
                         isDragging = true
                         dragPosition = change.position.x.coerceIn(0f, sliderWidth)
+
+                        if (selectedLevel == minLevel && dragPosition < selectedLevel * levelSpacing) {
+                            dragPosition = selectedLevel * levelSpacing
+                        }
                     },
                     onDragEnd = {
                         val newLevel = ((dragPosition / sliderWidth) * (maxLevel - 1))
                             .roundToInt()
-                            .coerceIn(0, maxLevel - 1)
+                            .coerceIn(minLevel, maxLevel - 1)
 
                         selectedLevel = newLevel
                         dragPosition = selectedLevel * levelSpacing
@@ -82,6 +91,10 @@ fun GaeBizSlider(
                         onValueChange(newLevel + 1)
 
                         isDragging = false
+
+                        if (selectedLevel == minLevel && dragPosition < selectedLevel * levelSpacing) {
+                            dragPosition = selectedLevel * levelSpacing
+                        }
                     },
                     onDragCancel = {
                         dragPosition = selectedLevel * levelSpacing
@@ -91,9 +104,10 @@ fun GaeBizSlider(
             }
             .pointerInput(maxLevel, sliderWidth) {
                 detectTapGestures { offset ->
+
                     val newLevel = ((offset.x / sliderWidth) * (maxLevel - 1))
                         .roundToInt()
-                        .coerceIn(0, maxLevel - 1)
+                        .coerceIn(minLevel, maxLevel - 1)
 
                     selectedLevel = newLevel
                     dragPosition = selectedLevel * levelSpacing

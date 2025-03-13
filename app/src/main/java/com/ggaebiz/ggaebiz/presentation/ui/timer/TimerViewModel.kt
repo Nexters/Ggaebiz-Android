@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.timer
 
+import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
@@ -20,12 +21,14 @@ data class TimerState(
 
 sealed interface TimerSideEffect {
     data object ShowToast : TimerSideEffect
-    data class StartService(val seconds: Int, val audioResPath: String) : TimerSideEffect
+    data class StartService(val seconds: Int, val audioResPath: String, val vibration : Int, val volume : Int) : TimerSideEffect
     data object StopService : TimerSideEffect
+    data object NavigateConfig : TimerSideEffect
 }
 
 sealed interface TimerIntent {
     data object StopTimer : TimerIntent
+    data object ClickConfig : TimerIntent
 }
 
 class TimerViewModel(
@@ -34,6 +37,7 @@ class TimerViewModel(
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
     private val getTimerSettingUseCase: GetTimerSettingUseCase,
     private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
+    private val configRepository: ConfigRepository
 ) : BaseViewModel<TimerState, TimerIntent, TimerSideEffect>(TimerState()) {
 
     init {
@@ -43,6 +47,7 @@ class TimerViewModel(
     fun processIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.StopTimer -> stopTimer()
+            TimerIntent.ClickConfig -> postSideEffect(TimerSideEffect.NavigateConfig)
         }
     }
 
@@ -55,6 +60,12 @@ class TimerViewModel(
         val audioPath = (data?.mentAudioList?.get(level - 1)?.get(leveIdx)?.audioPath) ?: ""
         val settingSeconds = hour * 3600 + minute * 60
 
+        val vibration = if(configRepository.getVibrationStatus()){
+            configRepository.getVibrationValue()
+        }else {
+            0
+        }
+
         updateState {
             it.copy(
                 selectedCharacterIdx = selectedCharacterIdx,
@@ -66,7 +77,12 @@ class TimerViewModel(
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
-        postSideEffect(TimerSideEffect.StartService(settingSeconds, audioPath))
+        postSideEffect(TimerSideEffect.StartService(
+            settingSeconds,
+            audioPath,
+            vibration,
+            configRepository.getVolumeValue()
+        ))
         startTimeTick()
     }
 

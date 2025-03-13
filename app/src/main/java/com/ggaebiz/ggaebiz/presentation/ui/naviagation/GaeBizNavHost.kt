@@ -9,6 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
+import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashScreen
@@ -63,7 +64,8 @@ fun GaeBizNavHost(
         composable<Route.Home> {
             HomeScreen(
                 navigateSetting = { navigator.navigateSetting() },
-                navigateAlarm = { navigator.navigateAlarm() }
+                navigateAlarm = { navigator.navigateAlarm() },
+                navigateConfig = { navigator.navigateConfig()}
             )
         }
         composable<Route.Setting> {
@@ -74,13 +76,19 @@ fun GaeBizNavHost(
         }
         composable<Route.Timer> {
             TimerScreen(
-                navigateHome = { navigator.navigateHome() }
+                navigateHome = { navigator.navigateHome() },
+                navigateConfig = {navigator.navigateConfig()}
             )
         }
         composable<Route.Alarm> {
             AlarmScreen(
                 navigateStart = { navigator.navigateToMainClearingBackStack() },
                 navigateTimer = { navigator.navigateTimer() }
+            )
+        }
+        composable<Route.Config> {
+            ConfigScreen(
+                navigateBack = {navigator.popBackStack()}
             )
         }
     }
