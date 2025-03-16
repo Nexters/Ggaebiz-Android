@@ -94,6 +94,7 @@ fun SettingContent(
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizMent(
             text = stringResource(SETTING_MENT_LIST[uiState.level - 1]),
+            hasBelowArrow = false
         )
 
         Spacer(modifier = Modifier.height(24.dp))
