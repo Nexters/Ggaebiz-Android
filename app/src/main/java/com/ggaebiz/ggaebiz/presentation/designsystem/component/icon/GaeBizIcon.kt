@@ -10,6 +10,7 @@ object GaeBizIcon {
     val icBack: ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_back)
+
     val icRightArrow: ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_right_arrow)
@@ -21,4 +22,8 @@ object GaeBizIcon {
     val icColon : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.icon_colon)
+
+    val icOrangeSpeaker : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_orange_speaker)
 }

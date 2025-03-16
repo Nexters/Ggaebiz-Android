@@ -2,18 +2,20 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.widget.Toast
-import android.widget.Toast.LENGTH_SHORT
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -60,11 +62,10 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoRightIconAppBar
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.toast.GaebizToast
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
@@ -87,7 +88,6 @@ fun HomeScreen(
 ) {
     var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {
         if (backPressedOnce) {
@@ -122,9 +122,10 @@ fun HomeScreen(
         true
     }
 
+    var showToast by remember { mutableStateOf(false) }
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
-            is HomeSideEffect.NoticeVolumeOff -> showToast(context, uiState)
+            is HomeSideEffect.NoticeVolumeOff -> showToast = true
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
@@ -132,12 +133,19 @@ fun HomeScreen(
             HomeSideEffect.NavigateToConfig -> navigateConfig()
         }
     }
-    HomeContent(processIntent = viewModel::processIntent)
+
+    HomeContent(
+        showToast = showToast,
+        onDismissToast = { showToast = false },
+        processIntent = viewModel::processIntent,
+    )
 }
 
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
+    showToast: Boolean,
+    onDismissToast: () -> Unit,
     processIntent: (HomeIntent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -156,85 +164,108 @@ fun HomeContent(
         }
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        GaeBizLogoRightIconAppBar (clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
-        Spacer(modifier = Modifier.height(58.dp))
-        GaeBizMent(
-            text = stringResource(selectedCharacter.initMentResId),
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-        HorizontalPager(
-            state = pagerState,
-            contentPadding = PaddingValues(horizontal = sideOffset),
-            modifier = Modifier.fillMaxWidth(),
-        ) { page ->
-            val isActive = page == pagerState.currentPage
-
-            AnimatedCharacterItem(
-                character = CHARACTER_LIST[page],
-                imageWidth = imageWidth,
-                exoPlayer = exoPlayer,
-                isActive = isActive,
-                playMent = {
-                    processIntent(HomeIntent.PlayMentAudio)
-                },
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            GaeBizLogoRightIconAppBar (clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
+            Spacer(modifier = Modifier.height(58.dp))
+            GaeBizMent(
+                text = stringResource(selectedCharacter.initMentResId),
             )
-        }
 
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = stringResource(selectedCharacter.wholeNameResId),
-            style = GaeBizTheme.typography.titleSemiBold,
-        )
+            Spacer(modifier = Modifier.height(30.dp))
+            HorizontalPager(
+                state = pagerState,
+                contentPadding = PaddingValues(horizontal = sideOffset),
+                modifier = Modifier.fillMaxWidth(),
+            ) { page ->
+                val isActive = page == pagerState.currentPage
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            selectedCharacter.traitsResIdList.forEach { trait ->
-                GaeBizTag(text = stringResource(trait))
-            }
-        }
-
-        Spacer(modifier = Modifier.height(40.dp))
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            CHARACTER_LIST.indices.forEach { index ->
-                Box(
-                    modifier = Modifier
-                        .height(6.dp)
-                        .padding(horizontal = 4.dp)
-                        .width(if (index == pagerState.currentPage) 10.dp else 6.dp)
-                        .background(
-                            if (index == pagerState.currentPage) {
-                                GaeBizTheme.colors.primaryOrange
-                            } else {
-                                GaeBizTheme.colors.gray200
-                            },
-                            shape = RoundedCornerShape(50),
-                        ),
+                AnimatedCharacterItem(
+                    character = CHARACTER_LIST[page],
+                    imageWidth = imageWidth,
+                    exoPlayer = exoPlayer,
+                    isActive = isActive,
+                    playMent = {
+                        processIntent(HomeIntent.PlayMentAudio)
+                    },
                 )
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(selectedCharacter.wholeNameResId),
+                style = GaeBizTheme.typography.titleSemiBold,
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                selectedCharacter.traitsResIdList.forEach { trait ->
+                    GaeBizTag(text = stringResource(trait))
+                }
+            }
+
+            Spacer(modifier = Modifier.height(40.dp))
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                CHARACTER_LIST.indices.forEach { index ->
+                    Box(
+                        modifier = Modifier
+                            .height(6.dp)
+                            .padding(horizontal = 4.dp)
+                            .width(if (index == pagerState.currentPage) 10.dp else 6.dp)
+                            .background(
+                                if (index == pagerState.currentPage) {
+                                    GaeBizTheme.colors.primaryOrange
+                                } else {
+                                    GaeBizTheme.colors.gray200
+                                },
+                                shape = RoundedCornerShape(50),
+                            ),
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+            GaeBizButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp),
+                onClick = { processIntent(HomeIntent.ClickSettingButton) },
+                contentColor = GaeBizTheme.colors.white,
+                containerColor = GaeBizTheme.colors.gray800,
+                disabledContentColor = GaeBizTheme.colors.gray400,
+                disabledContainerColor = GaeBizTheme.colors.gray100,
+                text = stringResource(
+                    R.string.setting_button_text,
+                    stringResource(selectedCharacter.nameResId)
+                ),
+                style = GaeBizTheme.typography.bodySemiBold,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Spacer(modifier = Modifier.weight(1f))
-        GaeBizButton(
-            modifier = Modifier
+        LaunchedEffect(showToast) {
+            delay(2000)
+            onDismissToast()
+        }
+
+        AnimatedVisibility(
+            visible = showToast,
+            enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+            exit = fadeOut(animationSpec = tween(durationMillis = 300)),
+            modifier = modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp),
-            onClick = { processIntent(HomeIntent.ClickSettingButton) },
-            contentColor = GaeBizTheme.colors.white,
-            containerColor = GaeBizTheme.colors.gray800,
-            disabledContentColor = GaeBizTheme.colors.gray400,
-            disabledContainerColor = GaeBizTheme.colors.gray100,
-            text = stringResource(
-                R.string.setting_button_text,
-                stringResource(selectedCharacter.nameResId)
-            ),
-            style = GaeBizTheme.typography.bodySemiBold,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 116.dp),
+        ) {
+            GaebizToast(
+                ment = context.getString(
+                    CHARACTER_LIST[pagerState.currentPage].nameResId
+                ) + "가 말 하고 있어요. 볼륨을 켜주세요."
+            )
+        }
     }
 
     DisposableEffect(Unit) {
@@ -331,15 +362,6 @@ fun AnimatedCharacterItem(
             contentScale = ContentScale.Crop,
         )
     }
-}
-
-fun showToast(context: Context, uiState: HomeState) {
-    Toast.makeText(
-        context,
-        context.getString(CHARACTER_LIST[uiState.selectCharacterIdx].nameResId) +
-                "가 말 하고 있어요.\n볼륨을 켜주세요.",
-        LENGTH_SHORT,
-    ).show()
 }
 
 @Preview(showBackground = true)
