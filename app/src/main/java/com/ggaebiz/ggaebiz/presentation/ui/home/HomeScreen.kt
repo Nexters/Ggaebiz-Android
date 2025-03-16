@@ -64,6 +64,7 @@ import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifec
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoRightIconAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
@@ -159,7 +160,7 @@ fun HomeContent(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        GaeBizLogoAppBar(clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
+        GaeBizLogoRightIconAppBar (clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
         Spacer(modifier = Modifier.height(58.dp))
         GaeBizMent(
             text = stringResource(selectedCharacter.initMentResId),
