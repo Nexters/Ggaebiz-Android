@@ -38,7 +38,6 @@ fun GaeBizLogoAppBar(
             painter = painterResource(id = logoDrawable),
             contentDescription = stringResource(R.string.logo_img_description),
         )
-
         Image(
             modifier = Modifier
                 .size(48.dp)
@@ -49,11 +48,12 @@ fun GaeBizLogoAppBar(
                     clickRightIcon()
                 }
                 .background(GaeBizTheme.colors.gray50)
-                .padding(vertical = 12.dp, horizontal = 16.dp)
+                .padding(14.dp)
                 .align(Alignment.CenterEnd),
             painter = painterResource(id = R.drawable.icon_setting),
             contentDescription = "Clickable Image"
         )
+
     }
 }
 
