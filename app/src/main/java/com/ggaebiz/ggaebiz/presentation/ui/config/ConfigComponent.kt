@@ -109,9 +109,15 @@ fun ConfigBatterySection(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier
+                .size(32.dp)
+                .clip(
+                    CircleShape
+                )
+                .background(GaeBizTheme.colors.gray50)
+                .padding(8.dp),
             painter = painterResource(id = R.drawable.icon_battery),
-            contentDescription = "Image"
+            contentDescription = "Icon Image"
         )
         Spacer(Modifier.width(12.dp))
         Column(
@@ -125,11 +131,7 @@ fun ConfigBatterySection(
             Spacer(Modifier.height(4.dp))
             Text(
                 text = stringResource(R.string.config_battery_sub_text),
-                style = TextStyle(
-                    fontFamily = PretendardFont,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
-                ),
+                style = GaeBizTheme.typography.label4,
                 color = GaeBizTheme.colors.gray400,
             )
         }
