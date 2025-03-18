@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -13,7 +14,7 @@ android {
         applicationId = "com.ggaebiz.ggaebiz"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1000200
+        versionCode = 1000201
         versionName = "1.0.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
