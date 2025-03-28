@@ -41,10 +41,12 @@ val appModule = module {
     single { AudioDataStore(get()) }
     single { TimerDataStore(get()) }
     single { ConfigDataStore(get()) }
+    single { OnboardingDataStore(get()) }
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
     single<TimerRepository> { TimerRepositoryImpl(get()) }
     single<ConfigRepository> { ConfigRepositoryImpl(get()) }
+    single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
 
     single { TimerServiceManager(androidContext()) }
 
