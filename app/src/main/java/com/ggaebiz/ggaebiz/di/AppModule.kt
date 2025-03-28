@@ -7,12 +7,15 @@ import com.ggaebiz.ggaebiz.data.datastore.ConfigDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.audioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.configDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.timerDataStore
+import com.ggaebiz.ggaebiz.data.datastore.OnboardingDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
 import com.ggaebiz.ggaebiz.data.repository.AudioRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ConfigRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.OnboardingRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
 import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
+import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
@@ -26,6 +29,7 @@ import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerViewModel
 import org.koin.android.ext.koin.androidContext
@@ -59,6 +63,7 @@ val appModule = module {
     factory { SetSnoozeCountUseCase(get()) }
     factory { GetSnoozeCountUseCase(get()) }
 
+    viewModel { OnboardingViewModel(get()) }
     viewModel { HomeViewModel(get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get()) }
