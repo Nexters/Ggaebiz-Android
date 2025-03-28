@@ -34,13 +34,32 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.FullScreen
 import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(
     navigateHome: () -> Unit,
+    navigateOnboarding: () -> Unit,
+    viewModel: SplashViewModel = koinViewModel(),
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    SplashContent(
+        navigateNextScreen = {
+            if (uiState.isOnboardingExposed) navigateHome()
+            else navigateOnboarding()
+        },
+    )
+}
+
+@Composable
+fun SplashContent(
+    modifier: Modifier = Modifier,
+    navigateNextScreen: () -> Unit,
 ) {
     val initDuration = 1000
     val animationDuration = 800
@@ -48,7 +67,7 @@ fun SplashScreen(
     var isAnimating by remember { mutableStateOf(false) }
 
     BackHandler(enabled = true) { }
-    
+
     val animatedHeight by animateDpAsState(
         targetValue = if (isAnimating) 26.dp else 0.dp,
         animationSpec = tween(durationMillis = animationDuration),
@@ -59,7 +78,7 @@ fun SplashScreen(
         delay(initDuration.toLong())
         isAnimating = true
         delay(animationDuration + delayDuration.toLong())
-        navigateHome()
+        navigateNextScreen()
     }
 
     FullScreen(backGroundGradient = GaeBizTheme.colors.gradientOrange) {
@@ -154,3 +173,4 @@ fun SplashScreen(
         }
     }
 }
+

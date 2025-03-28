@@ -31,6 +31,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
@@ -63,6 +64,7 @@ val appModule = module {
     factory { SetSnoozeCountUseCase(get()) }
     factory { GetSnoozeCountUseCase(get()) }
 
+    viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
     viewModel { HomeViewModel(get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
