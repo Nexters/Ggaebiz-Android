@@ -11,6 +11,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -87,106 +88,113 @@ fun OnboardingContent(
             pagerState.animateScrollToPage(currentPage - 1)
         }
     }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Spacer(modifier = Modifier.height(60.dp))
-        HorizontalPager(
-            state = pagerState,
-            userScrollEnabled = false,
-            modifier = Modifier.fillMaxWidth(),
-        ) { page ->
-            Column(
+        val screenHeight = maxHeight
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Spacer(modifier = Modifier.height(60.dp))
+            HorizontalPager(
+                state = pagerState,
+                userScrollEnabled = false,
                 modifier = Modifier
-                    .wrapContentSize()
-                    .padding(horizontal = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-
-                Image(
-                    modifier = Modifier.fillMaxWidth(),
-                    painter = painterResource(id = ONBOARDING_LIST[page].onBoardingImgRes),
-                    contentDescription = stringResource(R.string.logo_img_description),
-                )
-
-                Spacer(modifier = Modifier.height(47.5.dp))
-                Text(
-                    color = GaeBizTheme.colors.gray900,
-                    style = GaeBizTheme.typography.titleBold,
-                    text = stringResource(ONBOARDING_LIST[page].descriptionRes),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(41.5.dp))
-        Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
-            ONBOARDING_LIST.indices.forEach { index ->
-                Box(
+                    .fillMaxWidth()
+                    .height(screenHeight * 0.6f),
+            ) { page ->
+                Column(
                     modifier = Modifier
-                        .height(6.dp)
-                        .padding(horizontal = 4.dp)
-                        .width(if (index == pagerState.currentPage) 10.dp else 6.dp)
-                        .background(
-                            if (index == pagerState.currentPage) {
-                                GaeBizTheme.colors.primaryOrange
-                            } else {
-                                GaeBizTheme.colors.gray200
-                            },
-                            shape = RoundedCornerShape(50),
-                        ),
-                )
+                        .wrapContentSize()
+                        .padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+
+                    Image(
+                        modifier = Modifier.fillMaxWidth(),
+                        painter = painterResource(id = ONBOARDING_LIST[page].onBoardingImgRes),
+                        contentDescription = stringResource(R.string.logo_img_description),
+                    )
+
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(
+                        color = GaeBizTheme.colors.gray900,
+                        style = GaeBizTheme.typography.titleBold,
+                        text = stringResource(ONBOARDING_LIST[page].descriptionRes),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.weight(1f))
-        GaeBizButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp)
-                .alpha(if (currentPage < pagerState.pageCount - 1) 1f else 0f),
-            onClick = {
-                coroutineScope.launch {
-                    pagerState.slowAnimateScrollToPage(pagerState.pageCount - 1)
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
+                ONBOARDING_LIST.indices.forEach { index ->
+                    Box(
+                        modifier = Modifier
+                            .height(6.dp)
+                            .padding(horizontal = 4.dp)
+                            .width(if (index == pagerState.currentPage) 10.dp else 6.dp)
+                            .background(
+                                if (index == pagerState.currentPage) {
+                                    GaeBizTheme.colors.primaryOrange
+                                } else {
+                                    GaeBizTheme.colors.gray200
+                                },
+                                shape = RoundedCornerShape(50),
+                            ),
+                    )
                 }
-            },
-            contentColor = GaeBizTheme.colors.gray600,
-            containerColor = Color.Transparent,
-            disabledContentColor = GaeBizTheme.colors.white,
-            disabledContainerColor = GaeBizTheme.colors.white,
-            text = stringResource(R.string.skip_text),
-            style = GaeBizTheme.typography.bodyMedium,
-        )
+            }
 
-        Spacer(modifier = Modifier.height(12.dp))
-        GaeBizButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp),
-            onClick = {
-                coroutineScope.launch {
-                    if (currentPage < pagerState.pageCount - 1) {
-                        pagerState.slowAnimateScrollToPage(currentPage + 1)
-                    } else {
-                        processIntent(OnboardingIntent.ClickStartGaebizButton)
+            Spacer(modifier = Modifier.weight(1f))
+            GaeBizButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp)
+                    .alpha(if (currentPage < pagerState.pageCount - 1) 1f else 0f),
+                onClick = {
+                    coroutineScope.launch {
+                        pagerState.slowAnimateScrollToPage(pagerState.pageCount - 1)
                     }
-                }
-            },
-            contentColor = GaeBizTheme.colors.white,
-            containerColor = GaeBizTheme.colors.primaryOrange,
-            disabledContentColor = GaeBizTheme.colors.gray400,
-            disabledContainerColor = GaeBizTheme.colors.gray100,
-            text = if (currentPage == pagerState.pageCount - 1) {
-                stringResource(R.string.start_ggaebiz_text)
-            } else {
-                stringResource(R.string.go_to_next_text)
-            },
-            style = GaeBizTheme.typography.bodySemiBold,
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+                },
+                contentColor = GaeBizTheme.colors.gray600,
+                containerColor = Color.Transparent,
+                disabledContentColor = GaeBizTheme.colors.white,
+                disabledContainerColor = GaeBizTheme.colors.white,
+                text = stringResource(R.string.skip_text),
+                style = GaeBizTheme.typography.bodyMedium,
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+            GaeBizButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp),
+                onClick = {
+                    coroutineScope.launch {
+                        if (currentPage < pagerState.pageCount - 1) {
+                            pagerState.slowAnimateScrollToPage(currentPage + 1)
+                        } else {
+                            processIntent(OnboardingIntent.ClickStartGaebizButton)
+                        }
+                    }
+                },
+                contentColor = GaeBizTheme.colors.white,
+                containerColor = GaeBizTheme.colors.primaryOrange,
+                disabledContentColor = GaeBizTheme.colors.gray400,
+                disabledContainerColor = GaeBizTheme.colors.gray100,
+                text = if (currentPage == pagerState.pageCount - 1) {
+                    stringResource(R.string.start_ggaebiz_text)
+                } else {
+                    stringResource(R.string.go_to_next_text)
+                },
+                style = GaeBizTheme.typography.bodySemiBold,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
     }
 }
 
