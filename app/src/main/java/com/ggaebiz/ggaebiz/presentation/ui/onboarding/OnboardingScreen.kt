@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.Onboarding.Companion.ONBOARDING_LIST
@@ -71,9 +72,14 @@ fun OnboardingScreen(
         }
     }
 
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            OnboardingSideEffect.NavigateHome -> navigatorHome()
+        }
+    }
+
     OnboardingContent(
         processIntent = viewModel::processIntent,
-        onClickStartButton = { navigatorHome() },
     )
 }
 
@@ -81,7 +87,6 @@ fun OnboardingScreen(
 fun OnboardingContent(
     modifier: Modifier = Modifier,
     processIntent: (OnboardingIntent) -> Unit,
-    onClickStartButton: () -> Unit,
 ) {
     val pagerState = rememberPagerState(initialPage = 0, pageCount = { ONBOARDING_LIST.size })
     val coroutineScope = rememberCoroutineScope()
@@ -178,7 +183,6 @@ fun OnboardingContent(
                         pagerState.slowAnimateScrollToPage(currentPage + 1)
                     } else {
                         processIntent(OnboardingIntent.ClickStartGaebizButton)
-                        onClickStartButton()
                     }
                 }
             },
@@ -216,7 +220,6 @@ fun GreetingPreview2() {
     GaeBizTheme {
         OnboardingContent(
             processIntent = {},
-            onClickStartButton = {}
         )
     }
 }

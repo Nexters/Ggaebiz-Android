@@ -7,7 +7,9 @@ data class OnboardingState(
     val noneValue: Nothing? = null,
 )
 
-sealed interface OnboardingSideEffect { }
+sealed interface OnboardingSideEffect {
+    data object NavigateHome: OnboardingSideEffect
+}
 
 sealed interface OnboardingIntent {
     data object ClickStartGaebizButton : OnboardingIntent
@@ -25,6 +27,7 @@ class OnboardingViewModel(
 
     private fun clickStartGaebizButton() = launch {
         onboardingRepository.setIsOnboardingExposed(value = true)
+        postSideEffect(OnboardingSideEffect.NavigateHome)
     }
 }
 
