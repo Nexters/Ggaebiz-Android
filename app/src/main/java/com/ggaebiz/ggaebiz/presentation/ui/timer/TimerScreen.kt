@@ -7,10 +7,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
@@ -28,8 +26,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
-import com.ggaebiz.ggaebiz.presentation.designsystem.component.timer.GaeBizTimer
-import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
+import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
@@ -41,7 +38,6 @@ import org.koin.compose.getKoin
 fun TimerScreen(
     viewModel: TimerViewModel = koinViewModel(),
     navigateHome: () -> Unit = {},
-    navigateConfig: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -53,14 +49,18 @@ fun TimerScreen(
         when (effect) {
             is TimerSideEffect.ShowToast -> showToast(context, uiState)
             is TimerSideEffect.StartService -> {
-                timerServiceManager.startTimerService(effect.seconds, effect.audioResPath, effect.vibration, effect.volume)
+                timerServiceManager.startTimerService(
+                    effect.seconds,
+                    effect.audioResPath,
+                    effect.vibration,
+                    effect.volume
+                )
             }
+
             is TimerSideEffect.StopService -> {
                 timerServiceManager.stopTimerService()
                 navigateHome()
             }
-
-            TimerSideEffect.NavigateConfig -> navigateConfig()
         }
     }
 
@@ -76,8 +76,6 @@ fun TimerContent(
     uiState: TimerState,
     processIntent: (TimerIntent) -> Unit,
 ) {
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val imageWidth = screenWidth / 3 * 2
     val composition by rememberLottieComposition(
         LottieCompositionSpec.RawRes(
             CHARACTER_LIST[uiState.selectedCharacterIdx].lottieResId,
@@ -89,37 +87,29 @@ fun TimerContent(
         isPlaying = true,
         restartOnPlay = false,
     )
-
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        GaeBizLogoAppBar(
-            clickRightIcon ={ processIntent(TimerIntent.ClickConfig)}
-        )
-
-        Spacer(modifier = Modifier.height(58.dp))
-        GaeBizMent(
-            text = stringResource(CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId),
-        )
-
-        Spacer(modifier = Modifier.height(30.dp))
-        LottieAnimation(
+        GaeBizLogoAppBar()
+        Spacer(modifier = Modifier.weight(1f))
+        CenterComponent(
+            CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId,
             composition = composition,
             progress = { progress },
-            modifier = Modifier.size(imageWidth),
+            seconds = uiState.remainingSeconds,
+            screenWidth = LocalConfiguration.current.screenWidthDp.dp
         )
-
-        GaeBizTimer(remainingSeconds = uiState.remainingSeconds)
-
         Spacer(modifier = Modifier.weight(1f))
         GaeBizSlideButton(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 58.dp, end = 58.dp, bottom = 96.dp),
+                .width(260.dp)
+                .height(66.dp),
             text = stringResource(R.string.end_button_text),
             onSlideComplete = { processIntent(TimerIntent.StopTimer) },
         )
+        Spacer(modifier = Modifier.weight(1f))
+
     }
 }
 
@@ -145,5 +135,16 @@ fun showToast(context: Context, uiState: TimerState) {
             ),
             LENGTH_SHORT,
         ).show()
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun TimerScreenPreview() {
+    GaeBizTheme {
+        TimerScreen(
+            navigateHome = {}
+        )
     }
 }

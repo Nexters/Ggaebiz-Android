@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +45,8 @@ fun ConfigSliderSection(
     onSliderChange: (Int) -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(vertical = 8.dp)
+        modifier = Modifier.padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
             modifier = Modifier
@@ -59,9 +61,7 @@ fun ConfigSliderSection(
         )
         Spacer(Modifier.width(8.dp))
         Text(
-            modifier = Modifier
-                .padding(4.dp)
-                .weight(1f),
+            modifier = Modifier.weight(1f),
             text = mainText,
             style = GaeBizTheme.typography.bodySemiBold,
             color = GaeBizTheme.colors.gray800,
@@ -75,10 +75,10 @@ fun ConfigSliderSection(
         }
     }
     if (isSlider) {
+        Spacer(Modifier.height(8.dp))
         GaeBizSlider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
                 .clip(
                     RoundedCornerShape(16.dp)
                 )
@@ -109,42 +109,60 @@ fun ConfigBatterySection(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Image(
-            modifier = Modifier.size(32.dp),
+            modifier = Modifier
+                .size(32.dp)
+                .clip(
+                    CircleShape
+                )
+                .background(GaeBizTheme.colors.gray50)
+                .padding(8.dp),
             painter = painterResource(id = R.drawable.icon_battery),
-            contentDescription = "Image"
+            contentDescription = "Icon Image"
         )
         Spacer(Modifier.width(12.dp))
-        Column(
-            modifier = Modifier.weight(1f)
+        Text(
+            modifier = Modifier.weight(1f),
+            text = stringResource(R.string.config_batter_title_text),
+            style = GaeBizTheme.typography.bodySemiBold,
+            color = GaeBizTheme.colors.gray800,
+        )
+        Spacer(Modifier.width(12.dp))
+        Box(
+            modifier = Modifier
+                .height(32.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .clickable { onClickCleatButton() }
+                .background(GaeBizTheme.colors.gray800)
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
         ) {
             Text(
-                text = stringResource(R.string.config_batter_title_text),
-                style = GaeBizTheme.typography.bodySemiBold,
-                color = GaeBizTheme.colors.gray800,
-            )
-            Spacer(Modifier.height(4.dp))
-            Text(
-                text = stringResource(R.string.config_battery_sub_text),
-                style = TextStyle(
-                    fontFamily = PretendardFont,
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 11.sp
-                ),
-                color = GaeBizTheme.colors.gray400,
+                text = stringResource(R.string.config_batter_btn_text),
+                style = GaeBizTheme.typography.label3,
+                color = GaeBizTheme.colors.white
             )
         }
+    }
+    Spacer(Modifier.height(8.dp))
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(
+                RoundedCornerShape(16.dp)
+            )
+            .background(GaeBizTheme.colors.gray50)
+            .padding(horizontal = 8.dp, vertical = 12.dp),
+    ) {
         Text(
-            modifier = Modifier
-                .clip(
-                    RoundedCornerShape(10.dp)
-                )
-                .clickable { onClickCleatButton() }
-                .background(GaeBizTheme.colors.gray50)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            text = stringResource(R.string.config_batter_btn_text),
-            style = GaeBizTheme.typography.label3,
-            color = GaeBizTheme.colors.black,
-            textAlign = TextAlign.Center
+            text = stringResource(R.string.config_battery_sub_text1),
+            style = GaeBizTheme.typography.label4,
+            color = GaeBizTheme.colors.gray700,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            text = stringResource(R.string.config_battery_sub_text2),
+            style = GaeBizTheme.typography.label4,
+            color = GaeBizTheme.colors.gray700,
         )
     }
 }

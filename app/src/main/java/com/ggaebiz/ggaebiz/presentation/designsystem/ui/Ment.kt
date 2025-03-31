@@ -47,7 +47,7 @@ fun GaeBizMent(
         ) {
             Text(
                 text = text,
-                maxLines = 1,
+                maxLines = 2,
                 color = textColor,
                 style = textStyle,
             )

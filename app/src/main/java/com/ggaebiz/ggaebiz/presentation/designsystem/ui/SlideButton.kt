@@ -40,6 +40,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -104,10 +105,13 @@ fun GaeBizSlideButton(
         Text(
             text = text,
             modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = iconSize / 2)
                 .align(Alignment.Center)
                 .alpha(1f - (offsetX / maxDragDistance)),
             color = GaeBizTheme.colors.gray500,
             style = GaeBizTheme.typography.bodySemiBold,
+            textAlign = TextAlign.Center
         )
 
         Box(

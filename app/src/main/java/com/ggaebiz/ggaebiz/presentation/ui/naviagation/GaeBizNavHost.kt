@@ -76,8 +76,7 @@ fun GaeBizNavHost(
         }
         composable<Route.Timer> {
             TimerScreen(
-                navigateHome = { navigator.navigateHome() },
-                navigateConfig = {navigator.navigateConfig()}
+                navigateHome = { navigator.navigateHome() }
             )
         }
         composable<Route.Alarm> {

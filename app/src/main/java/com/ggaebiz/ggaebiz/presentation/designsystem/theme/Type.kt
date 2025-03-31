@@ -23,6 +23,7 @@ data class GaeBizTypography(
     val label1: TextStyle,
     val label2: TextStyle,
     val label3: TextStyle,
+    val label4 : TextStyle,
     val timer1: TextStyle,
     val timer2: TextStyle,
     val timer3: TextStyle,
@@ -42,6 +43,7 @@ val LocalGaeBizTypography = staticCompositionLocalOf {
         label1 = TextStyle.Default,
         label2 = TextStyle.Default,
         label3 = TextStyle.Default,
+        label4 = TextStyle.Default,
         timer1 = TextStyle.Default,
         timer2 = TextStyle.Default,
         timer3 = TextStyle.Default,
@@ -124,6 +126,11 @@ val Typography = GaeBizTypography(
         fontFamily = PretendardFont,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp
+    ),
+    label4 = TextStyle(
+        fontFamily = PretendardFont,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp
     ),
     timer1 = TextStyle(
         fontFamily = ZuumeFont,

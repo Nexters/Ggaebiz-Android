@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -19,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
@@ -33,6 +35,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTimePicker
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.SETTING_MENT_LIST
+import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -80,8 +83,7 @@ fun SettingContent(
             titleRes = R.string.setting_title_text,
             iconOnClick = { onClickBackButton() },
         )
-
-        Spacer(modifier = Modifier.height(21.dp))
+        Spacer(modifier = Modifier.weight(21f))
         Image(
             painter = painterResource(
                 CHARACTER_LIST[uiState.selectedCharacterIdx].selectedImageResId[uiState.level - 1]
@@ -90,12 +92,11 @@ fun SettingContent(
             modifier = Modifier.size(125.dp),
             contentScale = ContentScale.Crop,
         )
-
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizMent(
             text = stringResource(SETTING_MENT_LIST[uiState.level - 1]),
+            hasBelowArrow = false
         )
-
         Spacer(modifier = Modifier.height(24.dp))
         GaeBizLevelSlider(
             selectedLevel = uiState.level,
@@ -103,19 +104,18 @@ fun SettingContent(
                 processIntent(SettingIntent.SelectLevel(selectedLevel))
             },
         )
-
-        Spacer(modifier = Modifier.height(66.dp))
+        Spacer(modifier = Modifier.weight(66f))
         GaeBizTimePicker(
             hourPickerState = hourPickerState,
             minutePickerState = minutePickerState,
         )
-
-        Spacer(modifier = Modifier.weight(1f))
+        Spacer(modifier = Modifier.weight(59f))
         GaeBizButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp),
-            enabled = buttonEnabled,
+                .wrapContentHeight(Alignment.CenterVertically)
+                .padding(horizontal = 20.dp)
+            ,enabled = buttonEnabled,
             onClick = {
                 processIntent(
                     SettingIntent.ClickStartButton(
@@ -132,5 +132,16 @@ fun SettingContent(
             style = GaeBizTheme.typography.bodySemiBold,
         )
         Spacer(modifier = Modifier.height(12.dp))
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingScreenPreview() {
+    GaeBizTheme {
+        SettingScreen(
+            navigateTimer = {},
+            navigatorHome = {}
+        )
     }
 }
