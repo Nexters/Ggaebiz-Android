@@ -107,7 +107,7 @@ fun OnboardingContent(
             Column(
                 modifier = Modifier
                     .wrapContentSize()
-                    .padding(horizontal = 32.dp),
+                    .padding(horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
