@@ -1,8 +1,10 @@
 package com.ggaebiz.ggaebiz.presentation.ui.onboarding
 
 import android.app.Activity
+import android.content.Context
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -24,11 +26,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -44,9 +42,6 @@ import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLi
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.Onboarding.Companion.ONBOARDING_LIST
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -55,26 +50,20 @@ fun OnboardingScreen(
     viewModel: OnboardingViewModel = koinViewModel(),
     navigatorHome: () -> Unit,
 ) {
-    var backPressedOnce by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     BackHandler(enabled = true) {
-        if (backPressedOnce) {
+        if (viewModel.uiState.value.backPressedOnce) {
             (context as? Activity)?.finishAffinity()
         } else {
-            backPressedOnce = true
-            Toast.makeText(context, R.string.back_provider_toast_text, Toast.LENGTH_SHORT).show()
-
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(2000)
-                backPressedOnce = false
-            }
+            viewModel.processIntent(OnboardingIntent.ClickBackPressedButton)
         }
     }
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
             OnboardingSideEffect.NavigateHome -> navigatorHome()
+            OnboardingSideEffect.ToastBackPressed -> showToast(context, R.string.back_provider_toast_text)
         }
     }
 
@@ -212,6 +201,10 @@ suspend fun PagerState.slowAnimateScrollToPage(
             easing = FastOutSlowInEasing,
         ),
     )
+}
+
+private fun showToast(context: Context, @StringRes stringResId: Int) {
+    Toast.makeText(context, stringResId, Toast.LENGTH_SHORT).show()
 }
 
 @Preview(showBackground = true)
