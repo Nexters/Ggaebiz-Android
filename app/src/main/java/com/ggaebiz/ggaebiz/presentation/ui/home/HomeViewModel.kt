@@ -2,6 +2,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -11,9 +12,8 @@ data class HomeState(
     val isGranted: Boolean = false,
     val backPressedOnce: Boolean = false,
     val volumeToastStatus : Boolean = false,
-    val isPlaying: Boolean = false,
-    val isPressed: Boolean = false,
-    val isAnimating: Boolean = false
+    val isNudgeGuideViewed : Boolean = false,
+    val nudgeGuideIdx : Int = 1
 )
 
 sealed interface HomeSideEffect {
@@ -27,22 +27,22 @@ sealed interface HomeSideEffect {
 sealed interface HomeIntent {
     data class SelectCharacter(val selectCharacterIdx: Int) : HomeIntent
     data class UpdatePermission(val isGranted: Boolean) : HomeIntent
+    data object EnterScreen : HomeIntent
     data object ClickSettingButton : HomeIntent
     data object PlayMentAudio : HomeIntent
     data object ClickConfigButton : HomeIntent
     data object PressedBack : HomeIntent
+    data object ClickNudgeSkipButton : HomeIntent
+    data object ClickNudgeConfirmButton : HomeIntent
 }
 
 class HomeViewModel(
     private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
     private val audioManager: AudioManager,
+    private val configRepository: ConfigRepository
 ) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState()) {
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-
-    init {
-        postSideEffect(HomeSideEffect.CheckPermission)
-    }
 
     fun processIntent(intent: HomeIntent) {
         when (intent) {
@@ -71,11 +71,27 @@ class HomeViewModel(
                     }
                 }
             }
+            HomeIntent.ClickNudgeConfirmButton -> {
+                if (uiState.value.nudgeGuideIdx == 1){
+                    updateState { it.copy(nudgeGuideIdx = 2) }
+                }else{
+                    finishHomeNudge()
+                }
+            }
+            HomeIntent.ClickNudgeSkipButton -> {
+                finishHomeNudge()
+            }
+            HomeIntent.EnterScreen -> launch{
+                if (configRepository.getHomeNudgeGuideViewed()){
+                    updateState { it.copy(isNudgeGuideViewed = true) }
+                    postSideEffect(HomeSideEffect.CheckPermission)
+                }
+            }
         }
     }
 
     private fun selectCharacter(selectCharacterIdx: Int) = launch {
-        updateState { it.copy(selectCharacterIdx = selectCharacterIdx, isPlaying = false) }
+        updateState { it.copy(selectCharacterIdx = selectCharacterIdx) }
     }
 
     private fun clickSettingButton() = launch {
@@ -83,4 +99,9 @@ class HomeViewModel(
         postSideEffect(HomeSideEffect.NavigateToSetting)
     }
 
+    private fun finishHomeNudge() = launch{
+        configRepository.setHomeNudgeGuideViewed(true)
+        updateState { it.copy(isNudgeGuideViewed = true) }
+        postSideEffect(HomeSideEffect.CheckPermission)
+    }
 }

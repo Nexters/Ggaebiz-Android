@@ -3,22 +3,16 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,9 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,26 +32,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.media3.common.MediaItem
-import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
@@ -70,11 +52,8 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.toast.GaebizToast
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
-import com.ggaebiz.ggaebiz.presentation.model.Character
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.getKoin
 
@@ -105,6 +84,14 @@ fun HomeScreen(
         true
     }
 
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(HomeIntent.EnterScreen)
+    }
+
+    BackHandler(enabled = true) {
+        viewModel.processIntent(HomeIntent.PressedBack)
+    }
+
     val context = LocalContext.current
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
@@ -112,7 +99,6 @@ fun HomeScreen(
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
-
             HomeSideEffect.NavigateToConfig -> navigateConfig()
             is HomeSideEffect.ShowToast -> {
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
@@ -122,10 +108,6 @@ fun HomeScreen(
                 (context as? Activity)?.finishAffinity()
             }
         }
-    }
-
-    BackHandler(enabled = true) {
-        viewModel.processIntent(HomeIntent.PressedBack)
     }
 
     HomeContent(
@@ -149,24 +131,19 @@ fun HomeContent(
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
     val imageWidth = screenWidth / 3 * 2
     val sideOffset = screenWidth / 6
-
     LaunchedEffect(Unit) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
             processIntent(HomeIntent.SelectCharacter(page))
         }
     }
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             GaeBizLogoRightIconAppBar(clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) })
-            Spacer(modifier = Modifier.height(58.dp))
-            GaeBizMent(
-                text = stringResource(selectedCharacter.initMentResId),
-            )
-
+            Spacer(modifier = Modifier.weight(58f))
+            GaeBizMent(text = stringResource(selectedCharacter.initMentResId),)
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalPager(
                 state = pagerState,
@@ -174,7 +151,6 @@ fun HomeContent(
                 modifier = Modifier.fillMaxWidth(),
             ) { page ->
                 val isActive = page == pagerState.currentPage
-
                 AnimatedCharacterItem(
                     character = CHARACTER_LIST[page],
                     imageWidth = imageWidth,
@@ -183,22 +159,20 @@ fun HomeContent(
                     playMent = {
                         processIntent(HomeIntent.PlayMentAudio)
                     },
+                    enabled = uiState.isNudgeGuideViewed
                 )
             }
-
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = stringResource(selectedCharacter.wholeNameResId),
                 style = GaeBizTheme.typography.titleSemiBold,
             )
-
             Spacer(modifier = Modifier.height(16.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 selectedCharacter.traitsResIdList.forEach { trait ->
                     GaeBizTag(text = stringResource(trait))
                 }
             }
-
             Spacer(modifier = Modifier.height(40.dp))
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 CHARACTER_LIST.indices.forEach { index ->
@@ -218,13 +192,12 @@ fun HomeContent(
                     )
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(85f))
             GaeBizButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = { processIntent(HomeIntent.ClickSettingButton) },
+                onClick = { processIntent(HomeIntent.ClickSettingButton)},
                 contentColor = GaeBizTheme.colors.white,
                 containerColor = GaeBizTheme.colors.gray800,
                 disabledContentColor = GaeBizTheme.colors.gray400,
@@ -234,10 +207,10 @@ fun HomeContent(
                     stringResource(selectedCharacter.nameResId)
                 ),
                 style = GaeBizTheme.typography.bodySemiBold,
+                enabled = uiState.isNudgeGuideViewed
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-
         AnimatedVisibility(
             visible = uiState.volumeToastStatus,
             enter = fadeIn(animationSpec = tween(durationMillis = 300)),
@@ -255,99 +228,19 @@ fun HomeContent(
         }
     }
 
+    if(!uiState.isNudgeGuideViewed){
+        NudgeGuideComponent(
+            imgWidth = imageWidth,
+            guideIdx = uiState.nudgeGuideIdx,
+            clickConfirmButton = {processIntent(HomeIntent.ClickNudgeConfirmButton)},
+            clickSkipButton = {processIntent(HomeIntent.ClickNudgeSkipButton)}
+        )
+    }
+
     DisposableEffect(Unit) {
         onDispose {
             exoPlayer.release()
         }
-    }
-}
-
-@Composable
-fun AnimatedCharacterItem(
-    character: Character,
-    imageWidth: Dp,
-    exoPlayer: ExoPlayer,
-    isActive: Boolean,
-    playMent: () -> Unit,
-) {
-    val context = LocalContext.current
-    var isPlaying by remember { mutableStateOf(false) }
-    var isPressed by remember { mutableStateOf(false) }
-    var isAnimating by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
-
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed || isAnimating) 0.9f else 1f,
-        animationSpec = spring(stiffness = Spring.StiffnessLow), label = ""
-    )
-
-    val soundUri =
-        Uri.parse("android.resource://${context.packageName}/${character.initMentAudioResId}")
-
-    LaunchedEffect(isActive) {
-        if (!isActive) {
-            exoPlayer.pause()
-            isPlaying = false
-        }
-    }
-
-    DisposableEffect(exoPlayer) {
-        val listener = object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                if (state == Player.STATE_ENDED) {
-                    isPlaying = false
-                }
-            }
-        }
-        exoPlayer.addListener(listener)
-        onDispose {
-            exoPlayer.removeListener(listener)
-        }
-    }
-
-    fun handleTap() {
-        if (isPlaying) {
-            exoPlayer.pause()
-            isPlaying = false
-        } else {
-            playMent.invoke()
-            exoPlayer.setMediaItem(MediaItem.fromUri(soundUri))
-            exoPlayer.prepare()
-            exoPlayer.seekTo(0)
-            exoPlayer.play()
-            isPlaying = true
-        }
-    }
-
-    Box(
-        modifier = Modifier
-            .wrapContentSize()
-            .graphicsLayer(scaleX = scale, scaleY = scale)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        isPressed = true
-                        tryAwaitRelease()
-                        isPressed = false
-                    },
-                    onTap = {
-                        scope.launch {
-                            isAnimating = true
-                            delay(250)
-                            isAnimating = false
-                        }
-                        handleTap()
-                    },
-                )
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        Image(
-            painter = painterResource(id = character.imageResId[0]),
-            contentDescription = null,
-            modifier = Modifier.size(imageWidth),
-            contentScale = ContentScale.Crop,
-        )
     }
 }
 
