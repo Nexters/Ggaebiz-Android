@@ -20,11 +20,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -34,33 +30,46 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.FullScreen
-import kotlinx.coroutines.delay
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun SplashScreen(
     navigateHome: () -> Unit,
+    navigateOnboarding: () -> Unit,
+    viewModel: SplashViewModel = koinViewModel(),
 ) {
-    val initDuration = 1000
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
+        when (effect) {
+            is SplashSideEffect.NavigateHome -> navigateHome()
+            is SplashSideEffect.NavigateOnboarding -> navigateOnboarding()
+        }
+    }
+
+    SplashContent(
+        uiState = uiState,
+    )
+}
+
+@Composable
+fun SplashContent(
+    modifier: Modifier = Modifier,
+    uiState: SplashState,
+) {
     val animationDuration = 800
-    val delayDuration = 800
-    var isAnimating by remember { mutableStateOf(false) }
 
     BackHandler(enabled = true) { }
-    
+
     val animatedHeight by animateDpAsState(
-        targetValue = if (isAnimating) 26.dp else 0.dp,
+        targetValue = if (uiState.isAnimating) 26.dp else 0.dp,
         animationSpec = tween(durationMillis = animationDuration),
         label = "SpacerHeightAnimation"
     )
-
-    LaunchedEffect(Unit) {
-        delay(initDuration.toLong())
-        isAnimating = true
-        delay(animationDuration + delayDuration.toLong())
-        navigateHome()
-    }
 
     FullScreen(backGroundGradient = GaeBizTheme.colors.gradientOrange) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -73,7 +82,7 @@ fun SplashScreen(
                         .offset(y = 58.dp),
                 ) {
                     androidx.compose.animation.AnimatedVisibility(
-                        visible = !isAnimating,
+                        visible = !uiState.isAnimating,
                         exit = fadeOut(animationSpec = tween(animationDuration)),
                     ) {
                         Column(
@@ -111,7 +120,7 @@ fun SplashScreen(
                     }
 
                     androidx.compose.animation.AnimatedVisibility(
-                        visible = isAnimating,
+                        visible = uiState.isAnimating,
                         enter = fadeIn(animationSpec = tween(animationDuration)),
                     ) {
                         Column(modifier = Modifier.wrapContentSize()) {
@@ -154,3 +163,4 @@ fun SplashScreen(
         }
     }
 }
+

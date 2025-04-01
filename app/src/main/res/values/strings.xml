@@ -7,6 +7,14 @@
     <string name="splash_subtitle_text1">게으름뱅이들을 위한 타이머, </string>
     <string name="splash_subtitle_text2">깨비즈</string>
 
+    <!-- 온보딩 화면 -->
+    <string name="go_to_next_text">다음으로</string>
+    <string name="skip_text">건너뛰기</string>
+    <string name="start_ggaebiz_text">깨비즈 시작하기</string>
+    <string name="onboarding_text1">옛날 옛적에\n시간 수호 도깨비, 깨비즈들이\n숨어 살고 있었어요</string>
+    <string name="onboarding_text2">시간이 지나며,\n도깨비들은 사람들의\n관심에서 멀어져 잊어졌죠</string>
+    <string name="onboarding_text3">그래서 휴대폰 속으로 들어와\n사람들을 깨우기 시작했어요!\n깨비즈들의 능력을 확인해볼까요?</string>
+
     <string name="setting_button_text">%s랑 타이머 설정하기</string>
     <string name="start_button_text">타이머 시작하기</string>
     <string name="end_button_text">타이머 끝내기</string>

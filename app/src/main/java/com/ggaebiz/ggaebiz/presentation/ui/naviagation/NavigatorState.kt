@@ -29,6 +29,10 @@ class NavigatorState(
         navController.navigate(Route.Home)
     }
 
+    fun navigateOnboarding() {
+        navController.navigate(Route.Onboarding)
+    }
+
     fun navigateSetting() {
         navController.navigate(Route.Setting)
     }
