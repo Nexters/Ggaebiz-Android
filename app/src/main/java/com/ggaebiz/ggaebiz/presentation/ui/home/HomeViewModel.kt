@@ -1,27 +1,36 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
+import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
+import kotlinx.coroutines.delay
 
 data class HomeState(
     val selectCharacterIdx: Int = 0,
     val isGranted: Boolean = false,
+    val backPressedOnce: Boolean = false,
+    val volumeToastStatus : Boolean = false,
+    val isPlaying: Boolean = false,
+    val isPressed: Boolean = false,
+    val isAnimating: Boolean = false
 )
 
 sealed interface HomeSideEffect {
-    data object NoticeVolumeOff : HomeSideEffect
     data object NavigateToSetting : HomeSideEffect
     data object NavigateToConfig : HomeSideEffect
     data object CheckPermission : HomeSideEffect
+    data class ShowToast(val message : Int) : HomeSideEffect
+    data object FinishApp : HomeSideEffect
 }
 
 sealed interface HomeIntent {
     data class SelectCharacter(val selectCharacterIdx: Int) : HomeIntent
-    data object ClickSettingButton : HomeIntent
     data class UpdatePermission(val isGranted: Boolean) : HomeIntent
+    data object ClickSettingButton : HomeIntent
     data object PlayMentAudio : HomeIntent
     data object ClickConfigButton : HomeIntent
+    data object PressedBack : HomeIntent
 }
 
 class HomeViewModel(
@@ -40,13 +49,33 @@ class HomeViewModel(
             is HomeIntent.ClickSettingButton -> clickSettingButton()
             is HomeIntent.SelectCharacter -> selectCharacter(intent.selectCharacterIdx)
             is HomeIntent.UpdatePermission -> updateState { it.copy(isGranted = intent.isGranted) }
+            is HomeIntent.PlayMentAudio -> {
+                if (deviceVolume == 0) {
+                    updateState { it.copy(volumeToastStatus = true) }
+                    launch {
+                        delay(2000)
+                        updateState { it.copy(volumeToastStatus = false) }
+                    }
+                }
+            }
             HomeIntent.ClickConfigButton -> postSideEffect(HomeSideEffect.NavigateToConfig)
-            is HomeIntent.PlayMentAudio -> checkVolume()
+            HomeIntent.PressedBack ->{
+                if (uiState.value.backPressedOnce){
+                    postSideEffect(HomeSideEffect.FinishApp)
+                }else{
+                    updateState { it.copy(backPressedOnce = true) }
+                    postSideEffect(HomeSideEffect.ShowToast(R.string.back_provider_toast_text))
+                    launch {
+                        delay(2000)
+                        updateState { it.copy(backPressedOnce = false) }
+                    }
+                }
+            }
         }
     }
 
     private fun selectCharacter(selectCharacterIdx: Int) = launch {
-        updateState { it.copy(selectCharacterIdx = selectCharacterIdx) }
+        updateState { it.copy(selectCharacterIdx = selectCharacterIdx, isPlaying = false) }
     }
 
     private fun clickSettingButton() = launch {
@@ -54,9 +83,4 @@ class HomeViewModel(
         postSideEffect(HomeSideEffect.NavigateToSetting)
     }
 
-    private fun checkVolume() {
-        if (deviceVolume == 0) {
-            postSideEffect(HomeSideEffect.NoticeVolumeOff)
-        }
-    }
 }

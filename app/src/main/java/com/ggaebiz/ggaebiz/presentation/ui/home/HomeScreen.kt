@@ -62,6 +62,7 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoRightIconAppBar
@@ -72,8 +73,6 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTag
 import com.ggaebiz.ggaebiz.presentation.model.Character
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -84,25 +83,9 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     navigateSetting: () -> Unit,
     navigateAlarm: () -> Unit,
-    navigateConfig: () -> Unit
+    navigateConfig: () -> Unit,
 ) {
-    var backPressedOnce by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-
-    BackHandler(enabled = true) {
-        if (backPressedOnce) {
-            (context as? Activity)?.finishAffinity()
-        } else {
-            backPressedOnce = true
-            Toast.makeText(context, R.string.back_provider_toast_text, Toast.LENGTH_SHORT).show()
-
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(2000)
-                backPressedOnce = false
-            }
-        }
-    }
-
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
     if (timerServiceManager.isTimerServiceRunning(LocalContext.current)) {
         navigateAlarm()
@@ -122,21 +105,31 @@ fun HomeScreen(
         true
     }
 
-    var showToast by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
-            is HomeSideEffect.NoticeVolumeOff -> showToast = true
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
+
             HomeSideEffect.NavigateToConfig -> navigateConfig()
+            is HomeSideEffect.ShowToast -> {
+                Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+            }
+
+            HomeSideEffect.FinishApp -> {
+                (context as? Activity)?.finishAffinity()
+            }
         }
     }
 
+    BackHandler(enabled = true) {
+        viewModel.processIntent(HomeIntent.PressedBack)
+    }
+
     HomeContent(
-        showToast = showToast,
-        onDismissToast = { showToast = false },
+        uiState = uiState,
         processIntent = viewModel::processIntent,
     )
 }
@@ -144,8 +137,7 @@ fun HomeScreen(
 @Composable
 fun HomeContent(
     modifier: Modifier = Modifier,
-    showToast: Boolean,
-    onDismissToast: () -> Unit,
+    uiState: HomeState,
     processIntent: (HomeIntent) -> Unit,
 ) {
     val context = LocalContext.current
@@ -169,7 +161,7 @@ fun HomeContent(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            GaeBizLogoRightIconAppBar (clickRightIcon = {processIntent(HomeIntent.ClickConfigButton)})
+            GaeBizLogoRightIconAppBar(clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) })
             Spacer(modifier = Modifier.height(58.dp))
             GaeBizMent(
                 text = stringResource(selectedCharacter.initMentResId),
@@ -246,13 +238,8 @@ fun HomeContent(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        LaunchedEffect(showToast) {
-            delay(2000)
-            onDismissToast()
-        }
-
         AnimatedVisibility(
-            visible = showToast,
+            visible = uiState.volumeToastStatus,
             enter = fadeIn(animationSpec = tween(durationMillis = 300)),
             exit = fadeOut(animationSpec = tween(durationMillis = 300)),
             modifier = modifier
@@ -294,7 +281,8 @@ fun AnimatedCharacterItem(
         animationSpec = spring(stiffness = Spring.StiffnessLow), label = ""
     )
 
-    val soundUri = Uri.parse("android.resource://${context.packageName}/${character.initMentAudioResId}")
+    val soundUri =
+        Uri.parse("android.resource://${context.packageName}/${character.initMentAudioResId}")
 
     LaunchedEffect(isActive) {
         if (!isActive) {
@@ -302,7 +290,7 @@ fun AnimatedCharacterItem(
             isPlaying = false
         }
     }
-    
+
     DisposableEffect(exoPlayer) {
         val listener = object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
@@ -312,7 +300,6 @@ fun AnimatedCharacterItem(
             }
         }
         exoPlayer.addListener(listener)
-
         onDispose {
             exoPlayer.removeListener(listener)
         }
