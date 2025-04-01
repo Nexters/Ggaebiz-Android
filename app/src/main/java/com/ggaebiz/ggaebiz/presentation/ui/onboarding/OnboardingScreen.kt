@@ -27,6 +27,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.common.extension.collectAsStateWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLifecycle
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
@@ -52,6 +54,7 @@ fun OnboardingScreen(
     navigatorHome: () -> Unit,
 ) {
     val context = LocalContext.current
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     BackHandler(enabled = true) {
         if (viewModel.uiState.value.backPressedOnce) {
@@ -70,6 +73,7 @@ fun OnboardingScreen(
 
     OnboardingContent(
         processIntent = viewModel::processIntent,
+        uiState = uiState,
     )
 }
 
@@ -77,15 +81,15 @@ fun OnboardingScreen(
 fun OnboardingContent(
     modifier: Modifier = Modifier,
     processIntent: (OnboardingIntent) -> Unit,
+    uiState: OnboardingState,
 ) {
-    val pagerState = rememberPagerState(initialPage = 0, pageCount = { ONBOARDING_LIST.size })
+    val pagerState = rememberPagerState(initialPage = uiState.currentPage, pageCount = { ONBOARDING_LIST.size })
     val coroutineScope = rememberCoroutineScope()
 
-    val currentPage = pagerState.currentPage
-
-    BackHandler(enabled = currentPage > 0) {
+    BackHandler(enabled = uiState.currentPage > 0) {
         coroutineScope.launch {
-            pagerState.animateScrollToPage(currentPage - 1)
+            processIntent(OnboardingIntent.ClickBackButton)
+            pagerState.animateScrollToPage(uiState.currentPage - 1)
         }
     }
     BoxWithConstraints(
@@ -136,9 +140,9 @@ fun OnboardingContent(
                         modifier = Modifier
                             .height(6.dp)
                             .padding(horizontal = 4.dp)
-                            .width(if (index == pagerState.currentPage) 10.dp else 6.dp)
+                            .width(if (index == uiState.currentPage) 10.dp else 6.dp)
                             .background(
-                                if (index == pagerState.currentPage) {
+                                if (index == uiState.currentPage) {
                                     GaeBizTheme.colors.primaryOrange
                                 } else {
                                     GaeBizTheme.colors.gray200
@@ -154,9 +158,10 @@ fun OnboardingContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp)
-                    .alpha(if (currentPage < pagerState.pageCount - 1) 1f else 0f),
+                    .alpha(if (uiState.currentPage < pagerState.pageCount - 1) 1f else 0f),
                 onClick = {
                     coroutineScope.launch {
+                        processIntent(OnboardingIntent.ClickSkipButton)
                         pagerState.slowAnimateScrollToPage(pagerState.pageCount - 1)
                     }
                 },
@@ -175,8 +180,9 @@ fun OnboardingContent(
                     .padding(start = 20.dp, end = 20.dp),
                 onClick = {
                     coroutineScope.launch {
-                        if (currentPage < pagerState.pageCount - 1) {
-                            pagerState.slowAnimateScrollToPage(currentPage + 1)
+                        if (uiState.currentPage < pagerState.pageCount - 1) {
+                            processIntent(OnboardingIntent.ClickNextButton)
+                            pagerState.slowAnimateScrollToPage(uiState.currentPage + 1)
                         } else {
                             processIntent(OnboardingIntent.ClickStartGaebizButton)
                         }
@@ -186,7 +192,7 @@ fun OnboardingContent(
                 containerColor = GaeBizTheme.colors.primaryOrange,
                 disabledContentColor = GaeBizTheme.colors.gray400,
                 disabledContainerColor = GaeBizTheme.colors.gray100,
-                text = if (currentPage == pagerState.pageCount - 1) {
+                text = if (uiState.currentPage == pagerState.pageCount - 1) {
                     stringResource(R.string.start_ggaebiz_text)
                 } else {
                     stringResource(R.string.go_to_next_text)
@@ -219,8 +225,8 @@ private fun showToast(context: Context, @StringRes stringResId: Int) {
 @Composable
 fun GreetingPreview2() {
     GaeBizTheme {
-        OnboardingContent(
-            processIntent = {},
+        OnboardingScreen(
+            navigatorHome = {}
         )
     }
 }
