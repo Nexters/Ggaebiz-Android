@@ -57,7 +57,7 @@ val appModule = module {
     factory { SetSnoozeCountUseCase(get()) }
     factory { GetSnoozeCountUseCase(get()) }
 
-    viewModel { HomeViewModel(get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get()) }
     viewModel { SettingViewModel(get(), get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
