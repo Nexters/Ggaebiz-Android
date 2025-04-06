@@ -13,9 +13,9 @@ class ConfigDataStore(private val dataStore: DataStore<Preferences>) {
     private val isVibrationStatus = booleanPreferencesKey("is_vibration_status")
     private val vibrationValue = intPreferencesKey("vibration_value")
     private val volumeValue = intPreferencesKey("volume_value")
-    private val isHomeNudgeGuideViewed = booleanPreferencesKey("home_nudge_viewed")
-    private val isSettingNudgeGuideViewed = booleanPreferencesKey("setting_nudge_viewed")
-    private val isBatteryPopupViewed = booleanPreferencesKey("battery_popup_viewed")
+    private val isHomeNudgeGuideViewed = booleanPreferencesKey("is_home_nudge_viewed")
+    private val isSettingNudgeGuideViewed = booleanPreferencesKey("is_setting_nudge_viewed")
+    private val isBatteryPopupViewed = booleanPreferencesKey("is_battery_popup_viewed")
 
     companion object {
         const val DEFAULT_IS_VIBRATION = true
@@ -70,7 +70,7 @@ class ConfigDataStore(private val dataStore: DataStore<Preferences>) {
 
     fun getHomeNudgeGuideViewed(): Flow<Boolean> {
         return dataStore.data.map { preferences ->
-            preferences[isHomeNudgeGuideViewed] ?: false
+            preferences[isHomeNudgeGuideViewed] ?: DEFAULT_IS_HOME_NUDGE_GUIDE_VIEWED
         }
     }
 

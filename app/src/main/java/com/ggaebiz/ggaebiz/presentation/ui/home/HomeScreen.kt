@@ -148,7 +148,7 @@ fun HomeContent(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            GaeBizLogoRightIconAppBar(clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) })
+            GaeBizLogoRightIconAppBar(clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) }, iconEnable = uiState.homeClickEnable)
             Spacer(modifier = Modifier.weight(58f))
             GaeBizMent(text = stringResource(selectedCharacter.initMentResId),)
             Spacer(modifier = Modifier.height(30.dp))
@@ -156,6 +156,7 @@ fun HomeContent(
                 state = pagerState,
                 contentPadding = PaddingValues(horizontal = sideOffset),
                 modifier = Modifier.fillMaxWidth(),
+                userScrollEnabled = uiState.homeClickEnable
             ) { page ->
                 val isActive = page == pagerState.currentPage
                 AnimatedCharacterItem(
@@ -166,7 +167,7 @@ fun HomeContent(
                     playMent = {
                         processIntent(HomeIntent.PlayMentAudio)
                     },
-                    enabled = uiState.isNudgeGuideViewed
+                    enabled = uiState.homeClickEnable
                 )
             }
             Spacer(modifier = Modifier.height(4.dp))
@@ -207,14 +208,14 @@ fun HomeContent(
                 onClick = { processIntent(HomeIntent.ClickSettingButton)},
                 contentColor = GaeBizTheme.colors.white,
                 containerColor = GaeBizTheme.colors.gray800,
-                disabledContentColor = GaeBizTheme.colors.gray400,
-                disabledContainerColor = GaeBizTheme.colors.gray100,
+                disabledContentColor = GaeBizTheme.colors.white,
+                disabledContainerColor = GaeBizTheme.colors.gray800,
                 text = stringResource(
                     R.string.setting_button_text,
                     stringResource(selectedCharacter.nameResId)
                 ),
                 style = GaeBizTheme.typography.bodySemiBold,
-                enabled = uiState.isNudgeGuideViewed
+                enabled = uiState.homeClickEnable
             )
             Spacer(modifier = Modifier.height(12.dp))
         }

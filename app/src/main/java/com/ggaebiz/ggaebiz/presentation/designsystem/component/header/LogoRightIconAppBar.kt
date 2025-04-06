@@ -25,6 +25,7 @@ fun GaeBizLogoRightIconAppBar(
     modifier: Modifier = Modifier,
     logoDrawable: Int = R.drawable.ggaebiz_kor,
     clickRightIcon: () -> Unit,
+    iconEnable : Boolean = true
 ) {
     Box(
         modifier = modifier
@@ -44,7 +45,9 @@ fun GaeBizLogoRightIconAppBar(
                 .clip(
                     CircleShape
                 )
-                .clickable {
+                .clickable(
+                    enabled = iconEnable
+                ) {
                     clickRightIcon()
                 }
                 .background(GaeBizTheme.colors.gray50)

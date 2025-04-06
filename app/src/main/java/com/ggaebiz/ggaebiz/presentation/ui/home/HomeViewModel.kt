@@ -16,7 +16,9 @@ data class HomeState(
     val isNudgeGuideViewed : Boolean = false,
     val isBatteryPopupShow : Boolean = false,
     val nudgeGuideIdx : Int = 1
-)
+){
+    val homeClickEnable = isNudgeGuideViewed && !isBatteryPopupShow
+}
 
 sealed interface HomeSideEffect {
     data object NavigateToSetting : HomeSideEffect
@@ -71,7 +73,7 @@ class HomeViewModel(
                 }
             }
             HomeIntent.ClickConfigButton -> {
-                postSideEffect(HomeSideEffect.NavigateToConfig)
+               postSideEffect(HomeSideEffect.NavigateToConfig)
             }
             HomeIntent.PressedBack ->{
                 if (uiState.value.backPressedOnce){

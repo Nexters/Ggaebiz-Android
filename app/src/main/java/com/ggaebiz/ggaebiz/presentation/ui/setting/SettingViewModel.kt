@@ -46,7 +46,7 @@ class SettingViewModel(
                 if (configRepository.getSettingNudgeGuideViewed()) {
                     updateState { it.copy(isNudgeGuideViewed = true) }
                 }else{
-                    delay(2000)
+                    delay(200)
                     updateState { it.copy(isNudgeGuideViewed = false) }
                 }
             }
