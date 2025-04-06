@@ -15,7 +15,7 @@ class ConfigDataStore(private val dataStore: DataStore<Preferences>) {
     private val volumeValue = intPreferencesKey("volume_value")
     private val isHomeNudgeGuideViewed = booleanPreferencesKey("home_nudge_viewed")
     private val isSettingNudgeGuideViewed = booleanPreferencesKey("setting_nudge_viewed")
-    private val isBatteryPopupViewed = booleanPreferencesKey("batter_popup_viewed")
+    private val isBatteryPopupViewed = booleanPreferencesKey("battery_popup_viewed")
 
     companion object {
         const val DEFAULT_IS_VIBRATION = true
