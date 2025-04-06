@@ -11,6 +11,7 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -35,6 +37,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.media3.common.MediaItem
@@ -51,11 +54,11 @@ data class Quadruple<A, B, C, D>(val first: A, val second: B, val third: C, val 
 
 @Composable
 fun NudgeGuideComponent(
-    imgWidth : Dp,
-    guideIdx : Int,
-    clickSkipButton : () -> Unit,
-    clickConfirmButton : () -> Unit
-){
+    imgWidth: Dp,
+    guideIdx: Int,
+    clickSkipButton: () -> Unit,
+    clickConfirmButton: () -> Unit,
+) {
     val (imgRes, idxText, bottomBlank, btnText) = when (guideIdx) {
         1 -> Quadruple(R.drawable.home_nudge1, "1/2", 32f, "다음")
         else -> Quadruple(R.drawable.home_nudge2, "2/2", 100f, "확인")
@@ -71,7 +74,7 @@ fun NudgeGuideComponent(
                 .fillMaxWidth()
                 .height(64.dp),
             contentAlignment = Alignment.Center
-        ){
+        ) {
             Text(
                 text = idxText,
                 color = GaeBizTheme.colors.white,
@@ -121,7 +124,6 @@ fun NudgeGuideComponent(
 }
 
 
-
 @Composable
 fun AnimatedCharacterItem(
     character: Character,
@@ -129,7 +131,7 @@ fun AnimatedCharacterItem(
     exoPlayer: ExoPlayer,
     isActive: Boolean,
     playMent: () -> Unit,
-    enabled : Boolean
+    enabled: Boolean,
 ) {
     val context = LocalContext.current
     var isPlaying by remember { mutableStateOf(false) }
@@ -211,5 +213,80 @@ fun AnimatedCharacterItem(
             modifier = Modifier.size(imageWidth),
             contentScale = ContentScale.Crop,
         )
+    }
+}
+
+
+@Composable
+fun BatteryPopupComponent(
+    clickNextButton: () -> Unit,
+    clickMoveSetting: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = (27.5).dp)
+                .background(
+                    color = GaeBizTheme.colors.white,
+                    shape = RoundedCornerShape(20.dp)
+                )
+                .padding(20.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.home_batter_popup_title),
+                color = GaeBizTheme.colors.gray900,
+                style = GaeBizTheme.typography.titleSemiBold
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = stringResource(R.string.home_battery_popup_content),
+                color = GaeBizTheme.colors.gray600,
+                style = GaeBizTheme.typography.bodyMedium
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            color = GaeBizTheme.colors.gray50,
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .clickable { clickNextButton() }
+                        .padding(horizontal = 4.dp, vertical = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.home_battery_next_button),
+                        color = GaeBizTheme.colors.black,
+                        style = GaeBizTheme.typography.bodySemiBold
+                    )
+                }
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(
+                            color = GaeBizTheme.colors.gray800,
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                        .clickable { clickMoveSetting() }
+                        .padding(horizontal = 4.dp, vertical = 12.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.home_battery_move_button),
+                        color = GaeBizTheme.colors.white,
+                        style = GaeBizTheme.typography.bodySemiBold
+                    )
+                }
+            }
+        }
     }
 }
