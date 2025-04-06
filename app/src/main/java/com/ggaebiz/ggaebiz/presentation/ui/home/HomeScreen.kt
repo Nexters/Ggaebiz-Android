@@ -74,7 +74,10 @@ fun HomeScreen(
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted -> viewModel.processIntent(HomeIntent.UpdatePermission(isGranted)) }
+        onResult = { isGranted ->
+            viewModel.processIntent(HomeIntent.UpdatePermission(isGranted))
+            viewModel.processIntent(HomeIntent.CheckBatteryPopUp)
+        }
     )
 
     val checkPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -99,8 +102,11 @@ fun HomeScreen(
         when (effect) {
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
             is HomeSideEffect.CheckPermission -> {
-                if (!checkPermission) { requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
-                viewModel.processIntent(HomeIntent.CheckBatteryPopUp)
+                if (!checkPermission) {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }else{
+                    viewModel.processIntent(HomeIntent.CheckBatteryPopUp)
+                }
             }
             HomeSideEffect.NavigateToConfig -> navigateConfig()
             is HomeSideEffect.ShowToast -> {
