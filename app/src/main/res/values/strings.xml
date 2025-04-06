@@ -148,7 +148,8 @@
     <string name="config_batter_btn_text">해제</string>
     <string name="config_vibration_title">진동 설정</string>
     <string name="config_volume_title">소리 설정</string>
-
+    <string name="timer_setting_nudge_guide">선택한 레벨에 따라 깨비즈의 \n알림 멘트 강도가 달라져요!</string>
+    <string name="timer_setting_nudge_guide_close">닫기</string>
 
 
 </resources>
