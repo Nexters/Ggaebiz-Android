@@ -2,8 +2,10 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -97,15 +99,20 @@ fun HomeScreen(
         when (effect) {
             is HomeSideEffect.NavigateToSetting -> navigateSetting()
             is HomeSideEffect.CheckPermission -> {
-                if (!checkPermission) requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                if (!checkPermission) { requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS) }
+                viewModel.processIntent(HomeIntent.CheckBatteryPopUp)
             }
             HomeSideEffect.NavigateToConfig -> navigateConfig()
             is HomeSideEffect.ShowToast -> {
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
             }
-
             HomeSideEffect.FinishApp -> {
                 (context as? Activity)?.finishAffinity()
+            }
+            HomeSideEffect.MoveToDeviceSetting -> {
+                val intent = Intent()
+                intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
+                context.startActivity(intent)
             }
         }
     }
@@ -234,6 +241,13 @@ fun HomeContent(
             guideIdx = uiState.nudgeGuideIdx,
             clickConfirmButton = {processIntent(HomeIntent.ClickNudgeConfirmButton)},
             clickSkipButton = {processIntent(HomeIntent.ClickNudgeSkipButton)}
+        )
+    }
+
+    if (uiState.isBatteryPopupShow){
+        BatteryPopupComponent(
+            clickMoveSetting = {processIntent(HomeIntent.ClickBatteryMoveButton)},
+            clickNextButton = {processIntent(HomeIntent.ClickBatteryNextButton)}
         )
     }
 

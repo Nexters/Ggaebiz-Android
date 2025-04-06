@@ -5,6 +5,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigSideEffect
 import kotlinx.coroutines.delay
 
 data class HomeState(
@@ -13,6 +14,7 @@ data class HomeState(
     val backPressedOnce: Boolean = false,
     val volumeToastStatus : Boolean = false,
     val isNudgeGuideViewed : Boolean = false,
+    val isBatteryPopupShow : Boolean = false,
     val nudgeGuideIdx : Int = 1
 )
 
@@ -22,6 +24,7 @@ sealed interface HomeSideEffect {
     data object CheckPermission : HomeSideEffect
     data class ShowToast(val message : Int) : HomeSideEffect
     data object FinishApp : HomeSideEffect
+    data object MoveToDeviceSetting : HomeSideEffect
 }
 
 sealed interface HomeIntent {
@@ -34,6 +37,9 @@ sealed interface HomeIntent {
     data object PressedBack : HomeIntent
     data object ClickNudgeSkipButton : HomeIntent
     data object ClickNudgeConfirmButton : HomeIntent
+    data object CheckBatteryPopUp : HomeIntent
+    data object ClickBatteryNextButton : HomeIntent
+    data object ClickBatteryMoveButton : HomeIntent
 }
 
 class HomeViewModel(
@@ -46,9 +52,15 @@ class HomeViewModel(
 
     fun processIntent(intent: HomeIntent) {
         when (intent) {
-            is HomeIntent.ClickSettingButton -> clickSettingButton()
-            is HomeIntent.SelectCharacter -> selectCharacter(intent.selectCharacterIdx)
-            is HomeIntent.UpdatePermission -> updateState { it.copy(isGranted = intent.isGranted) }
+            is HomeIntent.ClickSettingButton -> {
+                clickSettingButton()
+            }
+            is HomeIntent.SelectCharacter -> {
+                selectCharacter(intent.selectCharacterIdx)
+            }
+            is HomeIntent.UpdatePermission -> {
+                updateState { it.copy(isGranted = intent.isGranted) }
+            }
             is HomeIntent.PlayMentAudio -> {
                 if (deviceVolume == 0) {
                     updateState { it.copy(volumeToastStatus = true) }
@@ -58,7 +70,9 @@ class HomeViewModel(
                     }
                 }
             }
-            HomeIntent.ClickConfigButton -> postSideEffect(HomeSideEffect.NavigateToConfig)
+            HomeIntent.ClickConfigButton -> {
+                postSideEffect(HomeSideEffect.NavigateToConfig)
+            }
             HomeIntent.PressedBack ->{
                 if (uiState.value.backPressedOnce){
                     postSideEffect(HomeSideEffect.FinishApp)
@@ -81,10 +95,26 @@ class HomeViewModel(
             HomeIntent.ClickNudgeSkipButton -> {
                 finishHomeNudge()
             }
-            HomeIntent.EnterScreen -> launch{
-                if (configRepository.getHomeNudgeGuideViewed()){
-                    updateState { it.copy(isNudgeGuideViewed = true) }
-                    postSideEffect(HomeSideEffect.CheckPermission)
+            HomeIntent.EnterScreen -> {
+                launch{
+                    if (configRepository.getHomeNudgeGuideViewed()){
+                        updateState { it.copy(isNudgeGuideViewed = true) }
+                        postSideEffect(HomeSideEffect.CheckPermission)
+                    }
+                }
+            }
+            HomeIntent.ClickBatteryMoveButton ->launch {
+                updateState { it.copy(isBatteryPopupShow = false) }
+                configRepository.setBatteryPopupViewed(true)
+                postSideEffect(HomeSideEffect.MoveToDeviceSetting)
+            }
+            HomeIntent.ClickBatteryNextButton -> launch{
+                updateState { it.copy(isBatteryPopupShow = false) }
+                configRepository.setBatteryPopupViewed(true)
+            }
+            HomeIntent.CheckBatteryPopUp -> launch{
+                if (!configRepository.getBatteryPopupViewed()){
+                    updateState { it.copy(isBatteryPopupShow = true) }
                 }
             }
         }
