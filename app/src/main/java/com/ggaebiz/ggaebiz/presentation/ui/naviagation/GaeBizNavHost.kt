@@ -11,6 +11,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
+import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashScreen
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerScreen
@@ -58,7 +59,14 @@ fun GaeBizNavHost(
         modifier = modifier,
     ) {
         composable<Route.Splash> {
-            SplashScreen(navigateHome = { navigator.navigateHome() }
+            SplashScreen(
+                navigateHome = { navigator.navigateHome() },
+                navigateOnboarding = { navigator.navigateOnboarding() },
+            )
+        }
+        composable<Route.Onboarding> {
+            OnboardingScreen(
+                navigatorHome = { navigator.navigateToMainClearingBackStack() },
             )
         }
         composable<Route.Home> {
