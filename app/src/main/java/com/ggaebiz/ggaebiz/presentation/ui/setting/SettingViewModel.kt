@@ -1,6 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.setting
 
-import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
+import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
@@ -26,7 +26,7 @@ sealed interface SettingIntent {
 class SettingViewModel(
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
     private val setTimerSettingUseCase: SetTimerSettingUseCase,
-    private val configRepository: ConfigRepository,
+    private val onboardingRepository: OnboardingRepository
 ) : BaseViewModel<SettingState, SettingIntent, SettingSideEffect>(SettingState()) {
 
     init {
@@ -43,7 +43,7 @@ class SettingViewModel(
             is SettingIntent.SelectLevel -> selectLevel(level = intent.level)
             is SettingIntent.ClickStartButton -> startTimer(intent.hour, intent.minute)
             SettingIntent.EnterScreen -> launch{
-                if (configRepository.getSettingNudgeGuideViewed()) {
+                if (onboardingRepository.getSettingNudgeGuideViewed()) {
                     updateState { it.copy(isNudgeGuideViewed = true) }
                 }else{
                     delay(200)
@@ -52,7 +52,7 @@ class SettingViewModel(
             }
             SettingIntent.CloseNudgePopUp -> launch {
                 updateState { it.copy(isNudgeGuideViewed = true) }
-                configRepository.setSettingNudgeGuideViewed(true)
+                onboardingRepository.setSettingNudgeGuideViewed(true)
             }
         }
     }

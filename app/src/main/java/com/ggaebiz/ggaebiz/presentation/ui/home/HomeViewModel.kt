@@ -3,9 +3,9 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 import android.media.AudioManager
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
+import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
-import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigSideEffect
 import kotlinx.coroutines.delay
 
 data class HomeState(
@@ -47,7 +47,7 @@ sealed interface HomeIntent {
 class HomeViewModel(
     private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
     private val audioManager: AudioManager,
-    private val configRepository: ConfigRepository
+    private val onboardingRepository: OnboardingRepository
 ) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState()) {
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
@@ -99,7 +99,7 @@ class HomeViewModel(
             }
             HomeIntent.EnterScreen -> {
                 launch{
-                    if (configRepository.getHomeNudgeGuideViewed()){
+                    if (onboardingRepository.getHomeNudgeGuideViewed()){
                         updateState { it.copy(isNudgeGuideViewed = true) }
                         postSideEffect(HomeSideEffect.CheckPermission)
                     }
@@ -107,15 +107,15 @@ class HomeViewModel(
             }
             HomeIntent.ClickBatteryMoveButton ->launch {
                 updateState { it.copy(isBatteryPopupShow = false) }
-                configRepository.setBatteryPopupViewed(true)
+                onboardingRepository.setBatteryPopupViewed(true)
                 postSideEffect(HomeSideEffect.MoveToDeviceSetting)
             }
             HomeIntent.ClickBatteryNextButton -> launch{
                 updateState { it.copy(isBatteryPopupShow = false) }
-                configRepository.setBatteryPopupViewed(true)
+                onboardingRepository.setBatteryPopupViewed(true)
             }
             HomeIntent.CheckBatteryPopUp -> launch{
-                if (!configRepository.getBatteryPopupViewed()){
+                if (!onboardingRepository.getBatteryPopupViewed()){
                     updateState { it.copy(isBatteryPopupShow = true) }
                 }
             }
@@ -132,7 +132,7 @@ class HomeViewModel(
     }
 
     private fun finishHomeNudge() = launch{
-        configRepository.setHomeNudgeGuideViewed(true)
+        onboardingRepository.setHomeNudgeGuideViewed(true)
         updateState { it.copy(isNudgeGuideViewed = true) }
         postSideEffect(HomeSideEffect.CheckPermission)
     }
