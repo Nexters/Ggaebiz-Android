@@ -24,4 +24,6 @@ class ConfigRepositoryImpl(
 
     override suspend fun getVolumeValue(): Int =
         configDataStore.getVolumeValue().firstOrNull() ?: DEFAULT_VOLUME
+
+
 }

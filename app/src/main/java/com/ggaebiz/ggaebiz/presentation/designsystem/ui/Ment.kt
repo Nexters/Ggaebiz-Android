@@ -29,7 +29,7 @@ fun GaeBizMent(
     textColor: Color = GaeBizTheme.colors.gray800,
     radius: Int = 16,
     backgroundColor: Color = GaeBizTheme.colors.white,
-    hasBelowArrow: Boolean = true,
+    hasBelowArrow: Boolean = true
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
@@ -55,7 +55,7 @@ fun GaeBizMent(
         if (hasBelowArrow) {
             Icon(
                 modifier = Modifier.offset(y = (-9).dp),
-                imageVector = GaeBizIcon.icPolygon,
+                imageVector = GaeBizIcon.icBelowPolygon,
                 tint = backgroundColor,
                 contentDescription = null,
             )

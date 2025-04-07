@@ -14,6 +14,7 @@ class ConfigDataStore(private val dataStore: DataStore<Preferences>) {
     private val vibrationValue = intPreferencesKey("vibration_value")
     private val volumeValue = intPreferencesKey("volume_value")
 
+
     companion object {
         const val DEFAULT_IS_VIBRATION = true
         const val DEFAULT_VIBRATION = 3

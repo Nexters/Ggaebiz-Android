@@ -1,6 +1,13 @@
 package com.ggaebiz.ggaebiz.presentation.ui.setting
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,12 +19,15 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,7 +45,6 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizMent
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizTimePicker
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.SETTING_MENT_LIST
-import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -50,6 +59,10 @@ fun SettingScreen(
         when (effect) {
             is SettingSideEffect.NavigateToTimer -> navigateTimer()
         }
+    }
+
+    LaunchedEffect(Unit) {
+        viewModel.processIntent(SettingIntent.EnterScreen)
     }
 
     SettingContent(
@@ -70,20 +83,35 @@ fun SettingContent(
     var buttonEnabled by remember {
         mutableStateOf(hourPickerState.selectedItem != "00" && minutePickerState.selectedItem != "00")
     }
+    val spacerHeightPx = remember { mutableFloatStateOf(0f) }
+    val density = LocalDensity.current
+    val interactionSource = remember { MutableInteractionSource() }
+
 
     LaunchedEffect(hourPickerState.selectedItem, minutePickerState.selectedItem) {
-        buttonEnabled = !(hourPickerState.selectedItem == "00" && minutePickerState.selectedItem == "00")
+        buttonEnabled =
+            !(hourPickerState.selectedItem == "00" && minutePickerState.selectedItem == "00")
     }
-    
+
+
+
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                enabled = !uiState.isNudgeGuideViewed
+            ) {
+                processIntent(SettingIntent.CloseNudgePopUp)
+            },
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         GaeBizTextAppBar(
             titleRes = R.string.setting_title_text,
             iconOnClick = { onClickBackButton() },
         )
-        Spacer(modifier = Modifier.weight(21f))
+        Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(
                 CHARACTER_LIST[uiState.selectedCharacterIdx].selectedImageResId[uiState.level - 1]
@@ -104,18 +132,40 @@ fun SettingContent(
                 processIntent(SettingIntent.SelectLevel(selectedLevel))
             },
         )
-        Spacer(modifier = Modifier.weight(66f))
-        GaeBizTimePicker(
-            hourPickerState = hourPickerState,
-            minutePickerState = minutePickerState,
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .onGloballyPositioned {
+                    spacerHeightPx.floatValue = it.size.height.toFloat()
+                }
         )
-        Spacer(modifier = Modifier.weight(59f))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+        ) {
+            GaeBizTimePicker(
+                hourPickerState = hourPickerState,
+                minutePickerState = minutePickerState,
+            )
+            this@Column.AnimatedVisibility(
+                visible = !uiState.isNudgeGuideViewed,
+                enter = fadeIn(animationSpec = tween(durationMillis = 300)),
+                exit = fadeOut(animationSpec = tween(durationMillis = 300))
+            ) {
+                SettingNudgePopup(
+                    density,
+                    spacerHeightPx.floatValue,
+                    { processIntent(SettingIntent.CloseNudgePopUp) })
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
         GaeBizButton(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight(Alignment.CenterVertically)
-                .padding(horizontal = 20.dp)
-            ,enabled = buttonEnabled,
+                .padding(horizontal = 20.dp),
+            enabled = buttonEnabled,
             onClick = {
                 processIntent(
                     SettingIntent.ClickStartButton(
