@@ -16,6 +16,7 @@ sealed interface OnboardingSideEffect {
 }
 
 sealed interface OnboardingIntent {
+    data class SwipePager(val page: Int) : OnboardingIntent
     data object ClickNextButton : OnboardingIntent
     data object ClickSkipButton : OnboardingIntent
     data object ClickBackButton : OnboardingIntent
@@ -29,12 +30,17 @@ class OnboardingViewModel(
 
     fun processIntent(intent: OnboardingIntent) {
         when (intent) {
+            is OnboardingIntent.SwipePager -> swipePager(intent.page)
             is OnboardingIntent.ClickNextButton -> clickNextButton()
             is OnboardingIntent.ClickSkipButton -> clickSkipButton()
             is OnboardingIntent.ClickBackButton -> clickBackButton()
             is OnboardingIntent.ClickStartGaebizButton -> clickStartGaebizButton()
             is OnboardingIntent.ClickBackPressedButton -> clickBackPressedButton()
         }
+    }
+
+    private fun swipePager(page: Int) = launch {
+        updateState { it.copy(currentPage = page) }
     }
 
     private fun clickNextButton() = launch {

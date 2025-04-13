@@ -27,8 +27,10 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -45,6 +47,7 @@ import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLi
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.Onboarding.Companion.ONBOARDING_LIST
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -86,6 +89,14 @@ fun OnboardingContent(
     val pagerState = rememberPagerState(initialPage = uiState.currentPage, pageCount = { ONBOARDING_LIST.size })
     val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .distinctUntilChanged()
+            .collect { page ->
+                processIntent(OnboardingIntent.SwipePager(page))
+            }
+    }
+
     BackHandler(enabled = uiState.currentPage > 0) {
         coroutineScope.launch {
             processIntent(OnboardingIntent.ClickBackButton)
@@ -104,7 +115,6 @@ fun OnboardingContent(
             Spacer(modifier = Modifier.height(60.dp))
             HorizontalPager(
                 state = pagerState,
-                userScrollEnabled = false,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(screenHeight * 0.6f),
