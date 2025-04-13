@@ -252,10 +252,16 @@ fun HomeContent(
     }
 
     if (uiState.isBatteryPopupShow){
-        BatteryPopupComponent(
-            clickMoveSetting = {processIntent(HomeIntent.ClickBatteryMoveButton)},
-            clickNextButton = {processIntent(HomeIntent.ClickBatteryNextButton)}
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(GaeBizTheme.colors.black40),
+        ) {
+            BatteryPopupComponent(
+                clickMoveSetting = {processIntent(HomeIntent.ClickBatteryMoveButton)},
+                clickNextButton = {processIntent(HomeIntent.ClickBatteryNextButton)}
+            )
+        }
     }
 
     DisposableEffect(Unit) {
