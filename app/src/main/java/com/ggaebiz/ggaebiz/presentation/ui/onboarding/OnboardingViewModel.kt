@@ -32,7 +32,7 @@ class OnboardingViewModel(
         when (intent) {
             is OnboardingIntent.SwipePager -> swipePager(intent.page)
             is OnboardingIntent.ClickNextButton -> clickNextButton()
-            is OnboardingIntent.ClickSkipButton -> clickSkipButton()
+            is OnboardingIntent.ClickSkipButton -> clickStartGaebizButton()
             is OnboardingIntent.ClickBackButton -> clickBackButton()
             is OnboardingIntent.ClickStartGaebizButton -> clickStartGaebizButton()
             is OnboardingIntent.ClickBackPressedButton -> clickBackPressedButton()
@@ -45,10 +45,6 @@ class OnboardingViewModel(
 
     private fun clickNextButton() = launch {
         updateState { it.copy(currentPage = it.currentPage.inc()) }
-    }
-
-    private fun clickSkipButton() = launch {
-        updateState { it.copy(currentPage = ONBOARDING_LIST.size - 1) }
     }
 
     private fun clickBackButton() = launch {
