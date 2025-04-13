@@ -146,7 +146,7 @@ fun GaeBizSlider(
         }
         Canvas(
             modifier = Modifier
-                .offset(x = thumbX - (thumbSize / 2), y = 9.dp)
+                .offset(x = thumbX - (thumbSize / 2), y = thumbSize / 2)
                 .size(thumbSize),
         ) {
             drawCircle(
