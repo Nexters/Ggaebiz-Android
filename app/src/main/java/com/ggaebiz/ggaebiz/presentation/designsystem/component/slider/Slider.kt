@@ -44,6 +44,7 @@ fun GaeBizSlider(
 ) {
     var selectedLevel by remember { mutableStateOf(initialLevel - 1) }
     var sliderWidth by remember { mutableStateOf(0f) }
+    val sliderHeight = 40.dp
 
     var isDragging by remember { mutableStateOf(false) }
     var dragPosition by remember { mutableStateOf(0f) }
@@ -60,7 +61,7 @@ fun GaeBizSlider(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(40.dp)
+            .height(sliderHeight)
             .pointerInput(maxLevel, sliderWidth) {
                 detectDragGestures(
                     onDragStart = { offset ->
@@ -146,7 +147,7 @@ fun GaeBizSlider(
         }
         Canvas(
             modifier = Modifier
-                .offset(x = thumbX - (thumbSize / 2), y = thumbSize / 2)
+                .offset(x = thumbX - (thumbSize / 2), y = (sliderHeight - thumbSize) / 2)
                 .size(thumbSize),
         ) {
             drawCircle(
