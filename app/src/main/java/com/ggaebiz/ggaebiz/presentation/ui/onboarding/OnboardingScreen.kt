@@ -172,7 +172,6 @@ fun OnboardingContent(
                 onClick = {
                     coroutineScope.launch {
                         processIntent(OnboardingIntent.ClickSkipButton)
-                        pagerState.slowAnimateScrollToPage(pagerState.pageCount - 1)
                     }
                 },
                 contentColor = GaeBizTheme.colors.gray600,
