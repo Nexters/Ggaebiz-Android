@@ -113,15 +113,16 @@ class TimerService : Service() {
         timerJob?.cancel()
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             while (isActive) {
+                remainingTime--
+                delay(1000L) // 1초 대기
                 if (remainingTime > 0) {
                     Log.d("TimerService", "startTimer() :: 현재 숫자  :: ${remainingTime}")
-                    remainingTime--
+                    updateTimerNotification(remainingTime)
                 } else {
                     Log.d("TimerService", "startTimer() :: 타이머 종료")
                     timerJob?.cancel()
                     onTimerFinished(vibration,volume)
                 }
-                delay(1000L) // 1초 대기
             }
         }
     }
@@ -220,6 +221,36 @@ class TimerService : Service() {
             .setOngoing(true)
             .build()
     }
+
+    private fun updateTimerNotification(remainingSeconds: Int) {
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle(getString(R.string.notification_title))
+            .setContentText(formattedRemainingTime(remainingSeconds))
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setSilent(true)
+            .setSmallIcon(R.mipmap.ic_app_icon_round)
+            .setOngoing(true)
+            .setAutoCancel(false)
+            .build()
+
+        notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun formattedRemainingTime(remainingSeconds: Int): String {
+        val hours = remainingSeconds / 3600
+        val minutes = (remainingSeconds % 3600) / 60
+        val seconds = remainingSeconds % 60
+
+        return buildString {
+            append("남은 시간 ")
+            if (hours > 0) append("${hours.format2Digits()}시간 ")
+            if (hours > 0 || minutes > 0) append("${minutes.format2Digits()}분 ")
+            append("${seconds.format2Digits()}초")
+        }.trim()
+    }
+
+    private fun Int.format2Digits() = String.format("%02d", this)
 
     override fun onDestroy() {
         Log.d("TimerService", "onDestroy()")
