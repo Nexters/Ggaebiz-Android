@@ -1,6 +1,8 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
+import GaeBizPopupButton
 import android.net.Uri
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
@@ -8,6 +10,9 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -32,7 +38,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,7 +54,11 @@ import androidx.media3.common.Player
 import androidx.media3.exoplayer.ExoPlayer
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.ImagePopup
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.ListPopup
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.TextPopup
 import com.ggaebiz.ggaebiz.presentation.model.Character
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -216,77 +229,143 @@ fun AnimatedCharacterItem(
     }
 }
 
+@Composable
+fun BatteryPopup(
+    visible: Boolean,
+    onClickOk : () -> Unit,
+    onClickDenied : () -> Unit
+){
+    TextPopup(
+        visible = visible,
+        titleText = stringResource(R.string.home_batter_popup_title),
+        bodyText = stringResource(R.string.home_battery_popup_content),
+        position = GaeBizPopupPosition.Center,
+        buttons = listOf(
+            GaeBizPopupButton(
+                text = stringResource(R.string.home_battery_next_button),
+                style = GaeBizButtonStyle.Secondary,
+                onClick = { onClickDenied()}
+            ),
+            GaeBizPopupButton(
+                text = stringResource(R.string.home_battery_move_button),
+                style = GaeBizButtonStyle.Primary,
+                onClick = { onClickOk() }
+            )
+        )
+    )
+}
+
 
 @Composable
-fun BatteryPopupComponent(
-    clickNextButton: () -> Unit,
-    clickMoveSetting: () -> Unit,
+fun ProofPopup(
+    visible: Boolean,
+    onClickOk : () -> Unit,
+    onClickDenied : () -> Unit
+){
+    ImagePopup(
+        visible = visible,
+        titleText = stringResource(R.string.home_proof_popup_title),
+        subtitleText = stringResource(R.string.home_proof_popup_subtitle),
+        image = painterResource( R.drawable.img_proof_popup),
+        position = GaeBizPopupPosition.Bottom,
+        contentScale = ContentScale.FillHeight,
+        buttons = listOf(
+            GaeBizPopupButton(
+                text = stringResource(R.string.home_proof_popup_denied_button),
+                style = GaeBizButtonStyle.Secondary,
+                onClick = { onClickDenied()}
+            ),
+            GaeBizPopupButton(
+                text = stringResource(R.string.home_proof_popup_ok_button),
+                style = GaeBizButtonStyle.Primary,
+                onClick = {onClickOk()}
+            )
+        )
+    )
+}
+
+
+@Composable
+fun ListPopupItem(
+    text: String,
+    onClick: () -> Unit,
+    leadingIcon: ImageVector? = null,
 ) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    val interaction = remember { MutableInteractionSource() }
+    val hovered by interaction.collectIsHoveredAsState()
+
+    val bgTarget = if (hovered) GaeBizTheme.colors.gray50 else GaeBizTheme.colors.white
+    val bg by animateColorAsState(bgTarget, label = "bg")
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(15.dp))
+            .background(bg)
+            .hoverable(interaction)
+            .clickable(
+                interactionSource = interaction,
+                indication = null,
+                onClick = onClick
+            )
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = (27.5).dp)
-                .background(
-                    color = GaeBizTheme.colors.white,
-                    shape = RoundedCornerShape(20.dp)
-                )
-                .padding(20.dp)
-        ) {
-            Text(
-                text = stringResource(R.string.home_batter_popup_title),
-                color = GaeBizTheme.colors.gray900,
-                style = GaeBizTheme.typography.titleSemiBold
+        if (leadingIcon != null) {
+            Icon(
+                imageVector = leadingIcon,
+                contentDescription = null,
+                modifier = Modifier
+                    .padding(end = 12.dp),
+                tint = Color.Unspecified
             )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = stringResource(R.string.home_battery_popup_content),
-                color = GaeBizTheme.colors.gray600,
-                style = GaeBizTheme.typography.bodyMedium
+        }
+        Text(
+            text = text,
+            color = GaeBizTheme.colors.gray900,
+            style = GaeBizTheme.typography.bodySemiBold,
+            modifier = Modifier.weight(1f)
+        )
+
+        if (hovered) {
+            Icon(
+                imageVector = GaeBizIcon.icFillCheck,
+                contentDescription = null,
+                tint = GaeBizTheme.colors.primaryOrange
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(
-                            color = GaeBizTheme.colors.gray50,
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .clickable { clickNextButton() }
-                        .padding(horizontal = 4.dp, vertical = 12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.home_battery_next_button),
-                        color = GaeBizTheme.colors.black,
-                        style = GaeBizTheme.typography.bodySemiBold
-                    )
-                }
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .background(
-                            color = GaeBizTheme.colors.gray800,
-                            shape = RoundedCornerShape(15.dp)
-                        )
-                        .clickable { clickMoveSetting() }
-                        .padding(horizontal = 4.dp, vertical = 12.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.home_battery_move_button),
-                        color = GaeBizTheme.colors.white,
-                        style = GaeBizTheme.typography.bodySemiBold
-                    )
-                }
-            }
         }
     }
+}
+
+@Composable
+fun ChoiceWayPopup(
+    visible : Boolean,
+    onClickCamera : () -> Unit,
+    onClickGallery : () -> Unit,
+    onClickAlbum : () -> Unit
+){
+    ListPopup(
+        visible = visible,
+        titleText = stringResource(R.string.home_choice_way_popup_title),
+        position = GaeBizPopupPosition.Bottom,
+        itemContent = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                ListPopupItem(
+                    text = stringResource(R.string.home_choice_way_camera),
+                    onClick = {onClickCamera()},
+                    leadingIcon = GaeBizIcon.icProofCamera,
+                )
+                ListPopupItem(
+                    text = stringResource(R.string.home_choice_way_album),
+                    onClick = {onClickGallery()},
+                    leadingIcon = GaeBizIcon.icProofAlbum,
+                )
+                ListPopupItem(
+                    text = stringResource(R.string.home_choice_way_card),
+                    onClick = {onClickAlbum()},
+                    leadingIcon = GaeBizIcon.icProofCard,
+                )
+            }
+        }
+    )
 }

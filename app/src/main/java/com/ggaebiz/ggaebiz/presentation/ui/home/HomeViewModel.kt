@@ -1,8 +1,9 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import com.ggaebiz.ggaebiz.R
-import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
@@ -15,7 +16,9 @@ data class HomeState(
     val volumeToastStatus : Boolean = false,
     val isNudgeGuideViewed : Boolean = false,
     val isBatteryPopupShow : Boolean = false,
-    val nudgeGuideIdx : Int = 1
+    val nudgeGuideIdx : Int = 1,
+    val isProofPopupShow : Boolean = true,
+    val isChoiceWayPopup : Boolean = false
 ){
     val homeClickEnable = isNudgeGuideViewed && !isBatteryPopupShow
 }
@@ -42,7 +45,12 @@ sealed interface HomeIntent {
     data object CheckBatteryPopUp : HomeIntent
     data object ClickBatteryNextButton : HomeIntent
     data object ClickBatteryMoveButton : HomeIntent
+    data object ClickProofDisMissButton : HomeIntent
+    data object ClickProofMoveButton : HomeIntent
 }
+
+
+
 
 class HomeViewModel(
     private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
@@ -51,6 +59,7 @@ class HomeViewModel(
 ) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState()) {
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+
 
     fun processIntent(intent: HomeIntent) {
         when (intent) {
@@ -118,6 +127,12 @@ class HomeViewModel(
                 if (!onboardingRepository.getBatteryPopupViewed()){
                     updateState { it.copy(isBatteryPopupShow = true) }
                 }
+            }
+            HomeIntent.ClickProofDisMissButton -> {
+                updateState { it.copy(isProofPopupShow = false) }
+            }
+            HomeIntent.ClickProofMoveButton -> {
+                updateState { it.copy(isProofPopupShow = false, isChoiceWayPopup = true) }
             }
         }
     }

@@ -91,6 +91,7 @@ fun HomeScreen(
 
     LaunchedEffect(Unit) {
         viewModel.processIntent(HomeIntent.EnterScreen)
+
     }
 
     BackHandler(enabled = true) {
@@ -104,17 +105,20 @@ fun HomeScreen(
             is HomeSideEffect.CheckPermission -> {
                 if (!checkPermission) {
                     requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }else{
+                } else {
                     viewModel.processIntent(HomeIntent.CheckBatteryPopUp)
                 }
             }
+
             HomeSideEffect.NavigateToConfig -> navigateConfig()
             is HomeSideEffect.ShowToast -> {
                 Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
             }
+
             HomeSideEffect.FinishApp -> {
                 (context as? Activity)?.finishAffinity()
             }
+
             HomeSideEffect.MoveToDeviceSetting -> {
                 val intent = Intent()
                 intent.action = Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS
@@ -154,9 +158,12 @@ fun HomeContent(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            GaeBizLogoRightIconAppBar(clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) }, iconEnable = uiState.homeClickEnable)
+            GaeBizLogoRightIconAppBar(
+                clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) },
+                iconEnable = uiState.homeClickEnable
+            )
             Spacer(modifier = Modifier.weight(58f))
-            GaeBizMent(text = stringResource(selectedCharacter.initMentResId),)
+            GaeBizMent(text = stringResource(selectedCharacter.initMentResId))
             Spacer(modifier = Modifier.height(30.dp))
             HorizontalPager(
                 state = pagerState,
@@ -211,7 +218,7 @@ fun HomeContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 20.dp, end = 20.dp),
-                onClick = { processIntent(HomeIntent.ClickSettingButton)},
+                onClick = { processIntent(HomeIntent.ClickSettingButton) },
                 contentColor = GaeBizTheme.colors.white,
                 containerColor = GaeBizTheme.colors.gray800,
                 disabledContentColor = GaeBizTheme.colors.white,
@@ -242,28 +249,32 @@ fun HomeContent(
         }
     }
 
-    if(!uiState.isNudgeGuideViewed){
+    if (!uiState.isNudgeGuideViewed) {
         NudgeGuideComponent(
             imgWidth = imageWidth,
             guideIdx = uiState.nudgeGuideIdx,
-            clickConfirmButton = {processIntent(HomeIntent.ClickNudgeConfirmButton)},
-            clickSkipButton = {processIntent(HomeIntent.ClickNudgeSkipButton)}
+            clickConfirmButton = { processIntent(HomeIntent.ClickNudgeConfirmButton) },
+            clickSkipButton = { processIntent(HomeIntent.ClickNudgeSkipButton) }
         )
     }
 
-    if (uiState.isBatteryPopupShow){
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(GaeBizTheme.colors.black40),
-        ) {
-            BatteryPopupComponent(
-                clickMoveSetting = {processIntent(HomeIntent.ClickBatteryMoveButton)},
-                clickNextButton = {processIntent(HomeIntent.ClickBatteryNextButton)}
-            )
-        }
-    }
+    BatteryPopup(
+        uiState.isBatteryPopupShow,
+        onClickOk = { processIntent(HomeIntent.ClickBatteryMoveButton) },
+        onClickDenied = { processIntent(HomeIntent.ClickBatteryNextButton) }
+    )
+    ProofPopup(
+        visible = uiState.isProofPopupShow,
+        onClickOk = { processIntent(HomeIntent.ClickProofMoveButton) },
+        onClickDenied = { processIntent(HomeIntent.ClickProofDisMissButton) }
+    )
 
+    ChoiceWayPopup(
+        visible = uiState.isChoiceWayPopup,
+        onClickCamera = {},
+        onClickGallery = {},
+        onClickAlbum = {}
+    )
     DisposableEffect(Unit) {
         onDispose {
             exoPlayer.release()
