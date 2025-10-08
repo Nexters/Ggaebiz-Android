@@ -17,7 +17,7 @@ data class HomeState(
     val isNudgeGuideViewed : Boolean = false,
     val isBatteryPopupShow : Boolean = false,
     val nudgeGuideIdx : Int = 1,
-    val isProofPopupShow : Boolean = true,
+    val isProofPopupShow : Boolean = false,
     val isChoiceWayPopup : Boolean = false
 ){
     val homeClickEnable = isNudgeGuideViewed && !isBatteryPopupShow
