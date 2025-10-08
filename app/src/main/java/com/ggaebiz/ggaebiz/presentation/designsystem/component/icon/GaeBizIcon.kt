@@ -31,4 +31,20 @@ object GaeBizIcon {
     val icOrangeSpeaker : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_orange_speaker)
+
+    val icFillCheck : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.icon_fill_check)
+
+    val icProofCamera : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.icon_proof_camera)
+
+    val icProofAlbum : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.icon_proof_album)
+
+    val icProofCard : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.icon_proof_card)
 }
