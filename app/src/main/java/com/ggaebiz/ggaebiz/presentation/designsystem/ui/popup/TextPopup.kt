@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui.popup
 
 import GaeBizBasePopup
 import GaeBizPopupButton

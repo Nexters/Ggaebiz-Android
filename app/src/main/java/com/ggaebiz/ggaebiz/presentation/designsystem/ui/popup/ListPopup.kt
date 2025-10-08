@@ -1,4 +1,4 @@
-package com.ggaebiz.ggaebiz.presentation.designsystem.ui
+package com.ggaebiz.ggaebiz.presentation.designsystem.ui.popup
 
 import GaeBizBasePopup
 import GaeBizPopupButton
@@ -8,11 +8,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,16 +27,17 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
 @Composable
-fun ImagePopup(
+fun ListPopup(
     visible: Boolean,
     onDismissRequest: () -> Unit = {},
     titleText: String,
     subtitleText: String? = null,
-    image: Painter? = null,
-    contentScale: ContentScale = ContentScale.Crop,
+    itemContent: @Composable () -> Unit,
     position: GaeBizPopupPosition = GaeBizPopupPosition.Center,
-    buttons: List<GaeBizPopupButton>,
+    buttons: List<GaeBizPopupButton> = emptyList(),
 ) {
+    require(buttons.size <= 2) { "ListPopup supports up to 2 buttons." }
+
     GaeBizBasePopup(
         visible = visible,
         onDismissRequest = onDismissRequest,
@@ -52,7 +51,6 @@ fun ImagePopup(
         },
         subtitle = subtitleText?.let {
             {
-                Spacer(Modifier.height(4.dp))
                 Text(
                     text = it,
                     color = GaeBizTheme.colors.gray600,
@@ -60,41 +58,14 @@ fun ImagePopup(
                 )
             }
         },
-        content = {
-            Spacer(Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 120.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(GaeBizTheme.colors.white),
-                contentAlignment = Alignment.Center
-            ) {
-                if (image != null) {
-                    Image(
-                        painter = image,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(min = 160.dp),
-                        contentScale = contentScale,
-                    )
-                } else {
-                    Text(
-                        text = "(image)",
-                        color = GaeBizTheme.colors.gray400,
-                        style = GaeBizTheme.typography.bodyMedium
-                    )
-                }
-            }
-        },
+        content = { itemContent() },
         buttons = buttons
     )
 }
 
-@Preview(name = "ImagePopup", showBackground = true)
+@Preview(name = "ListPopup", showBackground = true, apiLevel = 34)
 @Composable
-fun GaeBizImagePopupPreview() {
+fun ListPopupPreview() {
     GaeBizTheme {
         Column(
             modifier = Modifier
@@ -107,21 +78,36 @@ fun GaeBizImagePopupPreview() {
                     .fillMaxWidth()
                     .background(GaeBizTheme.colors.gray50),
                 contentAlignment = Alignment.Center
-            ) {
-                ImagePopup(
+            ){
+                ListPopup(
                     visible = true,
-                    onDismissRequest = { /* no-op */ },
-                    titleText = "샘플 이미지 팝업",
-                    subtitleText = "샘플 서브타이틀",
-                    image = painterResource( R.drawable.icon_battery),
+                    titleText = "이미지 선택",
+                    subtitleText = "가로로 3개 샘플",
+                    itemContent = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            val samples = listOf(
+                                R.drawable.ic_selected_kiki_level1,
+                                R.drawable.ic_selected_kiki_level2,
+                                R.drawable.ic_selected_kiki_level3
+                            )
+                            samples.forEach { resId ->
+                                Image(
+                                    painter = painterResource(id = resId),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .aspectRatio(1f)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(GaeBizTheme.colors.gray100),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
+                    },
                     position = GaeBizPopupPosition.Bottom,
-                    buttons = listOf(
-                        GaeBizPopupButton(
-                            text = "확인",
-                            style = GaeBizButtonStyle.Primary,
-                            onClick = { /* no-op */ }
-                        )
-                    )
                 )
             }
         }

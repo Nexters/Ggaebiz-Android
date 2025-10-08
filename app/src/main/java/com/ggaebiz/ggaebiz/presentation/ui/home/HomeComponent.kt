@@ -56,9 +56,9 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.button.GaeBizButton
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
-import com.ggaebiz.ggaebiz.presentation.designsystem.ui.ImagePopup
-import com.ggaebiz.ggaebiz.presentation.designsystem.ui.ListPopup
-import com.ggaebiz.ggaebiz.presentation.designsystem.ui.TextPopup
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.popup.ImagePopup
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.popup.ListPopup
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.popup.TextPopup
 import com.ggaebiz.ggaebiz.presentation.model.Character
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
