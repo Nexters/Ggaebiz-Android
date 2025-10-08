@@ -5,6 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
@@ -23,7 +24,7 @@ data class GaeBizTypography(
     val label1: TextStyle,
     val label2: TextStyle,
     val label3: TextStyle,
-    val label4 : TextStyle,
+    val label4: TextStyle,
     val timer1: TextStyle,
     val timer2: TextStyle,
     val timer3: TextStyle,
@@ -73,8 +74,11 @@ val Typography = GaeBizTypography(
     titleSemiBold = TextStyle(
         fontFamily = PretendardFont,
         fontWeight = FontWeight.SemiBold,
+        fontStyle = FontStyle.Normal,
         fontSize = 20.sp,
-        lineHeight = 24.sp
+        lineHeight = 28.sp,
+        letterSpacing = 0.5.sp
+
     ),
     bodyBold = TextStyle(
         fontFamily = PretendardFont,
