@@ -1,8 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
-import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase

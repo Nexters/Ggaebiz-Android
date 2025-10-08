@@ -36,8 +36,6 @@ fun ListPopup(
     position: GaeBizPopupPosition = GaeBizPopupPosition.Center,
     buttons: List<GaeBizPopupButton> = emptyList(),
 ) {
-    require(buttons.size <= 2) { "ListPopup supports up to 2 buttons." }
-
     GaeBizBasePopup(
         visible = visible,
         onDismissRequest = onDismissRequest,
@@ -100,8 +98,7 @@ fun ListPopupPreview() {
                                     modifier = Modifier
                                         .weight(1f)
                                         .aspectRatio(1f)
-                                        .clip(RoundedCornerShape(12.dp))
-                                        .background(GaeBizTheme.colors.gray100),
+                                        .clip(RoundedCornerShape(12.dp)),
                                     contentScale = ContentScale.Crop
                                 )
                             }
