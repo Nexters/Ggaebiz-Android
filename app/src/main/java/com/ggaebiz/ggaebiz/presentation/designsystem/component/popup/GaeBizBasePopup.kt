@@ -140,7 +140,8 @@ fun GaeBizBasePopup(
         ) {
             Box(
                 modifier = modifier
-                    .then(Modifier.widthIn(max = maxWidth))
+                    .fillMaxWidth(0.912f)
+                    .widthIn(max = maxWidth)
                     .clip(shape)
                     .background(containerColor)
                     .clickable(enabled = false) {}
