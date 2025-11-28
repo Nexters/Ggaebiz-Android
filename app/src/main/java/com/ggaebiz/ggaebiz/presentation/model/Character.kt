@@ -20,6 +20,9 @@ data class Character(
     @StringRes val timerMentResId: Int,
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
+    @DrawableRes val selectedConcentrateNormalImageResId: Int,
+    @DrawableRes val selectedConcentrateStudyImageResId: Int,
+    @DrawableRes val selectedConcentrateExerciseImageResId: Int,
     @StringRes val traitsResIdList: PersistentList<Int>,
     @RawRes val lottieResId: Int,
     @RawRes val initMentAudioResId: Int,
@@ -44,6 +47,9 @@ data class Character(
                     R.drawable.ic_selected_kiki_level3,
                     R.drawable.ic_selected_kiki_level3,
                 ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_kiki_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_kiki_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_kiki_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.kiki_tag_text1,
                     R.string.kiki_tag_text2,
@@ -70,6 +76,9 @@ data class Character(
                     R.drawable.ic_selected_bobo_level3,
                     R.drawable.ic_selected_bobo_level3
                 ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_bobo_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_bobo_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_bobo_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.bobo_tag_text1,
                     R.string.bobo_tag_text2,
@@ -96,6 +105,9 @@ data class Character(
                     R.drawable.ic_selected_nana_level3,
                     R.drawable.ic_selected_nana_level3
                 ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_nana_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_nana_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_nana_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.nana_tag_text1,
                     R.string.nana_tag_text2,
@@ -122,6 +134,9 @@ data class Character(
                     R.drawable.ic_selected_chacha_level3,
                     R.drawable.ic_selected_chacha_level3
                 ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_chacha_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_chacha_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_chacha_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.chacha_tag_text1,
                     R.string.chacha_tag_text2,
@@ -148,6 +163,9 @@ data class Character(
                     R.drawable.ic_selected_booboo_level3,
                     R.drawable.ic_selected_booboo_level3
                 ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_booboo_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_booboo_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_booboo_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.booboo_tag_text1,
                     R.string.booboo_tag_text2,
