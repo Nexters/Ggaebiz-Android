@@ -16,8 +16,23 @@
     <string name="onboarding_text3">그래서 휴대폰 속으로 들어와\n사람들을 깨우기 시작했어요!\n깨비즈들의 능력을 확인해볼까요?</string>
 
     <string name="setting_button_text">%s랑 타이머 설정하기</string>
-    <string name="start_button_text">타이머 시작하기</string>
+    <string name="start_rest_button_text">%s랑 휴식 시작하기</string>
+    <string name="start_concentrate_button_text">%s랑 집중 시작하기</string>
+    <string name="rest_mode_text">휴식</string>
+    <string name="concentration_mode_text">집중</string>
+    <string name="normal_mode_text">일반모드</string>
+    <string name="study_mode_text">공부모드</string>
+    <string name="exercise_mode_text">운동모드</string>
+    <string name="ment_level_text">Level.%d</string>
+    <string name="ment_level_title_text">어떤 맛으로 알려줄까요?</string>
+    <string name="ment_level_subtitle_text">깨비즈의 쓴소리 강도를 선택해 보세요.</string>
+    <string name="ment_level_1_item_text">순한맛 🍼</string>
+    <string name="ment_level_2_item_text">중간맛 🔥</string>
+    <string name="ment_level_3_item_text">매운맛 🌋</string>
+
     <string name="end_button_text">타이머 끝내기</string>
+    <string name="pause_text">일시정지</string>
+    <string name="resume_text">다시 시작</string>
 
     <string name="back_provider_toast_text">한 번 더 누르면, 앱을 종료해요!</string>
     <string name="timer_time_minute_toast_text">%s가 %d시간 %d분 뒤에 깨워줄게!</string>
@@ -67,9 +82,9 @@
     <string name="booboo_init_ment_text">아ㅋㅋ 레알 갓생 살 준비 가보자고.</string>
     <string name="booboo_timer_ment_text">개큰 휴식~ 달다 달아~</string>
 
-    <string name="setting_ment_text1">순한 맛으로 살짝 깨워줄게!🥛</string>
-    <string name="setting_ment_text2">중간 맛🔥 딱 정신 차리기 좋을거야!</string>
-    <string name="setting_ment_text3">화끈한 매운맛! 안 일어나곤 못 버틸걸?🌋</string>
+    <string name="setting_ment_text1">순한 맛으로 살짝 알려줄게! 🥛</string>
+    <string name="setting_ment_text2">딱 좋은 중간 맛으로 알려줄게! 🔥</string>
+    <string name="setting_ment_text3">화끈한 매운맛으로 알려줄게! 🌋</string>
 
     <!--  label & description  -->
     <string name="slider_anim_label">Slider Animation</string>
@@ -81,10 +96,15 @@
     <!-- Alarm 울리기 화면 -->
     <string name="alarm_default_timer_text">00</string>
     <string name="alarm_finish_timer_btn_text">타이머 끄기</string>
-    <string name="alarm_snooze_timer_btn_text">5분 뒤 다시 알림</string>
+    <string name="alarm_resume_timer_btn_text">집중 다시 시작하기</string>
+    <string name="alarm_resume_after_10_minutes_timer_btn_text">10분 쉬고 다시 하기</string>
+    <string name="alarm_snooze_timer_btn_text">5분 미루기</string>
     <string name="notification_title">깨비즈</string>
     <string name="notification_content">Chill guy는 일을 미루지 않Chill..</string>
     <string name="notification_default_content">깨비즈 타이머 실행 중 입니다..</string>
+    <string name="notification_pause_content">"잠시 멈췄어요. • %1$s</string>
+    <string name="action_pause">타이머 일시정지</string>
+    <string name="action_resume">타이머 다시시작</string>
 
 
     <!-- Alarm 울리기 화면 -->
@@ -99,6 +119,15 @@
     <string name="alarm_ment_kiki_level3_3">너만의 작은 세상에서 탈출 좀 해, 현실을 살아 !! 현실로 컴백 플리즈으~.현실로 컴백 플리즈으~.현실로 컴백 플리즈으~. </string>
     <string name="alarm_ment_kiki_level3_4">조금만 쉰다더니, 그러다 인생도 쉬는 거 아냐? 나 무섭다 진짜아아앙ㅏㅇ</string>
     <string name="alarm_ment_kiki_level4_1">너의 인생 목표가 침대랑 평생 살기면 인정할게. 대단해~! 휴식이랑 결혼해 축의금은 500원</string>
+    <string name="focus_ment_kiki_1">삐빅 ! 와~ 나 지금 눈물 난다. 이렇게 집중 하는 사람 드물다~! 멋쟁이 멋쟁이 멋쟁이</string>
+    <string name="focus_ment_kiki_2">띵~띵~띵~띵~! 와, 이렇게 성실하면 친구들이 다 부러워하겠다~!</string>
+    <string name="focus_ment_kiki_3">삐빅! 집중 타임 끝! 삐빅! 집중 타임 끝! 삐빅! 집중 타임 끝! 삐빅! 집중 타임 끝!</string>
+    <string name="study_ment_kiki_1">딩동댕~ 공부 타임 종료! 이제 복습 타임 가야지, 안 그러면 싹 다 증발한다?</string>
+    <string name="study_ment_kiki_2">공부 루틴 완료! 너 오늘은 진짜 자기계발 유튜버 본체다!</string>
+    <string name="study_ment_kiki_3">띵동~ 공부 끝났다!… 아, 아니지. 복습해야지. 복습 끝났다!… 아, 아니지. 또 암기해야지. 아, 아니지.  복습해야지. 복습 끝났다!… 아, 아니지. 또 암기해야지</string>
+    <string name="exercise_ment_kiki_1">똑딱! 운동 끝! 와, 키키가 인정한다. 너 오늘 근손실이 울고 갔어어어!!!!</string>
+    <string name="exercise_ment_kiki_2">삐이익~! 운동 타임 끝! 너 지금 땀 빼느라 비트코인보다 핫하다~!</string>
+    <string name="exercise_ment_kiki_3">오늘 !! 운동 !! 완료오옭 !! 오늘 !! 운동 !! 완료오옭 !!  오늘 !! 운동 !! 완료오옭 !!  오늘 !! 운동 !! 완료오옭 !! </string>
 
     <string name="alarm_ment_bobo_level1_1">이제 일어나서 다시 시작하면 더 멋질 거 같은데? 내가 그쪽 성실한 모습에 반한거 알죠?</string>
     <string name="alarm_ment_bobo_level1_2">다 쉬었죠? 당신이 열심히 하는 모습은 또 얼마나 반짝반짝할까? 너무 설렌다. </string>
@@ -111,6 +140,15 @@
     <string name="alarm_ment_bobo_level3_3">아직까지 쉬고 있는거 일부러 나 안달나게 하는거에요? 그렇다면 성공이야.</string>
     <string name="alarm_ment_bobo_level3_4">이렇게 자꾸 미루고 약속을 안 지키면 어떡해요? 응? 나 아직 당신 포기하고 싶지 않아.</string>
     <string name="alarm_ment_bobo_level4_1">하, 내가 이렇게까지 하는데도 안 일어나는 거면 저도 이제 포기할게요.. 안녕..그대..</string>
+    <string name="focus_ment_bobo_1">하… 당신 또 해냈네. 집중하기 또 성.공. </string>
+    <string name="focus_ment_bobo_2">그거 알아요? 방금 당신 또 열심히 집중했어요. 그거 아무나 못하는건데?</string>
+    <string name="focus_ment_bobo_3">음 ~ 칭찬 타임 ~ 방금 집중하는 모습 너무 빛났어요 ~ 심쿵했잖아?</string>
+    <string name="study_ment_bobo_1">우와 ~ 공부까지 잘해버리면 너무 완벽한거 아닌가요~? 당신에게 또 반했다.</string>
+    <string name="study_ment_bobo_2">자, 공부 시간 끝났어요 ~ 이리 와요. 내가 칭찬해줄게.</string>
+    <string name="study_ment_bobo_3">공부도 너무 잘하네요 ~? 미모와 지성을 다 갖춘 당신은 욕.심.쟁.이.</string>
+    <string name="exercise_ment_bobo_1">운동하는 그대의 땀방울…. 너무 빛나서 보석인줄 알았잖아. 고생했어요~</string>
+    <string name="exercise_ment_bobo_2">음~ 운동할 때 집중하던 그 눈빛, 너무 인상적이야. 쉬었다가 한세트 더 할까요?</string>
+    <string name="exercise_ment_bobo_3">와~ 운동하는 거 쉽지 않은데~ 끝까지 포기 안 한 당신. 너무 매력적인걸?</string>
 
     <string name="alarm_ment_nana_level1_1">오빠야, 꿈나라에서 뭐 하고 있노~? 현실로 도라온나~</string>
     <string name="alarm_ment_nana_level1_2">타이머도 맞추고 대단하데? 이제 일어나서 할거 함 해보까?, 생각보다 열심히 사노? </string>
@@ -123,6 +161,15 @@
     <string name="alarm_ment_nana_level3_3">니 타이머는 왜 맞췄노? 소용도 없으면 끄지,,! 걍 혼자 앵앵 울리게 냅둘끼가?</string>
     <string name="alarm_ment_nana_level3_4">이불이 니 잡아뭇나?이래 누워만 있으면 어칼라고 그러고 있노. 정신 좀 차리라!</string>
     <string name="alarm_ment_nana_level4_1">답도 없다, 내 간다, 더 누버있던지는 니 알아 하고, 걍 때려 치아라 </string>
+    <string name="focus_ment_nana_1">우와아~ 또 집중하는 중이야? 괜히 방해하고 싶게 만드는 거 알아? 근데 열심히 하는 모습 보면 또 심장이 두근거린단 말이지.</string>
+    <string name="focus_ment_nana_2">어머, 진짜 제대로 몰입했네? 나 괜히 칭찬 안 해주고 싶었는데… 어쩔 수 없지, 잘했으니까 오늘은 특별히 인정해줄게.</string>
+    <string name="focus_ment_nana_3">또 열심히 하는 거야? 칭찬 스티커 몇 장 붙여줘야 하나? 진짜 귀엽게 왜 이렇게 잘해?</string>
+    <string name="study_ment_nana_1">우와아~ 공부까지 잘한다고?  완전 반칙이지 그고온! 이런 모습 보여주면 나 괜히 질투 난다고.</string>
+    <string name="study_ment_nana_2">나 말고 누구랑 그렇게 사이 좋은거야? 공부랑 그렇게 친한거야? 그래도 오늘은 똑똑이 모드니까 참아줄게.</string>
+    <string name="study_ment_nana_3">조용히 앉아있는 건데 왜 이렇게 귀여워 보이지? 공부까지 귀엽기 있냐고, 반칙이라니까.</string>
+    <string name="exercise_ment_nana_1">운동까지 이렇게 열심히 한다고? 우와아… 땀 흘리는 거 반짝거리는 거 봐.괜히 설렌다니까.</string>
+    <string name="exercise_ment_nana_2">힘든데도 끝까지 한다는 거, 진짜 멋있네. 나 또 반해버렸잖아. 칭찬은 아깝지 않다~.</string>
+    <string name="exercise_ment_nana_3">운동하면서 포기 안 하는 모습, 너무 매력적이라서 짜증날 정도야. 아휴, 또 인정해버렸네.</string>
 
     <string name="alarm_ment_chacha_level1_1">슬슬 일어날 때가 된거 같은데~~ 할미 타이머도 이렇게 시간 맞춰 일하고 있단다.^^ 얼른 일어나렴</string>
     <string name="alarm_ment_chacha_level1_2">벌써 약속한 시간이 됐단다~ 한 번만 마음먹으면 돼! 후딱 일어나고 나중에 후련하게 쉬렴</string>
@@ -135,6 +182,15 @@
     <string name="alarm_ment_chacha_level3_3">꼭 그렇게,,,,,,, 이 할미를 또 시간맞춰 깨우게 만들어야만,,,,,, 속이 후련했냐아아악????? (근데 이 톤 못살림 ^_ㅜ)</string>
     <string name="alarm_ment_chacha_level3_4">지금 나 타이머라고 이 할미 말 무시하고 누워 있는 거야? 너 이렇게 누워만 있으면 나중에 할미처럼 허리 휜다?</string>
     <string name="alarm_ment_chacha_level4_1">이 정도면 할머니 타이머가 아니라 타이머 고조 할머니가 와도 안일어나겠다</string>
+    <string name="focus_ment_chacha_1">집중하는거 보니까 아주 크게 될 인물이여~ 조금 쉬었다가 할미랑 다시 집중해볼까?</string>
+    <string name="focus_ment_chacha_2">아이고, 이만큼 집중했으면 잘했다~ 남은 건 내일 할미랑 또 하면 되지!</string>
+    <string name="focus_ment_chacha_3">벌써 목표한 시간이 다 됐단다~ 내일 할미가 또 같이 집중할테니까 걱정마~</string>
+    <string name="study_ment_chacha_1">아이고 우리 집안에서 박사 나겄다~ 할미 플랜카드 준비한다~?</string>
+    <string name="study_ment_chacha_2">너 공부하는 것만봐도 할미 배불러서 밥안먹어도 되겠다~ 기특해~~</string>
+    <string name="study_ment_chacha_3">공부를 이렇게 열심히 하는데, 성적이 오를 수밖에 없지~ 할미가 장담한다!</string>
+    <string name="exercise_ment_chacha_1">숨차다고? 그게 살아있다는 증거여~ 진짜 고생했다~</string>
+    <string name="exercise_ment_chacha_2">잘했어! 운동의 완성은 식단까지인거 알지? 얼른 할미랑 밥먹자~</string>
+    <string name="exercise_ment_chacha_3">아까 자세 진짜 좋았다~ 내일 결실의 근육통이 찾아올거여~</string>
 
     <string name="alarm_ment_booboo_level1_1">님, 일어나세염 솔직히 지금 하는게 이득이다. 인정?</string>
     <string name="alarm_ment_booboo_level1_2">엥 벌써 시간 다 됨. 그래도 잘 쉬었잖아 한 잔해~ </string>
@@ -147,7 +203,15 @@
     <string name="alarm_ment_booboo_level3_3">님 내일 감당 가능? 오늘 할 일 있다고 하지 않았나? 지금 안 하면 영원히 안할거지? 님 빼고 다 아는 사실임~</string>
     <string name="alarm_ment_booboo_level3_4">아직도 안 일어난거 실환가여? 또 미루면 후회할 거 뻔하쥬? 이럴거면 알람은 왜 맞추는지 의문이쥬?</string>
     <string name="alarm_ment_booboo_level4_1">전 님 깨우는거 포기 갈깁니다 수고하세여~ 내일의 님이 업보 청산할 거 생각하면 눈물이 핑 도네</string>
-
+    <string name="focus_ment_booboo_1">여기서 끝날거 아니지? 혹시 긁??</string>
+    <string name="focus_ment_booboo_2">이 사람이 왜이리 무리해. 이러다 궁전으로 갈 수도 있어.</string>
+    <string name="focus_ment_booboo_3">집중 벌써 끝났다고? 한 번 더 할거임? 난 하면 해</string>
+    <string name="study_ment_booboo_1">사람들 여기 보세요 이렇게 공부하다가 맨사 가입할 사람이 있어요~~</string>
+    <string name="study_ment_booboo_2">님 혹시 1등 하려면 이 정도로 만족하면 안됨. 10분 쉬고 다시 가보자고</string>
+    <string name="study_ment_booboo_3">공부한 사람이 있었슨. 한시간 더 달릴 사람도 있었슨.</string>
+    <string name="exercise_ment_booboo_1">개멋진 나를 위해 당장 파워 냉방으로 틀어</string>
+    <string name="exercise_ment_booboo_2">운동한 나… 제법 멋져… 10분만 쉬고 다시 달리자</string>
+    <string name="exercise_ment_booboo_3">이걸로 끝낼 거 아니지? 깔끔하게 한 번 더 하는거 어떤데</string>
 
     <string name="config_title_text">설정</string>
     <string name="config_batter_title_text">배터리 최적화 설정 해제</string>
