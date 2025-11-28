@@ -10,16 +10,30 @@ import kotlinx.coroutines.flow.StateFlow
 
 class TimerServiceManager(private val context: Context) {
     private var service: TimerService? = null
-    private var serviceConnection: ServiceConnection? = null
+    private var timerConnection: ServiceConnection? = null
+    private var overCountConnection: ServiceConnection? = null
 
-    fun startTimerService(seconds: Int, audioResPath: String, vibration : Int, volume : Int) {
+    fun startTimerService(seconds: Int, audioResPath: String, vibration : Int, volume : Int, actionButtonVisible: Boolean) {
         val intent = Intent(context, TimerService::class.java).apply {
             action = TimerService.ACTION_START
             putExtra(TimerService.INTENT_KEY_TIMER_SECONDS, seconds)
             putExtra(TimerService.INTENT_KEY_TIMER_AUDIO, audioResPath)
             putExtra(TimerService.INTENT_KEY_VIBRATION, vibration)
             putExtra(TimerService.INTENT_KEY_VOLUME, volume)
+            putExtra(TimerService.INTENT_KEY_ACTION_BUTTON_VISIBLE, actionButtonVisible)
         }
+        context.startService(intent)
+    }
+
+    fun pauseTimer() {
+        val intent = Intent(context, TimerService::class.java)
+            .setAction(TimerService.ACTION_PAUSE)
+        context.startService(intent)
+    }
+
+    fun resumeTimer() {
+        val intent = Intent(context, TimerService::class.java)
+            .setAction(TimerService.ACTION_RESUME)
         context.startService(intent)
     }
 
@@ -27,7 +41,8 @@ class TimerServiceManager(private val context: Context) {
         val stopServiceIntent = Intent(context, TimerService::class.java).apply {
             action = TimerService.ACTION_STOP
         }
-        unbindService()
+        unbindOverCountService()
+        unbindTimerService()
         context.stopService(stopServiceIntent)
     }
 
@@ -42,24 +57,58 @@ class TimerServiceManager(private val context: Context) {
         return false
     }
 
-    fun bindService(onServiceConnected: (StateFlow<Int>) -> Unit) {
-        if (serviceConnection == null) {
-            serviceConnection = createServiceConnection(onServiceConnected)
+    fun bindTimerService(onServiceConnected: (StateFlow<NotificationTimerState>) -> Unit) {
+        if (timerConnection == null) {
+            timerConnection = createTimerServiceConnection(onServiceConnected)
         }
 
         val intent = Intent(context, TimerService::class.java)
-        context.bindService(intent, serviceConnection!!, Context.BIND_AUTO_CREATE)
+        context.bindService(intent, timerConnection!!, Context.BIND_AUTO_CREATE)
     }
 
-    fun unbindService() {
-        serviceConnection?.let {
+    fun bindOverCountService(onServiceConnected: (StateFlow<Int>) -> Unit) {
+        if (overCountConnection == null) {
+            overCountConnection = createOverCountServiceConnection(onServiceConnected)
+        }
+
+        val intent = Intent(context, TimerService::class.java)
+        context.bindService(intent, overCountConnection!!, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindTimerService() {
+        timerConnection?.let {
             context.unbindService(it)
-            serviceConnection = null
+            timerConnection = null
         }
         service = null
     }
 
-    private fun createServiceConnection(onServiceConnected: (StateFlow<Int>) -> Unit): ServiceConnection {
+    fun unbindOverCountService() {
+        overCountConnection?.let {
+            context.unbindService(it)
+            overCountConnection = null
+        }
+        overCountConnection = null
+    }
+
+    private fun createTimerServiceConnection(onServiceConnected: (StateFlow<NotificationTimerState>) -> Unit): ServiceConnection {
+        return object : ServiceConnection {
+            override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
+                val timerBinder = binder as? TimerService.TimerBinder
+                service = timerBinder?.getService()
+
+                service?.let {
+                    onServiceConnected(it.notificationTimerState)
+                }
+            }
+
+            override fun onServiceDisconnected(name: ComponentName?) {
+                service = null
+            }
+        }
+    }
+
+    private fun createOverCountServiceConnection(onServiceConnected: (StateFlow<Int>) -> Unit): ServiceConnection {
         return object : ServiceConnection {
             override fun onServiceConnected(name: ComponentName?, binder: IBinder?) {
                 val timerBinder = binder as? TimerService.TimerBinder
