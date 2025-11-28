@@ -4,10 +4,14 @@ import android.util.Log
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_CHARACTER_IDX
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_HOUR
+import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_IS_REST_COMPLETED
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_IS_SETTING_TIMER
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_LEVEL
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_MINUTE
 import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
+import com.ggaebiz.ggaebiz.presentation.ui.setting.TimerMode
+import com.ggaebiz.ggaebiz.presentation.ui.setting.toTimerMode
+import com.ggaebiz.ggaebiz.presentation.ui.setting.toTimerModeString
 import kotlinx.coroutines.flow.first
 
 class TimerRepositoryImpl(
@@ -94,6 +98,78 @@ class TimerRepositoryImpl(
     override suspend fun setMinute(minute: Int) {
         try {
             timerDataStore.setMinute(minute)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun getSettingHour(): Int {
+        return try {
+            timerDataStore.getSettingHour().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error fetching timer data", e)
+            DEFAULT_HOUR
+        }
+    }
+
+    override suspend fun setSettingHour(settingHour: Int) {
+        try {
+            timerDataStore.setSettingHour(settingHour)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun getSettingMinute(): Int {
+        return try {
+            timerDataStore.getSettingMinute().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error fetching timer data", e)
+            DEFAULT_MINUTE
+        }
+    }
+
+    override suspend fun setSettingMinute(settingMinute: Int) {
+        try {
+            timerDataStore.setSettingMinute(settingMinute)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun getIsRestCompleted(): Boolean {
+        return try {
+            timerDataStore.getIsRestCompleted().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error fetching timer data", e)
+            DEFAULT_IS_REST_COMPLETED
+        }
+    }
+
+    override suspend fun setIsRestCompleted(isRestCompleted: Boolean) {
+        try {
+            timerDataStore.seIsRestCompleted(isRestCompleted)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun getTimerMode(): TimerMode {
+        return try {
+            val modeValue = timerDataStore.getTimerMode().first()
+            val typeValue = timerDataStore.getTimerType().first()
+            toTimerMode(modeValue, typeValue)
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error fetching timer data", e)
+            toTimerMode(TimerDataStore.DEFAULT_TIMER_MODE, TimerDataStore.DEFAULT_TIMER_TYPE)
+        }
+    }
+
+    override suspend fun setTimerMode(timerMode: TimerMode) {
+        try {
+            val (modeValue, typeValue) = toTimerModeString(timerMode)
+            timerDataStore.setTimerMode(modeValue)
+            timerDataStore.setTimerType(typeValue)
         } catch (e: Exception) {
             Log.e("TimerRepositoryImpl", "Error updating timer data", e)
         }

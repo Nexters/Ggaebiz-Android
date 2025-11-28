@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
@@ -16,7 +17,12 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     private val levelKey = intPreferencesKey("level_data")
     private val levelIdxKey = intPreferencesKey("level_idx_data")
     private val hourKey = intPreferencesKey("hour_data")
+    private val settingHourKey = intPreferencesKey("setting_hour_data")
     private val minuteKey = intPreferencesKey("minute_data")
+    private val settingMinuteKey = intPreferencesKey("setting_minute_data")
+    private val isRestCompletedKey = booleanPreferencesKey("is_rest_completed__data")
+    private val timerModeKey = stringPreferencesKey("timer_mode")
+    private val timerTypeKey = stringPreferencesKey("timer_type")
     private val snoozeCountKey = intPreferencesKey("snooze_count_data")
 
     companion object {
@@ -26,6 +32,9 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
         const val DEFAULT_LEVEL_IDX = 0
         const val DEFAULT_HOUR = 0
         const val DEFAULT_MINUTE = 30
+        const val DEFAULT_IS_REST_COMPLETED = false
+        const val DEFAULT_TIMER_MODE = "REST"
+        const val DEFAULT_TIMER_TYPE = "NORMAL"
         const val DEFAULT_SNOOZE_COUNT = 0
     }
 
@@ -102,6 +111,66 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     suspend fun setMinute(minute: Int) {
         dataStore.edit { preferences ->
             preferences[minuteKey] = minute
+        }
+    }
+
+    fun getSettingHour(): Flow<Int> {
+        return dataStore.data.map { preferences ->
+            preferences[settingHourKey] ?: DEFAULT_HOUR
+        }
+    }
+
+    suspend fun setSettingHour(settingHour: Int) {
+        dataStore.edit { preferences ->
+            preferences[settingHourKey] = settingHour
+        }
+    }
+
+    fun getSettingMinute(): Flow<Int> {
+        return dataStore.data.map { preferences ->
+            preferences[settingMinuteKey] ?: DEFAULT_MINUTE
+        }
+    }
+
+    suspend fun setSettingMinute(settingMinute: Int) {
+        dataStore.edit { preferences ->
+            preferences[settingMinuteKey] = settingMinute
+        }
+    }
+
+    fun getIsRestCompleted(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[isRestCompletedKey] ?: DEFAULT_IS_REST_COMPLETED
+        }
+    }
+
+    suspend fun seIsRestCompleted(isRestCompleted: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[isRestCompletedKey] = isRestCompleted
+        }
+    }
+
+    fun getTimerMode(): Flow<String> {
+        return dataStore.data.map { preferences ->
+            preferences[timerModeKey] ?: DEFAULT_TIMER_MODE
+        }
+    }
+
+    suspend fun setTimerMode(timerMode: String) {
+        dataStore.edit { preferences ->
+            preferences[timerModeKey] = timerMode
+        }
+    }
+
+    fun getTimerType(): Flow<String?> {
+        return dataStore.data.map { preferences ->
+            preferences[timerTypeKey]
+        }
+    }
+
+    suspend fun setTimerType(timerType: String) {
+        dataStore.edit { preferences ->
+            preferences[timerTypeKey] = timerType
         }
     }
 
