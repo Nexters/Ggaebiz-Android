@@ -19,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +36,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
+import com.ggaebiz.ggaebiz.presentation.ui.setting.RestType
+import com.ggaebiz.ggaebiz.presentation.ui.setting.TimerMode
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -42,7 +45,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun GaeBizPicker(
     modifier: Modifier = Modifier,
-    pickerState: PickerState,
+    selectedValue: String,
+    timerMode: TimerMode,
     list: List<String>,
     visibleItemsCount: Int,
     centerTextStyle: TextStyle,
@@ -52,124 +56,121 @@ fun GaeBizPicker(
     dividerHeight: Int,
     normalDividerColor: Color,
     pressedDividerColor: Color,
+    onSelected: (String) -> Unit,
 ) {
-    val listScrollCount = Integer.MAX_VALUE
-    val listScrollMiddle = listScrollCount / 2
-
     val visibleItemsMiddle = visibleItemsCount / 2
-    val listStartIndex = listScrollMiddle - listScrollMiddle % list.size - visibleItemsMiddle + list.indexOf(pickerState.selectedItem)
+
+    val period = list.size
+    val safeSelected =
+        if (list.contains(selectedValue)) selectedValue else list.firstOrNull() ?: "00"
+    val safeIndexInList = list.indexOf(safeSelected).coerceAtLeast(0)
+
+    val listScrollCount = Int.MAX_VALUE
+    val listScrollMiddle = listScrollCount / 2
+    val targetFirstIndex =
+        listScrollMiddle - (listScrollMiddle % period) - visibleItemsMiddle + safeIndexInList
 
     val coroutineScope = rememberCoroutineScope()
     var dividerColor by remember { mutableStateOf(normalDividerColor) }
-    val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
-    val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    val normalItemHeightPixels = remember { mutableIntStateOf(0) }
-    val normalItemHeightDp = pixelsToDp(normalItemHeightPixels.intValue)
-    val centerItemHeightPixels = remember { mutableIntStateOf(0) }
-    val centerIemHeightDp = pixelsToDp(centerItemHeightPixels.intValue)
+    val normalItemHeightPx = remember { mutableIntStateOf(0) }
+    val centerItemHeightPx = remember { mutableIntStateOf(0) }
+    val normalItemHeightDp = pixelsToDp(normalItemHeightPx.intValue)
+    val centerItemHeightDp = pixelsToDp(centerItemHeightPx.intValue)
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { listState.isScrollInProgress }
-            .distinctUntilChanged()
-            .collect {
-                dividerColor = if (listState.isScrollInProgress) {
-                    pressedDividerColor
-                } else {
-                    normalDividerColor
+    key(timerMode, period) {
+
+        val listState = rememberLazyListState(
+            initialFirstVisibleItemIndex = targetFirstIndex,
+            initialFirstVisibleItemScrollOffset = 0
+        )
+        val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+        LaunchedEffect(Unit) {
+            snapshotFlow { listState.isScrollInProgress }
+                .distinctUntilChanged()
+                .collect { inProgress ->
+                    dividerColor = if (inProgress) pressedDividerColor else normalDividerColor
                 }
-            }
-    }
+        }
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
-            .map { (index, offset) -> index + visibleItemsMiddle to offset }
-            .distinctUntilChanged()
-            .collect { (index, offset) ->
-                pickerState.selectedItem = list[index % list.size]
+        LaunchedEffect(Unit) {
+            snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
+                .map { (index, offset) -> index + visibleItemsMiddle to offset }
+                .distinctUntilChanged()
+                .collect { (centerIndex, offset) ->
+                    onSelected(list[centerIndex % period])
 
-                if (offset > 0) {
-                    coroutineScope.launch {
-                        val scrollAmount = -offset.toFloat()
-                        listState.animateScrollBy(
-                            value = scrollAmount,
-                            animationSpec = spring(
-                                dampingRatio = Spring.DampingRatioNoBouncy,
-                                stiffness = Spring.StiffnessMedium,
-                            ),
+                    if (offset > 0) {
+                        coroutineScope.launch {
+                            listState.animateScrollBy(
+                                value = -offset.toFloat(),
+                                animationSpec = spring(
+                                    dampingRatio = Spring.DampingRatioNoBouncy,
+                                    stiffness = Spring.StiffnessMedium
+                                )
+                            )
+                        }
+                    }
+                }
+        }
+
+        Box(modifier = modifier) {
+            LazyColumn(
+                state = listState,
+                flingBehavior = flingBehavior,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(
+                        normalItemHeightDp * (visibleItemsCount - 1) + centerItemHeightDp + dividerHeight.dp * 2
+                    ),
+            ) {
+                items(listScrollCount) { index ->
+                    val item = list[index % period]
+                    val isSelected = item == safeSelected
+                    val color = if (isSelected) centerTextColor else normalTextColor
+                    val textStyle = if (isSelected) centerTextStyle else normalTextStyle
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                            .wrapContentHeight(Alignment.CenterVertically),
+                    ) {
+                        if (isSelected) Spacer(Modifier.height(dividerHeight.dp))
+                        Text(
+                            text = item,
+                            style = textStyle.copy(color = color),
+                            textAlign = TextAlign.Center,
+                            modifier = Modifier.onSizeChanged { size ->
+                                if (isSelected) centerItemHeightPx.value = size.height
+                                else normalItemHeightPx.value = size.height
+                            }
                         )
+                        if (isSelected) Spacer(Modifier.height(dividerHeight.dp))
                     }
                 }
             }
-    }
 
-    Box(modifier = modifier) {
-        LazyColumn(
-            state = listState,
-            flingBehavior = flingBehavior,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(normalItemHeightDp * (visibleItemsCount - 1) + centerIemHeightDp + dividerHeight.dp * 2),
-        ) {
-            items(listScrollCount) { index ->
-                val item = list[index % list.size]
-                val isSelected = item == pickerState.selectedItem
-                val color = if (isSelected) centerTextColor else normalTextColor
-                val textStyle = if (isSelected) centerTextStyle else normalTextStyle
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .wrapContentWidth(Alignment.CenterHorizontally)
-                        .wrapContentHeight(Alignment.CenterVertically),
-                ) {
-                    if (isSelected) Spacer(modifier = Modifier.height(dividerHeight.dp))
-                    Text(
-                        text = item,
-                        style = textStyle.copy(color = color),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .onSizeChanged { size ->
-                                if (isSelected) {
-                                    centerItemHeightPixels.value = size.height
-                                } else {
-                                    normalItemHeightPixels.value = size.height
-                                }
-                            }
-                            .height(textStyle.fontSize.value.dp),
-                    )
-                    if (isSelected) Spacer(modifier = Modifier.height(dividerHeight.dp))
-                }
-            }
+            HorizontalDivider(
+                modifier = Modifier
+                    .offset(y = normalItemHeightDp * visibleItemsMiddle)
+                    .height(dividerHeight.dp),
+                color = dividerColor,
+            )
+            HorizontalDivider(
+                modifier = Modifier
+                    .offset(y = normalItemHeightDp * visibleItemsMiddle + centerItemHeightDp + dividerHeight.dp * 2)
+                    .height(dividerHeight.dp),
+                color = dividerColor,
+            )
         }
-
-        HorizontalDivider(
-            modifier = Modifier
-                .offset(y = normalItemHeightDp * visibleItemsMiddle)
-                .height(dividerHeight.dp),
-            color = dividerColor,
-        )
-
-        HorizontalDivider(
-            modifier = Modifier
-                .offset(y = normalItemHeightDp * visibleItemsMiddle + centerIemHeightDp + dividerHeight.dp * 2)
-                .height(dividerHeight.dp),
-            color = dividerColor,
-        )
     }
 }
 
 @Composable
 private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
-
-@Composable
-fun rememberPickerState(defaultValue: String = "") = remember { PickerState(defaultValue) }
-
-class PickerState(defaultValue: String) {
-    var selectedItem by mutableStateOf(defaultValue)
-}
 
 @Preview("Picker")
 @Composable
@@ -177,7 +178,8 @@ private fun GaeBizPickerPreview() {
     val hours = (0..6).toList().map { it.toString().padStart(2, '0') }
 
     GaeBizPicker(
-        pickerState = PickerState(""),
+        selectedValue = "",
+        timerMode = TimerMode.Rest(RestType.NORMAL),
         list = hours,
         visibleItemsCount = 3,
         centerTextStyle = GaeBizTheme.typography.timer2,
@@ -187,5 +189,6 @@ private fun GaeBizPickerPreview() {
         dividerHeight = 2,
         normalDividerColor = GaeBizTheme.colors.gray75,
         pressedDividerColor = GaeBizTheme.colors.primaryOrange,
+        onSelected = { },
     )
 }
