@@ -4,6 +4,7 @@ import android.util.Log
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_CHARACTER_IDX
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_HOUR
+import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_IS_INTERVAL_TIMER
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_IS_REST_COMPLETED
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_IS_SETTING_TIMER
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore.Companion.DEFAULT_LEVEL
@@ -194,6 +195,23 @@ class TimerRepositoryImpl(
     override suspend fun getLevelIdx(): Int {
         return try {
             timerDataStore.getLevelIdx().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+        }
+    }
+
+    override suspend fun getIsIntervalTimer(): Boolean {
+        return try {
+            timerDataStore.getIsIntervalTimer().first()
+        } catch (e: Exception) {
+            Log.e("TimerRepositoryImpl", "Error updating timer data", e)
+            DEFAULT_IS_INTERVAL_TIMER
+        }
+    }
+
+    override suspend fun setIsIntervalTimer(isIntervalTimer: Boolean) {
+        try {
+            timerDataStore.setIsIntervalTimer(isIntervalTimer)
         } catch (e: Exception) {
             Log.e("TimerRepositoryImpl", "Error updating timer data", e)
         }

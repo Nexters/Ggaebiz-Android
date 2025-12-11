@@ -35,4 +35,7 @@ interface TimerRepository {
     suspend fun setSnoozeCount(count: Int)
 
     suspend fun getLevelIdx(): Int
+
+    suspend fun getIsIntervalTimer(): Boolean
+    suspend fun setIsIntervalTimer(isIntervalTimer: Boolean)
 }

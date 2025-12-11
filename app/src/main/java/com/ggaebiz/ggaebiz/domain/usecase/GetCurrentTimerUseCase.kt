@@ -16,4 +16,10 @@ class GetCurrentTimerUseCase(private val repository: TimerRepository) {
             return getLevelIdx()
         }
     }
+
+    suspend fun getIsIntervalTimer(): Boolean {
+        repository.run {
+            return getIsIntervalTimer()
+        }
+    }
 }

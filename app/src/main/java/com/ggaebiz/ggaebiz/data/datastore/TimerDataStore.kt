@@ -16,6 +16,7 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     private val characterIdxKey = intPreferencesKey("character_idx_data")
     private val levelKey = intPreferencesKey("level_data")
     private val levelIdxKey = intPreferencesKey("level_idx_data")
+    private val isIntervalTimerKey = booleanPreferencesKey("is_interval_timer_data")
     private val hourKey = intPreferencesKey("hour_data")
     private val settingHourKey = intPreferencesKey("setting_hour_data")
     private val minuteKey = intPreferencesKey("minute_data")
@@ -30,6 +31,7 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
         const val DEFAULT_CHARACTER_IDX = 0
         const val DEFAULT_LEVEL = 1
         const val DEFAULT_LEVEL_IDX = 0
+        const val DEFAULT_IS_INTERVAL_TIMER = false
         const val DEFAULT_HOUR = 0
         const val DEFAULT_MINUTE = 30
         const val DEFAULT_IS_REST_COMPLETED = false
@@ -87,6 +89,18 @@ class TimerDataStore(private val dataStore: DataStore<Preferences>) {
     private suspend fun setLevelIdx(levelIdx: Int) {
         dataStore.edit { preferences ->
             preferences[levelIdxKey] = levelIdx
+        }
+    }
+
+    fun getIsIntervalTimer(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[isIntervalTimerKey] ?: DEFAULT_IS_INTERVAL_TIMER
+        }
+    }
+
+    suspend fun setIsIntervalTimer(isIntervalTimer: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[isIntervalTimerKey] = isIntervalTimer
         }
     }
 
