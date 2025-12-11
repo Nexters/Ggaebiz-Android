@@ -243,7 +243,7 @@ fun ChoiceLevelPopup(
                     title = stringResource(R.string.ment_level_1_item_text),
                     isSelected = selectedLevel == 1,
                     selectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].selectedImageResId[0]),
-                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].imageResId[0]),
+                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].unSelectedImageResId[0]),
                     onClick = { onClick(1) },
                 )
                 LevelItem(
@@ -251,7 +251,7 @@ fun ChoiceLevelPopup(
                     title = stringResource(R.string.ment_level_2_item_text),
                     isSelected = selectedLevel == 2,
                     selectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].selectedImageResId[1]),
-                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].imageResId[1]),
+                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].unSelectedImageResId[1]),
                     onClick = { onClick(2) },
                 )
                 LevelItem(
@@ -259,7 +259,7 @@ fun ChoiceLevelPopup(
                     title = stringResource(R.string.ment_level_3_item_text),
                     isSelected = selectedLevel == 3,
                     selectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].selectedImageResId[2]),
-                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].imageResId[2]),
+                    unSelectedIcon = painterResource(CHARACTER_LIST[selectedCharacterIdx].unSelectedImageResId[2]),
                     onClick = { onClick(3) },
                 )
             }
