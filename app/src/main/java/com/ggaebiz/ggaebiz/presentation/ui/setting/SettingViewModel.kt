@@ -97,6 +97,7 @@ class SettingViewModel(
             hour = hour,
             minute = minute,
             timerMode = uiState.value.timerMode,
+            isIntervalTimer = false,
         )
         setSettingTimerUseCase(
             hour = hour,

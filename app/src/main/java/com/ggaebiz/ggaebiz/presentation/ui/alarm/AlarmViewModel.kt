@@ -133,6 +133,7 @@ class AlarmViewModel(
             hour = 0,
             minute = uiState.value.nextTimerMinute,
             timerMode = null,
+            isIntervalTimer = true,
         )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }
@@ -146,6 +147,7 @@ class AlarmViewModel(
             hour = hour,
             minute = minute,
             timerMode = uiState.value.timerMode,
+            isIntervalTimer = false,
         )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }

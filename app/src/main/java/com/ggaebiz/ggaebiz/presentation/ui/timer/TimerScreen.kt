@@ -99,7 +99,7 @@ fun TimerContent(
         GaeBizLogoAppBar()
         Spacer(modifier = Modifier.weight(1f))
         CenterComponent(
-            CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId,
+            textRes = getTimerMent(uiState),
             composition = composition,
             progress = { progress },
             seconds = uiState.remainingSeconds,
@@ -155,6 +155,17 @@ fun showToast(context: Context, uiState: TimerState) {
     }
 }
 
+private fun getTimerMent(uiState: TimerState): Int {
+    return if (!uiState.isIntervalTimer && uiState.timerMode.isConcentrateTimer()) {
+        if (uiState.isPaused) {
+            CHARACTER_LIST[uiState.selectedCharacterIdx].stopTimerMentResId
+        } else {
+            CHARACTER_LIST[uiState.selectedCharacterIdx].resumeTimerMentResId
+        }
+    } else {
+        CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

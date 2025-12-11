@@ -23,6 +23,7 @@ data class TimerState(
     val actionButtonVisible: Boolean = false,
     val remainingSeconds: Int = 0,
     val isPaused: Boolean = false,
+    val isIntervalTimer: Boolean = false,
 )
 
 sealed interface TimerSideEffect {
@@ -63,8 +64,8 @@ class TimerViewModel(
     fun processIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.StopTimer -> stopTimer()
-            is TimerIntent.PauseTimer  -> postSideEffect(TimerSideEffect.PauseService)
-            is TimerIntent.ResumeTimer -> postSideEffect(TimerSideEffect.ResumeService)
+            is TimerIntent.PauseTimer  -> pauseTimer()
+            is TimerIntent.ResumeTimer -> resumeTimer()
         }
     }
 
@@ -72,6 +73,7 @@ class TimerViewModel(
         val (level, hour, minute, timerMode) = getCurrentTimerUseCase()
         val selectedCharacterIdx = getCharacterIdxUseCase()
         val leveIdx = getCurrentTimerUseCase.getLevelIdx()
+        val isIntervalTimer = getCurrentTimerUseCase.getIsIntervalTimer()
 
         val data = selectedCharacterIdx.getCharacterData()
         val audioPath = data?.getMentAudio(timerMode, level - 1, leveIdx)?.audioPath ?: ""
@@ -93,7 +95,8 @@ class TimerViewModel(
                 minute = minute,
                 timerMode = timerMode,
                 actionButtonVisible = actionButtonVisible,
-                remainingSeconds = settingSeconds
+                remainingSeconds = settingSeconds,
+                isIntervalTimer = isIntervalTimer,
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
@@ -115,6 +118,20 @@ class TimerViewModel(
         endTimerUseCase()
         setSnoozeCountUseCase(0)
         postSideEffect(TimerSideEffect.StopService)
+    }
+
+    private fun pauseTimer() {
+        updateState {
+            it.copy(isPaused = true)
+        }
+        postSideEffect(TimerSideEffect.PauseService)
+    }
+
+    private fun resumeTimer() {
+        updateState {
+            it.copy(isPaused = false)
+        }
+        postSideEffect(TimerSideEffect.ResumeService)
     }
 
     private fun bindAndCollectServiceState() {
