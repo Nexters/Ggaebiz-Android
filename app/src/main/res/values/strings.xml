@@ -60,9 +60,9 @@
 
     <string name="nana_name">나나</string>
     <string name="nana_name_text">NANA 나나</string>
-    <string name="nana_tag_text1">이미 속 터짐</string>
-    <string name="nana_tag_text2">은근 다정</string>
-    <string name="nana_tag_text3">사투리</string>
+    <string name="nana_tag_text1">애교 가-득</string>
+    <string name="nana_tag_text2">다정다감</string>
+    <string name="nana_tag_text3">새침발랄</string>
     <string name="nana_init_ment_text">계속 이래 있으면 어캐 되는지 알제?</string>
     <string name="nana_timer_ment_text">쉬는 것도 능력이다, 알제? 🤨</string>
 
@@ -70,7 +70,7 @@
     <string name="chacha_name_text">CHACHA 차차</string>
     <string name="chacha_tag_text1">T 할머니</string>
     <string name="chacha_tag_text2">잔소리</string>
-    <string name="chacha_tag_text3">보채기</string>
+    <string name="chacha_tag_text3">프로참견러</string>
     <string name="chacha_init_ment_text">너 깨우려고 할미가 이 늙은 몸을 이끌고 왔단다!</string>
     <string name="chacha_timer_ment_text">어허~ 이 짧은 시간도 소중한겨!</string>
 
