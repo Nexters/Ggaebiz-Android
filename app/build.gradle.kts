@@ -78,6 +78,7 @@ dependencies {
     //koin
     implementation(libs.insert.koin.koin.android)
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.navigation)
 
     implementation (libs.accompanist.systemuicontroller) // 최신 버전 확인
 
