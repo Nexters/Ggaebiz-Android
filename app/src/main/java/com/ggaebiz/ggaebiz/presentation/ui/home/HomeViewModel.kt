@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
+import android.net.Uri
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
@@ -9,14 +10,15 @@ import kotlinx.coroutines.delay
 
 data class HomeState(
     val selectCharacterIdx: Int = 0,
-    val isGranted: Boolean = false,
+    val isNotificationGranted: Boolean = false,
     val backPressedOnce: Boolean = false,
     val volumeToastStatus : Boolean = false,
     val isNudgeGuideViewed : Boolean = false,
     val isBatteryPopupShow : Boolean = false,
     val nudgeGuideIdx : Int = 1,
-    val isProofPopupShow : Boolean = false,
-    val isChoiceWayPopup : Boolean = false
+    val isProofPopupShow : Boolean = false, // 테스트를 위해선 이부분을 ture로 바꾸어주세욥
+    val isChoiceWayPopup : Boolean = false,
+    val proofImageUri : Uri? = null
 ){
     val homeClickEnable = isNudgeGuideViewed && !isBatteryPopupShow
 }
@@ -24,15 +26,18 @@ data class HomeState(
 sealed interface HomeSideEffect {
     data object NavigateToSetting : HomeSideEffect
     data object NavigateToConfig : HomeSideEffect
-    data object CheckPermission : HomeSideEffect
+    data object CheckNotificationsPermission : HomeSideEffect
     data class ShowToast(val message : Int) : HomeSideEffect
     data object FinishApp : HomeSideEffect
     data object MoveToDeviceSetting : HomeSideEffect
+    data object MoveToCamera : HomeSideEffect
+    data object MoveToGallery : HomeSideEffect
+    data class MoveToProof(val uri : Uri) : HomeSideEffect
 }
 
 sealed interface HomeIntent {
     data class SelectCharacter(val selectCharacterIdx: Int) : HomeIntent
-    data class UpdatePermission(val isGranted: Boolean) : HomeIntent
+    data class UpdateNotificationPermission(val isGranted: Boolean) : HomeIntent
     data object EnterScreen : HomeIntent
     data object ClickSettingButton : HomeIntent
     data object PlayMentAudio : HomeIntent
@@ -40,14 +45,19 @@ sealed interface HomeIntent {
     data object PressedBack : HomeIntent
     data object ClickNudgeSkipButton : HomeIntent
     data object ClickNudgeConfirmButton : HomeIntent
+
     data object CheckBatteryPopUp : HomeIntent
     data object ClickBatteryNextButton : HomeIntent
     data object ClickBatteryMoveButton : HomeIntent
+
     data object ClickProofDisMissButton : HomeIntent
     data object ClickProofMoveButton : HomeIntent
+    data object ClickProofCamera : HomeIntent
+    data object ClickProofGallery : HomeIntent
+    data object ClickProofCard : HomeIntent
+
+    data class FinishGetImage(val uri : Uri?) : HomeIntent
 }
-
-
 
 
 class HomeViewModel(
@@ -58,7 +68,6 @@ class HomeViewModel(
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
-
     fun processIntent(intent: HomeIntent) {
         when (intent) {
             is HomeIntent.ClickSettingButton -> {
@@ -67,8 +76,8 @@ class HomeViewModel(
             is HomeIntent.SelectCharacter -> {
                 selectCharacter(intent.selectCharacterIdx)
             }
-            is HomeIntent.UpdatePermission -> {
-                updateState { it.copy(isGranted = intent.isGranted) }
+            is HomeIntent.UpdateNotificationPermission -> {
+                updateState { it.copy(isNotificationGranted = intent.isGranted) }
             }
             is HomeIntent.PlayMentAudio -> {
                 if (deviceVolume == 0) {
@@ -108,7 +117,7 @@ class HomeViewModel(
                 launch{
                     if (onboardingRepository.getHomeNudgeGuideViewed()){
                         updateState { it.copy(isNudgeGuideViewed = true) }
-                        postSideEffect(HomeSideEffect.CheckPermission)
+                        postSideEffect(HomeSideEffect.CheckNotificationsPermission)
                     }
                 }
             }
@@ -129,8 +138,13 @@ class HomeViewModel(
             HomeIntent.ClickProofDisMissButton -> {
                 updateState { it.copy(isProofPopupShow = false) }
             }
-            HomeIntent.ClickProofMoveButton -> {
-                updateState { it.copy(isProofPopupShow = false, isChoiceWayPopup = true) }
+            HomeIntent.ClickProofMoveButton -> { updateState { it.copy(isProofPopupShow = false, isChoiceWayPopup = true) } }
+            HomeIntent.ClickProofCamera -> { postSideEffect(HomeSideEffect.MoveToCamera) }
+            HomeIntent.ClickProofGallery -> { postSideEffect(HomeSideEffect.MoveToGallery)}
+            HomeIntent.ClickProofCard -> { }
+            is HomeIntent.FinishGetImage -> {
+                updateState { it.copy(isChoiceWayPopup = false) }
+                intent.uri?.let {  postSideEffect(HomeSideEffect.MoveToProof(it))}
             }
         }
     }
@@ -147,6 +161,6 @@ class HomeViewModel(
     private fun finishHomeNudge() = launch{
         onboardingRepository.setHomeNudgeGuideViewed(true)
         updateState { it.copy(isNudgeGuideViewed = true) }
-        postSideEffect(HomeSideEffect.CheckPermission)
+        postSideEffect(HomeSideEffect.CheckNotificationsPermission)
     }
 }
