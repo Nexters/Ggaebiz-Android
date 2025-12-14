@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- cacheDir -->
+    <cache-path
+        name="cache"
+        path="." />
+
+    <!-- externalCacheDir -->
+    <external-cache-path
+        name="external_cache"
+        path="." />
+
+    <!-- external files (Pictures 등) -->
+    <external-files-path
+        name="external_files"
+        path="." />
+</paths>
