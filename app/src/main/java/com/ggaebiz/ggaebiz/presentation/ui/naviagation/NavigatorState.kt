@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.naviagation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
@@ -47,6 +48,14 @@ class NavigatorState(
 
     fun navigateConfig() {
         navController.navigate(Route.Config)
+    }
+
+    fun navigateEditor(uri: Uri?) {
+        navController.navigate(Route.Editor(uri = uri?.toString()))
+    }
+
+    fun navigateEditorResult(uri: Uri) {
+        navController.navigate(Route.EditorResult(uri = uri.toString()))
     }
 
     // 모든 화면을 제거하고 Home으로

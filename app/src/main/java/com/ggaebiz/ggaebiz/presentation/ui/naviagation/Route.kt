@@ -17,4 +17,7 @@ sealed interface Route  {
 
     @Serializable data object Config : Route
 
+    @Serializable data class Editor(val uri: String?) : Route
+
+    @Serializable data class EditorResult(val uri: String) : Route
 }

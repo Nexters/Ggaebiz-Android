@@ -12,6 +12,8 @@ import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingScreen
+import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorScreen
+import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.splash.SplashScreen
 import com.ggaebiz.ggaebiz.presentation.ui.timer.TimerScreen
@@ -73,7 +75,8 @@ fun GaeBizNavHost(
             HomeScreen(
                 navigateSetting = { navigator.navigateSetting() },
                 navigateAlarm = { navigator.navigateAlarm() },
-                navigateConfig = { navigator.navigateConfig()}
+                navigateConfig = { navigator.navigateConfig()},
+                navigateEditor  = { uri -> navigator.navigateEditor(uri) }
             )
         }
         composable<Route.Setting> {
@@ -96,6 +99,18 @@ fun GaeBizNavHost(
         composable<Route.Config> {
             ConfigScreen(
                 navigateBack = {navigator.popBackStack()}
+            )
+        }
+        composable<Route.Editor> {
+            EditorScreen(
+                navigateBack = { navigator.popBackStack()},
+                navigateSave = { uri ->  navigator.navigateEditorResult(uri)}
+            )
+        }
+        composable<Route.EditorResult> {
+            EditorResultScreen(
+                navigateBack = {navigator.popBackStack()},
+                navigateHome = {navigator.navigateToMainClearingBackStack()}
             )
         }
     }
