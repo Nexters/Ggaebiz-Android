@@ -2,6 +2,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
 import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
@@ -61,12 +62,16 @@ sealed interface HomeIntent {
 
 
 class HomeViewModel(
+    savedStateHandle: SavedStateHandle,
     private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
     private val audioManager: AudioManager,
     private val onboardingRepository: OnboardingRepository
-) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState()) {
+) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState(
+    isProofPopupShow = savedStateHandle.get<Boolean>("isFromAlarm") ?: false
+)) {
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+
 
     fun processIntent(intent: HomeIntent) {
         when (intent) {

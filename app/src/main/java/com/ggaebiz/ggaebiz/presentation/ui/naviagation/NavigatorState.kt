@@ -27,7 +27,7 @@ class NavigatorState(
     val startDestination = Route.Splash
 
     fun navigateHome() {
-        navController.navigate(Route.Home)
+        navController.navigate(Route.Home(null))
     }
 
     fun navigateOnboarding() {
@@ -60,11 +60,19 @@ class NavigatorState(
 
     // 모든 화면을 제거하고 Home으로
     fun navigateToMainClearingBackStack() {
-        navController.navigate(Route.Home) {
+        navController.navigate(Route.Home(null)) {
             popUpTo(0) { inclusive = true }
             launchSingleTop = true
         }
     }
+
+    fun navigateToMainFromAlarm(isFromAlarm : Boolean){
+        navController.navigate(Route.Home(isFromAlarm)){
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     fun popBackStack() {
         navController.popBackStack()
     }

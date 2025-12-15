@@ -92,7 +92,7 @@ fun GaeBizNavHost(
         }
         composable<Route.Alarm> {
             AlarmScreen(
-                navigateStart = { navigator.navigateToMainClearingBackStack() },
+                navigateStart = { navigator.navigateToMainFromAlarm(true) },
                 navigateTimer = { navigator.navigateTimer() }
             )
         }

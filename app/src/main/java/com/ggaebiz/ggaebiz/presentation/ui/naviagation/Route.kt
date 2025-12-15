@@ -7,7 +7,7 @@ sealed interface Route  {
 
     @Serializable data object Onboarding : Route
 
-    @Serializable data object Home : Route
+    @Serializable data class Home(val isFromAlarm : Boolean?) : Route
 
     @Serializable data object Setting : Route
 

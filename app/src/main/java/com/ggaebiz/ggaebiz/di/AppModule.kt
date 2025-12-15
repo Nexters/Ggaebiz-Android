@@ -73,7 +73,7 @@ val appModule = module {
     factory { CreateCachedImageUseCase(get()) }
     factory { SaveImageToGalleryUseCase(imageRepository = get()) }
 
-    viewModel { HomeViewModel(get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
