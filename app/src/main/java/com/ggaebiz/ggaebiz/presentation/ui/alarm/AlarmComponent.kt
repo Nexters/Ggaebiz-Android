@@ -86,6 +86,8 @@ private fun AlarmDefaultText() {
 @Composable
 fun AlarmBottomSection(
     modifier: Modifier = Modifier,
+    finishButtonTextRes: Int,
+    snoozeButtonTextRes: Int,
     onClickFinishButton: () -> Unit,
     onClickSnoozeButton: () -> Unit,
     isDisableSnoozeButton: Boolean,
@@ -99,7 +101,7 @@ fun AlarmBottomSection(
     ) {
         GaeBizButton(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.alarm_finish_timer_btn_text),
+            text = stringResource(finishButtonTextRes),
             style = GaeBizTheme.typography.bodySemiBold,
             containerColor = GaeBizTheme.colors.primaryOrange,
             contentColor = GaeBizTheme.colors.white,
@@ -114,7 +116,7 @@ fun AlarmBottomSection(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = stringResource(R.string.alarm_snooze_timer_btn_text),
+                    text = stringResource(snoozeButtonTextRes),
                     style = GaeBizTheme.typography.bodyMedium,
                     color = GaeBizTheme.colors.gray100,
                 )

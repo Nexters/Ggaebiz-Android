@@ -2,12 +2,17 @@ package com.ggaebiz.ggaebiz.presentation.ui.alarm
 
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetIsRestCompletedUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
-import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetSettingTimerUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetIsRestCompletedUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
-import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetCurrentTimerUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import com.ggaebiz.ggaebiz.presentation.common.extension.getCharacterData
+import com.ggaebiz.ggaebiz.presentation.ui.setting.RestType
+import com.ggaebiz.ggaebiz.presentation.ui.setting.TimerMode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.StateFlow
 import java.util.Locale
@@ -16,14 +21,29 @@ data class AlarmState(
     val level: Int = 1,
     val ment: Int = R.string.alarm_ment_kiki_level1_1,
     val backGroundImgRes: Int = R.drawable.fullpage_kiki_lev_1,
+    val timerMode: TimerMode = TimerMode.Rest(RestType.NORMAL),
     val plusSeconds: String = "+ 00:00",
     var snoozeCount: Int = 0,
+    val isRestCompleted: Boolean = false,
 ) {
-    val disableSnoozeButton: Boolean = snoozeCount >= 2
+    companion object {
+        const val DEFAULT_SNOOZE_MINUTE = 5
+        const val DEFAULT_REST_MINUTE = 10
+    }
+    private val isFirstSnoozeOrMaxLevel: Boolean = snoozeCount == 0 && level == 3
+
+    val isRestAvailable: Boolean = timerMode.isConcentrateTimer() && isRestCompleted.not()
+    val disableSnoozeButton: Boolean = snoozeCount >= 2 && timerMode.isRestTimer()
+
+    val nextTimerMinute = if (isRestAvailable) DEFAULT_REST_MINUTE else DEFAULT_SNOOZE_MINUTE
+
+    val nextSnoozeCount = if (isRestAvailable) snoozeCount else snoozeCount + 1
+    val nextLevel: Int = if (isFirstSnoozeOrMaxLevel || isRestAvailable) level else level + 1
 }
 
 sealed interface AlarmIntent {
     data object ClickSnooze : AlarmIntent
+    data object ClickResumeConcentrate : AlarmIntent
     data object ClickFinish : AlarmIntent
     data object StartOverCount : AlarmIntent
 }
@@ -36,10 +56,13 @@ sealed interface AlarmSideEffect {
 
 class AlarmViewModel(
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
-    private val getTimerSettingUseCase: GetTimerSettingUseCase,
-    private val setTimerSettingUseCase: SetTimerSettingUseCase,
+    private val getCurrentTimerUseCase: GetCurrentTimerUseCase,
+    private val setCurrentTimerUseCase: SetCurrentTimerUseCase,
+    private val getSettingTimerUseCase: GetSettingTimerUseCase,
     private val getSnoozeCountUseCase: GetSnoozeCountUseCase,
     private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
+    private val getIsRestCompletedUseCase: GetIsRestCompletedUseCase,
+    private val setIsRestCompletedUseCase: SetIsRestCompletedUseCase,
 ) : BaseViewModel<AlarmState, AlarmIntent, AlarmSideEffect>(AlarmState()) {
 
     init {
@@ -51,6 +74,7 @@ class AlarmViewModel(
         when (intent) {
             AlarmIntent.ClickFinish -> finishTimer()
             AlarmIntent.ClickSnooze -> snoozeTimer()
+            AlarmIntent.ClickResumeConcentrate -> resumeConcentrateTimer()
             AlarmIntent.StartOverCount -> startIncreaseSeconds()
         }
     }
@@ -77,17 +101,20 @@ class AlarmViewModel(
     private fun getTimerInfo() = launch {
         val snoozeCount = getSnoozeCountUseCase()
         val characterIdx = getCharacterIdxUseCase()
-        val (level, _, _) = getTimerSettingUseCase()
-        val levelIdx = getTimerSettingUseCase.getLevelIdx()
+        val (level, _, _, timerMode) = getCurrentTimerUseCase()
+        val levelIdx = getCurrentTimerUseCase.getLevelIdx()
+        val isRestCompleted = getIsRestCompletedUseCase()
 
         val data = characterIdx.getCharacterData()
         if (data != null) {
             updateState {
                 it.copy(
-                    ment = data.mentAudioList[level - 1][levelIdx].ment,
+                    ment = data.getMentAudio(timerMode, level - 1, levelIdx).ment,
                     backGroundImgRes = data.alarmBackgroundImageList[level - 1],
+                    timerMode = timerMode,
                     level = level,
-                    snoozeCount = snoozeCount
+                    snoozeCount = snoozeCount,
+                    isRestCompleted = isRestCompleted,
                 )
             }
         }
@@ -99,16 +126,28 @@ class AlarmViewModel(
     }
 
     private fun snoozeTimer() = launch {
-        val nowLevel = uiState.value.level
-        val nowSnooze = uiState.value.snoozeCount
-        val newLevel = if (nowSnooze == 0 && nowLevel == 3) nowLevel else nowLevel + 1
-
-        setSnoozeCountUseCase.invoke((nowSnooze + 1))
-        setTimerSettingUseCase(
-            level = newLevel,
+        setSnoozeCountUseCase(uiState.value.nextSnoozeCount)
+        setIsRestCompletedUseCase(true)
+        setCurrentTimerUseCase(
+            level = uiState.value.nextLevel,
             hour = 0,
-            minute = 5,
-            snoozeCount = nowSnooze + 1
+            minute = uiState.value.nextTimerMinute,
+            timerMode = null,
+            isIntervalTimer = true,
+        )
+        postSideEffect(AlarmSideEffect.ClickSnooze)
+    }
+
+    private fun resumeConcentrateTimer() = launch {
+        val (hour, minute) = getSettingTimerUseCase()
+        setSnoozeCountUseCase(0)
+        setIsRestCompletedUseCase(false)
+        setCurrentTimerUseCase(
+            level = 1,
+            hour = hour,
+            minute = minute,
+            timerMode = uiState.value.timerMode,
+            isIntervalTimer = false,
         )
         postSideEffect(AlarmSideEffect.ClickSnooze)
     }

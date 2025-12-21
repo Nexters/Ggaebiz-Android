@@ -28,6 +28,8 @@ import com.ggaebiz.ggaebiz.presentation.common.extension.collectSideEffectWithLi
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizLogoAppBar
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.ui.GaeBizSlideButton
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.TimerActionButton
+import com.ggaebiz.ggaebiz.presentation.designsystem.ui.TimerActionType
 import com.ggaebiz.ggaebiz.presentation.model.Character.Companion.CHARACTER_LIST
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import org.koin.androidx.compose.koinViewModel
@@ -53,7 +55,8 @@ fun TimerScreen(
                     effect.seconds,
                     effect.audioResPath,
                     effect.vibration,
-                    effect.volume
+                    effect.volume,
+                    effect.actionButtonVisible,
                 )
             }
 
@@ -61,6 +64,8 @@ fun TimerScreen(
                 timerServiceManager.stopTimerService()
                 navigateHome()
             }
+            is TimerSideEffect.PauseService -> timerServiceManager.pauseTimer()
+            is TimerSideEffect.ResumeService -> timerServiceManager.resumeTimer()
         }
     }
 
@@ -94,11 +99,23 @@ fun TimerContent(
         GaeBizLogoAppBar()
         Spacer(modifier = Modifier.weight(1f))
         CenterComponent(
-            CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId,
+            textRes = getTimerMent(uiState),
             composition = composition,
             progress = { progress },
             seconds = uiState.remainingSeconds,
             screenWidth = LocalConfiguration.current.screenWidthDp.dp
+        )
+        Spacer(modifier = Modifier.weight(1f))
+        TimerActionButton(
+            type =  if (uiState.isPaused) TimerActionType.Resume else TimerActionType.Pause,
+            visible = uiState.actionButtonVisible,
+            onClick = {
+                if (uiState.isPaused) {
+                    processIntent(TimerIntent.ResumeTimer)
+                } else {
+                    processIntent(TimerIntent.PauseTimer)
+                }
+            },
         )
         Spacer(modifier = Modifier.weight(1f))
         GaeBizSlideButton(
@@ -138,6 +155,17 @@ fun showToast(context: Context, uiState: TimerState) {
     }
 }
 
+private fun getTimerMent(uiState: TimerState): Int {
+    return if (!uiState.isIntervalTimer && uiState.timerMode.isConcentrateTimer()) {
+        if (uiState.isPaused) {
+            CHARACTER_LIST[uiState.selectedCharacterIdx].stopTimerMentResId
+        } else {
+            CHARACTER_LIST[uiState.selectedCharacterIdx].resumeTimerMentResId
+        }
+    } else {
+        CHARACTER_LIST[uiState.selectedCharacterIdx].timerMentResId
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

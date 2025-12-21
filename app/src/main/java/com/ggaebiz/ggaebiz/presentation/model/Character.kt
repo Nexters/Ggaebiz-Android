@@ -18,8 +18,14 @@ data class Character(
     @StringRes val wholeNameResId: Int,
     @StringRes val initMentResId: Int,
     @StringRes val timerMentResId: Int,
+    @StringRes val resumeTimerMentResId: Int,
+    @StringRes val stopTimerMentResId: Int,
     @DrawableRes val imageResId: PersistentList<Int>,
     @DrawableRes val selectedImageResId: PersistentList<Int>,
+    @DrawableRes val unSelectedImageResId: PersistentList<Int>,
+    @DrawableRes val selectedConcentrateNormalImageResId: Int,
+    @DrawableRes val selectedConcentrateStudyImageResId: Int,
+    @DrawableRes val selectedConcentrateExerciseImageResId: Int,
     @StringRes val traitsResIdList: PersistentList<Int>,
     @RawRes val lottieResId: Int,
     @RawRes val initMentAudioResId: Int,
@@ -31,7 +37,9 @@ data class Character(
                 nameResId = R.string.kiki_name,
                 wholeNameResId = R.string.kiki_name_text,
                 initMentResId = R.string.kiki_init_ment_text,
-                timerMentResId = R.string.kiki_timer_ment_text,
+                timerMentResId = R.string.kiki_timer_rest_ment_text,
+                resumeTimerMentResId = R.string.kiki_resume_timer_concentrate_ment_text,
+                stopTimerMentResId = R.string.kiki_stop_timer_concentrate_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_kiki_level1,
                     R.drawable.ic_kiki_level2,
@@ -44,6 +52,14 @@ data class Character(
                     R.drawable.ic_selected_kiki_level3,
                     R.drawable.ic_selected_kiki_level3,
                 ),
+                unSelectedImageResId = persistentListOf(
+                    R.drawable.ic_unselected_kiki_level1,
+                    R.drawable.ic_unselected_kiki_level2,
+                    R.drawable.ic_unselected_kiki_level3,
+                ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_kiki_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_kiki_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_kiki_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.kiki_tag_text1,
                     R.string.kiki_tag_text2,
@@ -57,7 +73,9 @@ data class Character(
                 key = CharacterName.BOBO,
                 wholeNameResId = R.string.bobo_name_text,
                 initMentResId = R.string.bobo_init_ment_text,
-                timerMentResId = R.string.bobo_timer_ment_text,
+                timerMentResId = R.string.bobo_timer_rest_ment_text,
+                resumeTimerMentResId = R.string.bobo_resume_timer_concentrate_ment_text,
+                stopTimerMentResId = R.string.bobo_stop_timer_concentrate_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_bobo_level1,
                     R.drawable.ic_bobo_level2,
@@ -70,6 +88,14 @@ data class Character(
                     R.drawable.ic_selected_bobo_level3,
                     R.drawable.ic_selected_bobo_level3
                 ),
+                unSelectedImageResId = persistentListOf(
+                    R.drawable.ic_unselected_bobo_level1,
+                    R.drawable.ic_unselected_bobo_level2,
+                    R.drawable.ic_unselected_bobo_level3,
+                ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_bobo_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_bobo_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_bobo_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.bobo_tag_text1,
                     R.string.bobo_tag_text2,
@@ -83,7 +109,9 @@ data class Character(
                 key = CharacterName.NANA,
                 wholeNameResId = R.string.nana_name_text,
                 initMentResId = R.string.nana_init_ment_text,
-                timerMentResId = R.string.nana_timer_ment_text,
+                timerMentResId = R.string.nana_timer_rest_ment_text,
+                resumeTimerMentResId = R.string.nana_resume_timer_concentrate_ment_text,
+                stopTimerMentResId = R.string.nana_stop_timer_concentrate_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_nana_level1,
                     R.drawable.ic_nana_level2,
@@ -96,6 +124,14 @@ data class Character(
                     R.drawable.ic_selected_nana_level3,
                     R.drawable.ic_selected_nana_level3
                 ),
+                unSelectedImageResId = persistentListOf(
+                    R.drawable.ic_unselected_nana_level1,
+                    R.drawable.ic_unselected_nana_level2,
+                    R.drawable.ic_unselected_nana_level3,
+                ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_nana_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_nana_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_nana_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.nana_tag_text1,
                     R.string.nana_tag_text2,
@@ -109,7 +145,9 @@ data class Character(
                 key = CharacterName.CHACHA,
                 wholeNameResId = R.string.chacha_name_text,
                 initMentResId = R.string.chacha_init_ment_text,
-                timerMentResId = R.string.chacha_timer_ment_text,
+                timerMentResId = R.string.chacha_timer_rest_ment_text,
+                resumeTimerMentResId = R.string.chacha_resume_timer_concentrate_ment_text,
+                stopTimerMentResId = R.string.chacha_stop_timer_concentrate_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_chacha_level1,
                     R.drawable.ic_chacha_level2,
@@ -122,6 +160,14 @@ data class Character(
                     R.drawable.ic_selected_chacha_level3,
                     R.drawable.ic_selected_chacha_level3
                 ),
+                unSelectedImageResId = persistentListOf(
+                    R.drawable.ic_unselected_chacha_level1,
+                    R.drawable.ic_unselected_chacha_level2,
+                    R.drawable.ic_unselected_chacha_level3,
+                ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_chacha_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_chacha_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_chacha_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.chacha_tag_text1,
                     R.string.chacha_tag_text2,
@@ -135,7 +181,9 @@ data class Character(
                 key = CharacterName.BOOBOO,
                 wholeNameResId = R.string.booboo_name_text,
                 initMentResId = R.string.booboo_init_ment_text,
-                timerMentResId = R.string.booboo_timer_ment_text,
+                timerMentResId = R.string.booboo_timer_rest_ment_text,
+                resumeTimerMentResId = R.string.booboo_resume_timer_concentrate_ment_text,
+                stopTimerMentResId = R.string.booboo_stop_timer_concentrate_ment_text,
                 imageResId = persistentListOf(
                     R.drawable.ic_booboo_level1,
                     R.drawable.ic_booboo_level2,
@@ -148,6 +196,14 @@ data class Character(
                     R.drawable.ic_selected_booboo_level3,
                     R.drawable.ic_selected_booboo_level3
                 ),
+                unSelectedImageResId = persistentListOf(
+                    R.drawable.ic_unselected_booboo_level1,
+                    R.drawable.ic_unselected_booboo_level2,
+                    R.drawable.ic_unselected_booboo_level3,
+                ),
+                selectedConcentrateNormalImageResId = R.drawable.ic_selected_booboo_level1,
+                selectedConcentrateStudyImageResId = R.drawable.ic_selected_booboo_study,
+                selectedConcentrateExerciseImageResId = R.drawable.ic_selected_booboo_exercise,
                 traitsResIdList = persistentListOf(
                     R.string.booboo_tag_text1,
                     R.string.booboo_tag_text2,

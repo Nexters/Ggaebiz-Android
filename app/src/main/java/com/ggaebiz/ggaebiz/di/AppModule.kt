@@ -26,9 +26,14 @@ import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SaveImageToGalleryUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetIsRestCompletedUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetSettingTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
-import com.ggaebiz.ggaebiz.domain.usecase.SetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetCurrentTimerUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetIsRestCompletedUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SetSettingTimerUseCase
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
@@ -65,20 +70,24 @@ val appModule = module {
     factory { GetAudioResIdUseCase(get()) }
     factory { SelectCharacterIdxUseCase(get()) }
     factory { GetCharacterIdxUseCase(get()) }
-    factory { SetTimerSettingUseCase(get()) }
+    factory { GetCurrentTimerUseCase(get()) }
+    factory { SetCurrentTimerUseCase(get()) }
     factory { EndTimerUseCase(get()) }
-    factory { GetTimerSettingUseCase(get()) }
+    factory { GetSettingTimerUseCase(get()) }
+    factory { SetSettingTimerUseCase(get()) }
+    factory { GetIsRestCompletedUseCase(get()) }
+    factory { SetIsRestCompletedUseCase(get()) }
     factory { SetSnoozeCountUseCase(get()) }
     factory { GetSnoozeCountUseCase(get()) }
     factory { CreateCachedImageUseCase(get()) }
     factory { SaveImageToGalleryUseCase(imageRepository = get()) }
 
     viewModel { HomeViewModel(get(), get(), get(), get()) }
-    viewModel { SettingViewModel(get(), get(), get()) }
+    viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
-    viewModel { TimerViewModel(get(), get(), get(), get(), get(), get()) }
-    viewModel { AlarmViewModel(get(), get(), get(), get(), get()) }
+    viewModel { TimerViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
+    viewModel { AlarmViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ConfigViewModel(get()) }
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
