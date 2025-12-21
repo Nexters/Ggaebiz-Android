@@ -3,6 +3,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.proof.editor
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntSize
 import com.ggaebiz.ggaebiz.R
@@ -50,6 +51,12 @@ sealed interface EditorIntent {
     data class OnPick(val source : StickerSource, val canvasSize : IntSize, val resource : Resources) :
         EditorIntent
     data class OnSelectImage(val selectImageId: String) : EditorIntent
+    data class OnTransform(
+        val id: String,
+        val pan: Offset,
+        val zoom: Float? = null,
+        val rotation: Float? = null
+    ) : EditorIntent
 
     data class OnMove(val id : String, val x : Float, val y : Float): EditorIntent
     data class OnResize(val id : String , val scale: Float ): EditorIntent
@@ -57,6 +64,8 @@ sealed interface EditorIntent {
     data class OnRotate(val id : String, val newRotation: Float): EditorIntent
     data class OnBringToFront(val id : String): EditorIntent
 }
+
+
 
 sealed interface EditorEffect {
     data object NavigateBack : EditorEffect

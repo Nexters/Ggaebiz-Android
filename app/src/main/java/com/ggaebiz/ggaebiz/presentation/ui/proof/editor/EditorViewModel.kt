@@ -2,6 +2,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.proof.editor
 
 import android.graphics.BitmapFactory
 import android.net.Uri
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -65,25 +66,51 @@ class EditorViewModel(
             }
 
             is EditorIntent.OnPick -> {
-                val centerX = intent.canvasSize.width / 2f
-                val centerY = intent.canvasSize.height / 2f
+                val center = Offset(
+                    intent.canvasSize.width / 2f,
+                    intent.canvasSize.height / 2f
+                )
+
                 when (intent.source) {
                     is StickerSource.Png -> {
                         val imageBitmap = BitmapFactory
                             .decodeResource(intent.resource, intent.source.resId)
                             .asImageBitmap()
-                        updateState { it ->
-                            it.copy(stickers = uiState.value.stickers + BitmapSticker(
-                                x = centerX, y = centerY,
-                                source = StickerSource.Bitmap(imageBitmap),
-                                zIndex = (uiState.value.stickers.maxOfOrNull { it.zIndex }
-                                    ?: 0) + 1)
+
+                        updateState { state ->
+                            state.copy(
+                                stickers = state.stickers + BitmapSticker(
+                                    offset = center,
+                                    source = StickerSource.Bitmap(imageBitmap),
+                                    zIndex = (state.stickers.maxOfOrNull { it.zIndex } ?: 0) + 1,
+                                    x = center.x,
+                                    y = center.y
+                                )
                             )
                         }
                     }
-                    else -> {}
+                    else -> Unit
                 }
             }
+
+            is EditorIntent.OnTransform -> {
+                updateState { state ->
+                    state.copy(
+                        stickers = state.stickers.map { s ->
+                            if (s.id != intent.id) s
+                            else when (s) {
+                                is BitmapSticker -> s.copy(
+                                    offset = s.offset + intent.pan,
+                                    scale = intent.zoom ?: s.scale,
+                                    rotation = intent.rotation ?: s.rotation
+                                )
+                            }
+                        }
+                    )
+                }
+            }
+
+
 
             is EditorIntent.OnSelectImage -> {
                 updateState { it.copy(selectImageId = intent.selectImageId) }
@@ -141,7 +168,6 @@ class EditorViewModel(
     private fun Sticker.withPos(x: Float, y: Float) = when (this) {
         is BitmapSticker -> copy(x = x, y = y)
     }
-
     private fun Sticker.withScale(scale: Float) = when (this) {
         is BitmapSticker -> copy(scale = scale.coerceIn(0.3f, 5f))
     }

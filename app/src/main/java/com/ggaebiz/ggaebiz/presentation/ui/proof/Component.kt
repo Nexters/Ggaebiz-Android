@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
@@ -62,21 +62,32 @@ fun Segmented2Tabs(
     selectedRight: Boolean,
     onSelectLeft: () -> Unit,
     onSelectRight: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val stroke = MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp , bottom = 16.dp),
+            .padding(start = 20.dp, end = 20.dp, bottom = 16.dp),
         shape = RoundedCornerShape(14.dp),
         color = GaeBizTheme.colors.gray500
     ) {
-        Row(Modifier.padding(6.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp))
-            {
-            Pill(text = left,  selected = !selectedRight,  onClick = onSelectLeft,  modifier = Modifier.weight(1f))
-            Pill(text = right, selected =  selectedRight, onClick = onSelectRight, modifier = Modifier.weight(1f))
+        Row(
+            Modifier.padding(6.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        )
+        {
+            Pill(
+                text = left,
+                selected = !selectedRight,
+                onClick = onSelectLeft,
+                modifier = Modifier.weight(1f)
+            )
+            Pill(
+                text = right,
+                selected = selectedRight,
+                onClick = onSelectRight,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }
@@ -86,11 +97,12 @@ private fun Pill(
     text: String,
     selected: Boolean,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val bg  =if (selected) GaeBizTheme.colors.white else Color.Transparent
-    val textC=if (selected) GaeBizTheme.colors.primaryOrange else GaeBizTheme.colors.gray50
-    val textS = (if ( selected) GaeBizTheme.typography.body2SemiBold else GaeBizTheme.typography.body2SemiBold )
+    val bg = if (selected) GaeBizTheme.colors.white else Color.Transparent
+    val textC = if (selected) GaeBizTheme.colors.primaryOrange else GaeBizTheme.colors.gray50
+    val textS =
+        (if (selected) GaeBizTheme.typography.body2SemiBold else GaeBizTheme.typography.body2SemiBold)
     val interaction = remember { MutableInteractionSource() }
 
     Box(
@@ -99,15 +111,17 @@ private fun Pill(
             .background(bg)
             .clickable(
                 interactionSource = interaction,
-                indication = null
-                , onClick = onClick)
-            .padding(horizontal = 10.dp , vertical = 6.dp)
-            ,
+                indication = null, onClick = onClick
+            )
+            .padding(horizontal = 10.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text, style = textS ,color = textC, maxLines = 1)
+        Text(text, style = textS, color = textC, maxLines = 1)
     }
 }
+
+
+
 
 @Composable
 fun StickersCanvas(
@@ -117,9 +131,13 @@ fun StickersCanvas(
     onSelect: (String) -> Unit,
     onBringToFront: (String) -> Unit,
     onMove: (id: String, x: Float, y: Float) -> Unit,
-    onResize: (id: String, newScale: Float) -> Unit,
-    onRotate: (id: String, delta: Float) -> Unit,
     onRemove: (id: String) -> Unit,
+    onTransform: (
+        id: String,
+        pan: Offset,
+        zoom: Float?,
+        rotation: Float?,
+    ) -> Unit,
     edgeOverdrag: Dp = 0.dp,
     onDragActiveChange: (Boolean) -> Unit = {},
 ) {
@@ -209,6 +227,9 @@ fun StickersCanvas(
                         .border(borderW, GaeBizTheme.colors.white)
                 )
 
+                var startScale by remember { mutableStateOf(1f) }
+                var startRotation by remember { mutableStateOf(0f) }
+                var startAngle by remember { mutableStateOf(0f) }
                 var lastAngle by remember { mutableStateOf(0f) }
                 Box(
                     Modifier
@@ -223,20 +244,56 @@ fun StickersCanvas(
                         .background(GaeBizTheme.colors.white, CircleShape)
                         .pointerInput(s.id) {
                             detectDragGestures(
-                                onDragStart = { offset ->
-                                    lastAngle = atan2(offset.y - s.y, offset.x - s.x)
+                                onDragStart = { down ->
+                                    onSelect(s.id)
+                                    onBringToFront(s.id)
+
+                                    startScale = s.scale
+                                    startRotation = s.rotation
+
+                                    val center = Offset(s.x, s.y)
+                                    val touch = center + down
+
+                                    startAngle = atan2(
+                                        touch.y - center.y,
+                                        touch.x - center.x
+                                    )
                                 },
                                 onDrag = { change, drag ->
                                     change.consume()
+
                                     // 스케일
                                     val deltaScale = (drag.x + drag.y) / 200f
-                                    onResize(s.id, (s.scale + deltaScale).coerceAtLeast(0.1f))
-                                    // 회전
-                                    val currentAngle =
-                                        atan2(change.position.y - s.y, change.position.x - s.x)
-                                    val delta = -(currentAngle - lastAngle) * 180f / PI.toFloat()
-                                    lastAngle = currentAngle
-                                    onRotate(s.id, delta)
+                                    val newScale =
+                                        (startScale + deltaScale).coerceAtLeast(0.1f)
+
+                                    // 각도
+                                    val center = Offset(s.x, s.y)
+                                    val touch = center + change.position
+
+                                    val currentAngle = atan2(
+                                        touch.y - center.y,
+                                        touch.x - center.x
+                                    )
+
+
+                                    val ROTATION_SENSITIVITY = 0.5f  // 회전 감도
+                                    val angleDelta =
+                                        -(currentAngle - startAngle) *
+                                                ROTATION_SENSITIVITY *
+                                                180f / PI.toFloat()
+
+
+                                    val newRotation =
+                                        (startRotation + angleDelta).mod(360f)
+
+                                    // 한번에 전달
+                                    onTransform(
+                                        s.id,
+                                        Offset.Zero,
+                                        newScale,
+                                        newRotation
+                                    )
                                 }
                             )
                         },
