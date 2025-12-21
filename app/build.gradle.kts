@@ -14,8 +14,8 @@ android {
         applicationId = "com.ggaebiz.ggaebiz"
         minSdk = 24
         targetSdk = 35
-        versionCode = 1000401
-        versionName = "1.0.4"
+        versionCode = 1000501
+        versionName = "1.0.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
