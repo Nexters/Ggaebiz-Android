@@ -46,7 +46,7 @@ fun TimerActionButton(
 
     val background = when (type) {
         TimerActionType.Pause ->
-            if (isPressed) GaeBizTheme.colors.gray50 else GaeBizTheme.colors.gray100
+            if (isPressed) GaeBizTheme.colors.gray100 else GaeBizTheme.colors.gray50
 
         TimerActionType.Resume ->
             if (isPressed) GaeBizTheme.colors.primaryOrange100 else GaeBizTheme.colors.primaryOrange50
