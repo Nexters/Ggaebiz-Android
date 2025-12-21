@@ -24,7 +24,6 @@ import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetSnoozeCountUseCase
-import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SaveImageToGalleryUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetIsRestCompletedUseCase
