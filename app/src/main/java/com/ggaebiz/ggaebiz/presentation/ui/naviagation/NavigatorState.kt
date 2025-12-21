@@ -1,5 +1,6 @@
 package com.ggaebiz.ggaebiz.presentation.ui.naviagation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavDestination
@@ -26,7 +27,7 @@ class NavigatorState(
     val startDestination = Route.Splash
 
     fun navigateHome() {
-        navController.navigate(Route.Home)
+        navController.navigate(Route.Home(null))
     }
 
     fun navigateOnboarding() {
@@ -49,13 +50,29 @@ class NavigatorState(
         navController.navigate(Route.Config)
     }
 
+    fun navigateEditor(uri: Uri?) {
+        navController.navigate(Route.Editor(uri = uri?.toString()))
+    }
+
+    fun navigateEditorResult(uri: Uri) {
+        navController.navigate(Route.EditorResult(uri = uri.toString()))
+    }
+
     // 모든 화면을 제거하고 Home으로
     fun navigateToMainClearingBackStack() {
-        navController.navigate(Route.Home) {
+        navController.navigate(Route.Home(null)) {
             popUpTo(0) { inclusive = true }
             launchSingleTop = true
         }
     }
+
+    fun navigateToMainFromAlarm(isFromAlarm : Boolean){
+        navController.navigate(Route.Home(isFromAlarm)){
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     fun popBackStack() {
         navController.popBackStack()
     }
