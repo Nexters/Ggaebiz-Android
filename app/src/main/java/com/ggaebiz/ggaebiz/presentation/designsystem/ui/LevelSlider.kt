@@ -19,6 +19,7 @@ import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.slider.GaeBizSlider
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 
+@Deprecated("use levelItem")
 @Composable
 fun GaeBizLevelSlider(
     modifier: Modifier = Modifier,

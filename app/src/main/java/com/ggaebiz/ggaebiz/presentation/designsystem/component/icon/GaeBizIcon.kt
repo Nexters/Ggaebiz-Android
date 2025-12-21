@@ -47,4 +47,28 @@ object GaeBizIcon {
     val icProofCard : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.icon_proof_card)
+
+    val icBasketBall : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_basketball)
+
+    val icPencil : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_pencil)
+
+    val icCheck : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_check)
+
+    val icTopBottomArrow : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_top_bottom_arrow)
+
+    val icResume : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_resume)
+
+    val icPause : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_pause)
 }

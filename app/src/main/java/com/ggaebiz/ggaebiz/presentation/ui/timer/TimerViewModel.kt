@@ -4,11 +4,14 @@ import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.usecase.EndTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetAudioResIdUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetCharacterIdxUseCase
-import com.ggaebiz.ggaebiz.domain.usecase.GetTimerSettingUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetIsRestCompletedUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSnoozeCountUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import com.ggaebiz.ggaebiz.presentation.common.extension.getCharacterData
-import kotlinx.coroutines.delay
+import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
+import com.ggaebiz.ggaebiz.presentation.ui.setting.RestType
+import com.ggaebiz.ggaebiz.presentation.ui.setting.TimerMode
 
 data class TimerState(
     val selectedCharacterIdx: Int = 0,
@@ -16,26 +19,42 @@ data class TimerState(
     val levelIdx: Int = 0,
     val hour: Int = 0,
     val minute: Int = 30,
+    val timerMode: TimerMode = TimerMode.Rest(RestType.NORMAL),
+    val actionButtonVisible: Boolean = false,
     val remainingSeconds: Int = 0,
+    val isPaused: Boolean = false,
+    val isIntervalTimer: Boolean = false,
 )
 
 sealed interface TimerSideEffect {
     data object ShowToast : TimerSideEffect
-    data class StartService(val seconds: Int, val audioResPath: String, val vibration : Int, val volume : Int) : TimerSideEffect
+    data class StartService(
+        val seconds: Int,
+        val audioResPath: String,
+        val vibration : Int,
+        val volume : Int,
+        val actionButtonVisible: Boolean,
+    ) : TimerSideEffect
     data object StopService : TimerSideEffect
+    data object PauseService : TimerSideEffect
+    data object ResumeService : TimerSideEffect
 }
 
 sealed interface TimerIntent {
     data object StopTimer : TimerIntent
+    data object PauseTimer : TimerIntent
+    data object ResumeTimer : TimerIntent
 }
 
 class TimerViewModel(
     private val getAudioResIdUseCase: GetAudioResIdUseCase,
     private val endTimerUseCase: EndTimerUseCase,
     private val getCharacterIdxUseCase: GetCharacterIdxUseCase,
-    private val getTimerSettingUseCase: GetTimerSettingUseCase,
+    private val getCurrentTimerUseCase: GetCurrentTimerUseCase,
+    private val getIsRestCompletedUseCase: GetIsRestCompletedUseCase,
     private val setSnoozeCountUseCase: SetSnoozeCountUseCase,
-    private val configRepository: ConfigRepository
+    private val configRepository: ConfigRepository,
+    private val timerServiceManager: TimerServiceManager,
 ) : BaseViewModel<TimerState, TimerIntent, TimerSideEffect>(TimerState()) {
 
     init {
@@ -45,17 +64,21 @@ class TimerViewModel(
     fun processIntent(intent: TimerIntent) {
         when (intent) {
             is TimerIntent.StopTimer -> stopTimer()
+            is TimerIntent.PauseTimer  -> pauseTimer()
+            is TimerIntent.ResumeTimer -> resumeTimer()
         }
     }
 
     private fun setTimerSetting() = launch {
-        val (level, hour, minute) = getTimerSettingUseCase()
+        val (level, hour, minute, timerMode) = getCurrentTimerUseCase()
         val selectedCharacterIdx = getCharacterIdxUseCase()
-        val leveIdx = getTimerSettingUseCase.getLevelIdx()
+        val leveIdx = getCurrentTimerUseCase.getLevelIdx()
+        val isIntervalTimer = getCurrentTimerUseCase.getIsIntervalTimer()
 
         val data = selectedCharacterIdx.getCharacterData()
-        val audioPath = (data?.mentAudioList?.get(level - 1)?.get(leveIdx)?.audioPath) ?: ""
+        val audioPath = data?.getMentAudio(timerMode, level - 1, leveIdx)?.audioPath ?: ""
         val settingSeconds = hour * 3600 + minute * 60
+        val actionButtonVisible = getIsRestCompletedUseCase().not() && timerMode.isConcentrateTimer()
 
         val vibration = if(configRepository.getVibrationStatus()){
             configRepository.getVibrationValue()
@@ -70,7 +93,10 @@ class TimerViewModel(
                 levelIdx = leveIdx,
                 hour = hour,
                 minute = minute,
-                remainingSeconds = settingSeconds
+                timerMode = timerMode,
+                actionButtonVisible = actionButtonVisible,
+                remainingSeconds = settingSeconds,
+                isIntervalTimer = isIntervalTimer,
             )
         }
         postSideEffect(TimerSideEffect.ShowToast)
@@ -78,17 +104,10 @@ class TimerViewModel(
             settingSeconds,
             audioPath,
             vibration,
-            configRepository.getVolumeValue()
+            configRepository.getVolumeValue(),
+            actionButtonVisible,
         ))
-        startTimeTick()
-    }
-
-    private fun startTimeTick() = launch {
-        while (uiState.value.remainingSeconds > 0) {
-            delay(1000L)
-            updateState { it.copy(remainingSeconds = uiState.value.remainingSeconds - 1) }
-        }
-        endTimer()
+        bindAndCollectServiceState()
     }
 
     private fun endTimer() = launch {
@@ -99,5 +118,38 @@ class TimerViewModel(
         endTimerUseCase()
         setSnoozeCountUseCase(0)
         postSideEffect(TimerSideEffect.StopService)
+    }
+
+    private fun pauseTimer() {
+        updateState {
+            it.copy(isPaused = true)
+        }
+        postSideEffect(TimerSideEffect.PauseService)
+    }
+
+    private fun resumeTimer() {
+        updateState {
+            it.copy(isPaused = false)
+        }
+        postSideEffect(TimerSideEffect.ResumeService)
+    }
+
+    private fun bindAndCollectServiceState() {
+        timerServiceManager.bindTimerService { flow ->
+            // flow 수신
+            launch {
+                flow.collect { info ->
+                    updateState {
+                        it.copy(
+                            remainingSeconds = info.remainingTime,
+                            isPaused = info.isPaused
+                        )
+                    }
+                    if (!info.isPaused && info.remainingTime <= 0) {
+                        endTimer()
+                    }
+                }
+            }
+        }
     }
 }

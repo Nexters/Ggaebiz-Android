@@ -28,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -47,13 +48,39 @@ class TimerService : Service() {
     val notificationManager: NotificationManager get() = _notificationManager
     private lateinit var wakeLock: PowerManager.WakeLock
 
+    private var remainingTime: Int = 0
+    private var isPaused: Boolean = false
+
+    private val _notificationTimerState = MutableStateFlow(NotificationTimerState(0, true, false))
+    val notificationTimerState: StateFlow<NotificationTimerState> get() = _notificationTimerState
+
+    private fun emitState() {
+        _notificationTimerState.update {
+            it.copy(
+                remainingTime = remainingTime,
+                isPaused = isPaused,
+            )
+        }
+    }
+
+    private fun setActionButtonVisible(actionButtonVisible: Boolean) {
+        _notificationTimerState.update {
+            it.copy(
+                actionButtonVisible = actionButtonVisible,
+            )
+        }
+    }
+
     companion object {
         const val ACTION_START = "START_TIMER"
         const val ACTION_STOP = "STOP_TIMER"
+        const val ACTION_PAUSE = "PAUSE_TIMER"
+        const val ACTION_RESUME = "RESUME_TIMER"
         const val INTENT_KEY_TIMER_SECONDS = "TIMER_SECONDS"
         const val INTENT_KEY_TIMER_AUDIO = "TIMER_AUDIO"
         const val INTENT_KEY_VIBRATION = "TIMER_VIBRATION"
         const val INTENT_KEY_VOLUME = "TIMER_VOLUME"
+        const val INTENT_KEY_ACTION_BUTTON_VISIBLE = "TIMER_ACTION_BUTTON_VISIBLE"
         const val REQUEST_CODE = 1004
         const val NOTIFICATION_CHANNEL_ID = "timer_channel"
         const val NOTIFICATION_ID = 1
@@ -93,31 +120,63 @@ class TimerService : Service() {
         val action = intent?.action
         Log.d("TimerService", "onStartCommand() :: action :: ${action}")
 
-        if (action == ACTION_STOP) {
-            stopSelf()
-        } else if (action == ACTION_START) {
-            val seconds = intent.getIntExtra(INTENT_KEY_TIMER_SECONDS, 0)
-            val vibration = intent.getIntExtra(INTENT_KEY_VIBRATION,3)
-            val volume = intent.getIntExtra(INTENT_KEY_VOLUME, 3)
-            audioResPath = intent.getStringExtra(INTENT_KEY_TIMER_AUDIO) ?: ""
-            startTimer(seconds, vibration, volume)
-            // 서비스 실행
-            startForegroundService()
+        when (action) {
+            ACTION_STOP -> stopSelf()
+
+            ACTION_START -> {
+                val seconds = intent.getIntExtra(INTENT_KEY_TIMER_SECONDS, 0)
+                val vibration = intent.getIntExtra(INTENT_KEY_VIBRATION, 3)
+                val volume = intent.getIntExtra(INTENT_KEY_VOLUME, 3)
+                val actionButtonVisible = intent.getBooleanExtra(INTENT_KEY_ACTION_BUTTON_VISIBLE, false)
+                setActionButtonVisible(actionButtonVisible)
+                audioResPath = intent.getStringExtra(INTENT_KEY_TIMER_AUDIO) ?: ""
+                startTimer(seconds, vibration, volume)
+                startForegroundService()
+            }
+
+            ACTION_PAUSE -> {
+                if (!isPaused) {
+                    isPaused = true
+                    emitState()
+                    updateTimerNotification()
+                    player.pause()
+                    vibrator?.cancel()
+                }
+            }
+
+            ACTION_RESUME -> {
+                if (isPaused) {
+                    isPaused = false
+                    emitState()
+                    updateTimerNotification()
+                }
+            }
         }
+
 
         return START_STICKY
     }
 
     private fun startTimer(times: Int, vibration: Int, volume: Int) {
-        var remainingTime = times
+        remainingTime = times
+        isPaused = false
+        emitState()
+
         timerJob?.cancel()
         timerJob = CoroutineScope(Dispatchers.Main).launch {
             while (isActive) {
-                remainingTime--
+                if (isPaused) {
+                    delay(200L)
+                    continue
+                }
+                
                 delay(1000L) // 1초 대기
+                remainingTime--
+                emitState()
+
                 if (remainingTime > 0) {
                     Log.d("TimerService", "startTimer() :: 현재 숫자  :: ${remainingTime}")
-                    updateTimerNotification(remainingTime)
+                    updateTimerNotification()
                 } else {
                     Log.d("TimerService", "startTimer() :: 타이머 종료")
                     timerJob?.cancel()
@@ -210,8 +269,22 @@ class TimerService : Service() {
         }
     }
 
+    private fun pausePendingIntent(): PendingIntent =
+        PendingIntent.getService(
+            this, REQUEST_CODE + 1,
+            Intent(this, TimerService::class.java).setAction(ACTION_PAUSE),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+    private fun resumePendingIntent(): PendingIntent =
+        PendingIntent.getService(
+            this, REQUEST_CODE + 2,
+            Intent(this, TimerService::class.java).setAction(ACTION_RESUME),
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    
     private fun createSilentNotification(): Notification {
-        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(getString(R.string.notification_default_content))
             .setPriority(NotificationCompat.PRIORITY_HIGH) // 우선순위 최소
@@ -219,22 +292,37 @@ class TimerService : Service() {
             .setSilent(true) // 알림 사운드 없음
             .setSmallIcon(R.mipmap.ic_app_icon_round)
             .setOngoing(true)
-            .build()
+
+        if (notificationTimerState.value.actionButtonVisible) {
+            notification.addAction(0, getString(R.string.action_pause), pausePendingIntent())
+        }
+
+        return notification.build()
     }
 
-    private fun updateTimerNotification(remainingSeconds: Int) {
+    private fun updateTimerNotification() {
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
-            .setContentText(formattedRemainingTime(remainingSeconds))
+            .setContentText(
+                if (isPaused && notificationTimerState.value.actionButtonVisible) getString(R.string.notification_pause_content, formattedRemainingTime(remainingTime))
+                else formattedRemainingTime(remainingTime)
+            )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setSilent(true)
             .setSmallIcon(R.mipmap.ic_app_icon_round)
             .setOngoing(true)
             .setAutoCancel(false)
-            .build()
 
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        if (notificationTimerState.value.actionButtonVisible) {
+            if (isPaused) {
+                notification.addAction(0, getString(R.string.action_resume), resumePendingIntent())
+            } else {
+                notification.addAction(0, getString(R.string.action_pause), pausePendingIntent())
+            }
+        }
+
+        notificationManager.notify(NOTIFICATION_ID, notification.build())
     }
 
     private fun formattedRemainingTime(remainingSeconds: Int): String {
@@ -278,3 +366,9 @@ class TimerService : Service() {
         }
     }
 }
+
+data class NotificationTimerState(
+    val remainingTime: Int,
+    val isPaused: Boolean,
+    val actionButtonVisible: Boolean,
+)
