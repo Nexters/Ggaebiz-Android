@@ -182,15 +182,12 @@ fun PhotoEditorScreen(
                             onMove = { id, nx, ny ->
                                 processIntent(EditorIntent.OnMove(id, nx, ny))
                             },
-                            onResize = { id, newScale ->
-                                processIntent(EditorIntent.OnResize(id, newScale))
-                            },
                             onRemove = { id ->
                                 processIntent(EditorIntent.OnRemove(id))
                             },
                             onDragActiveChange = { dragging = it },  //  드래그 중 시트 스와이프 OFF,
-                            onRotate = { id, delta ->
-                                processIntent(EditorIntent.OnRotate(id, delta))
+                            onTransform = { id, pan, zoom, rotation ->
+                                processIntent(EditorIntent.OnTransform(id,pan,zoom,rotation))
                             }
                         )
                     }

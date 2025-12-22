@@ -1,15 +1,17 @@
 package com.ggaebiz.ggaebiz.presentation.model
 
 import androidx.annotation.DrawableRes
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 
 sealed interface Sticker {
     val id: String
-    val x: Float
-    val y: Float
+    val x: Float get() = offset.x   // 파생
+    val y: Float get() = offset.y
     val scale: Float
     val zIndex: Int
+    val offset: Offset       // 중심 기준
     val isSelected: Boolean
     var rotation: Float
     val source: StickerSource
@@ -19,6 +21,7 @@ data class BitmapSticker(
     override val id: String = java.util.UUID.randomUUID().toString(),
     override val x: Float,
     override val y: Float,
+    override val offset: Offset,
     override val scale: Float = 1f,
     override val zIndex: Int = 0,
     override val isSelected: Boolean = false,
