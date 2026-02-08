@@ -14,4 +14,8 @@ interface ImageRepository {
     ): Uri
 
     suspend fun saveImageToGallery(uri: Uri): Result<Unit>
+    
+    suspend fun createProofCard(
+        bitmap: ImageBitmap
+    ): Uri
 }

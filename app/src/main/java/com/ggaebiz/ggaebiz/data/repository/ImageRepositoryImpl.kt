@@ -3,6 +3,7 @@ package com.ggaebiz.ggaebiz.data.repository
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Matrix
 import android.net.Uri
@@ -51,6 +52,13 @@ class ImageRepositoryImpl(
                 saveBitmapToGallery(uri)
             }
         }
+
+    override suspend fun createProofCard(
+        bitmap: ImageBitmap
+    ): Uri = withContext(Dispatchers.IO) {
+        val androidBitmap = bitmap.asAndroidBitmap()
+        saveBitmapToCache(androidBitmap)
+    }
 
 
     private fun createShareBitmap(
@@ -158,4 +166,5 @@ class ImageRepositoryImpl(
         values.put(MediaStore.Images.Media.IS_PENDING, 0)
         resolver.update(galleryUri, values, null, null)
     }
+
 }
