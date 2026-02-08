@@ -111,6 +111,7 @@ fun GaeBizBasePopup(
     shape: Shape = RoundedCornerShape(20.dp),
     maxWidth: Dp = 560.dp,
     contentPadding: PaddingValues = PaddingValues(20.dp),
+    horizontalPadding: Dp = 16.dp,
     scrimColor: Color = GaeBizTheme.colors.black.copy(alpha = 0.45f),
     dismissOnScrim: Boolean = true,
     title: (@Composable () -> Unit),
@@ -133,7 +134,7 @@ fun GaeBizBasePopup(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    horizontal = 16.dp,
+                    horizontal = horizontalPadding,
                     vertical = if (position == GaeBizPopupPosition.Bottom) 16.dp else 0.dp
                 ),
             contentAlignment = align

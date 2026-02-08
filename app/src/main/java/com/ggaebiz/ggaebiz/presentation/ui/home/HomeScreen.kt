@@ -74,7 +74,8 @@ fun HomeScreen(
     navigateSetting: () -> Unit,
     navigateAlarm: () -> Unit,
     navigateConfig: () -> Unit,
-    navigateEditor: (Uri) -> Unit
+    navigateEditor: (Uri) -> Unit,
+    navigateProofCard: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
@@ -167,6 +168,9 @@ fun HomeScreen(
                 }
             }
             is HomeSideEffect.MoveToProof -> { navigateEditor(effect.uri) }
+            HomeSideEffect.NavigateToProofCard -> {
+                navigateProofCard()
+            }
         }
     }
 
@@ -306,6 +310,7 @@ fun HomeContent(
         onClickOk = { processIntent(HomeIntent.ClickBatteryMoveButton) },
         onClickDenied = { processIntent(HomeIntent.ClickBatteryNextButton) }
     )
+
     ProofPopup(
         visible = uiState.isProofPopupShow,
         onClickOk = { processIntent(HomeIntent.ClickProofMoveButton) },
@@ -357,7 +362,8 @@ fun GreetingPreview2() {
             navigateAlarm = {},
             navigateSetting = {},
             navigateConfig = {},
-            navigateEditor = {}
+            navigateEditor = {},
+            navigateProofCard = {}
         )
     }
 }

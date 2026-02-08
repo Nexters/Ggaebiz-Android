@@ -269,6 +269,7 @@ fun ProofPopup(
         image = painterResource( R.drawable.img_proof_popup),
         position = GaeBizPopupPosition.Bottom,
         contentScale = ContentScale.FillHeight,
+        horizontalPadding = 0.dp,
         buttons = listOf(
             GaeBizPopupButton(
                 text = stringResource(R.string.home_proof_popup_denied_button),
@@ -348,6 +349,7 @@ fun ChoiceWayPopup(
         visible = visible,
         titleText = stringResource(R.string.home_choice_way_popup_title),
         position = GaeBizPopupPosition.Bottom,
+        horizontalPadding = 0.dp,
         itemContent = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ListPopupItem(
