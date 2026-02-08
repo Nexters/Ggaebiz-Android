@@ -38,6 +38,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.proof.card.ProofCardViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
@@ -81,7 +82,7 @@ val appModule = module {
     factory { CreateCachedImageUseCase(get()) }
     factory { SaveImageToGalleryUseCase(imageRepository = get()) }
 
-    viewModel { HomeViewModel(get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { OnboardingViewModel(get()) }
@@ -90,5 +91,6 @@ val appModule = module {
     viewModel { ConfigViewModel(get()) }
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
+    viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
 
 }

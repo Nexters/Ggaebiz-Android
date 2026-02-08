@@ -78,4 +78,8 @@ object GaeBizIcon {
     val icPause : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_pause)
+
+    val icSaveImageFinger : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_save_image)
 }
