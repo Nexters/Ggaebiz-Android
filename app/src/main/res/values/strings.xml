@@ -248,5 +248,15 @@
     <string name="home_choice_way_card">인증카드 저장하기</string>
     <string name="name_editor_title_text"> </string>
 
+    <!-- Proof Card 화면 -->
+    <string name="proof_card_title_text">집중한 시간이 담긴\n깨비카드를 받았어요</string>
+    <string name="proof_card_save_image_text">이미지 저장</string>
+    <string name="proof_card_share_image_text">SNS 공유</string>
+    <string name="proof_card_save_guide_text">이미지를 꾹 눌러 저장해보세요</string>
+    <string name="proof_card_save_success_text">이미지를 저장했어요</string>
+    <string name="proof_card_save_failure_text">이미지 저장을 실패했어요. 다시 시도해주세요</string>
+    <string name="proof_card_create_failure_text">이미지 생성에 실패했어요. 다시 시도해주세요</string>
+    <string name="proof_card_share_chooser_title">이미지 공유</string>
+
 
 </resources>
