@@ -25,7 +25,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +43,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.proof.Segmented2Tabs
 import com.ggaebiz.ggaebiz.presentation.ui.proof.StickerPickerGrid
 import com.ggaebiz.ggaebiz.presentation.ui.proof.StickersCanvas
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -85,7 +89,17 @@ fun PhotoEditorScreen(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
     var canvasSize by remember { mutableStateOf(IntSize(1, 1)) }
-    var dragging by remember { mutableStateOf(false) }
+    val graphicsLayer = rememberGraphicsLayer()
+    var isCapturing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isCapturing) {
+        if (isCapturing) {
+            delay(100)
+            val bitmap = graphicsLayer.toImageBitmap()
+            isCapturing = false
+            processIntent(EditorIntent.ClickFinish(bitmap))
+        }
+    }
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
@@ -99,7 +113,7 @@ fun PhotoEditorScreen(
                             .clip(RoundedCornerShape(10.dp))
                             .background(GaeBizTheme.colors.primaryOrange)
                             .clickable {
-                                processIntent(EditorIntent.ClickFinish(canvasSize))
+                                isCapturing = true
                             }
                             .padding(horizontal = 20.dp, vertical = 12.dp),
                         contentAlignment = Alignment.Center
@@ -137,8 +151,7 @@ fun PhotoEditorScreen(
                     processIntent(
                         EditorIntent.OnPick(
                             canvasSize = canvasSize,
-                            source = src,
-                            resource = context.resources
+                            source = src
                         )
                     )
                 }
@@ -163,7 +176,17 @@ fun PhotoEditorScreen(
                             .fillMaxWidth()
                             .aspectRatio(3f / 4f)
                             .background(Color.Black, RoundedCornerShape(12.dp))
-                            .onGloballyPositioned { canvasSize = it.size },
+                            .onGloballyPositioned { canvasSize = it.size }
+                            .drawWithContent {
+                                if (isCapturing) {
+                                    graphicsLayer.record {
+                                        this@drawWithContent.drawContent()
+                                    }
+                                    drawLayer(graphicsLayer)
+                                } else {
+                                    drawContent()
+                                }
+                            },
                     ) {
                         Image(
                             bitmap = uiState.previewBitmap,
@@ -174,20 +197,19 @@ fun PhotoEditorScreen(
                         StickersCanvas(
                             canvasSize = canvasSize,
                             stickers = uiState.stickers.sortedBy { it.zIndex },
-                            selectedId = uiState.selectImageId,
+                            selectedId = if (isCapturing) null else uiState.selectImageId,
                             onSelect = { id -> processIntent(EditorIntent.OnSelectImage(id)) },
-                            onBringToFront = { id ->
-                                processIntent(EditorIntent.OnBringToFront(id))
-                            },
                             onMove = { id, nx, ny ->
                                 processIntent(EditorIntent.OnMove(id, nx, ny))
                             },
+                            onScale = { id, scale ->
+                                processIntent(EditorIntent.OnScale(id, scale))
+                            },
+                            onRotate = { id, angle ->
+                                processIntent(EditorIntent.OnRotate(id, angle))
+                            },
                             onRemove = { id ->
                                 processIntent(EditorIntent.OnRemove(id))
-                            },
-                            onDragActiveChange = { dragging = it },  //  드래그 중 시트 스와이프 OFF,
-                            onTransform = { id, pan, zoom, rotation ->
-                                processIntent(EditorIntent.OnTransform(id,pan,zoom,rotation))
                             }
                         )
                     }

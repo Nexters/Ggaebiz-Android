@@ -76,7 +76,7 @@ class ProofCardViewModel(
 
     private fun createAndSaveImage() = launch {
         val uri = uiState.value.previewBitmap?.let {
-            createProofCardUseCase.createProofCard(it)
+            createProofCardUseCase(it)
         }
         uri?.let {
             saveImageToGalleryUseCase(it)
@@ -93,7 +93,7 @@ class ProofCardViewModel(
 
     private fun createAndShareImage() = launch {
         val uri = uiState.value.previewBitmap?.let {
-            createProofCardUseCase.createProofCard(it)
+            createProofCardUseCase(it)
         }
         uri?.let {
             postSideEffect(ProofCardSideEffect.ShareImage(it))
