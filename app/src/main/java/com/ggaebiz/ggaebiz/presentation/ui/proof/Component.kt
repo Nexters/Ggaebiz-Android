@@ -25,35 +25,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.rememberNestedScrollInteropConnection
-import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
-import com.ggaebiz.ggaebiz.presentation.model.BitmapSticker
 import com.ggaebiz.ggaebiz.presentation.model.Sticker
 import com.ggaebiz.ggaebiz.presentation.model.StickerSource
 import kotlin.math.PI
-import kotlin.math.atan2
+import kotlin.math.cos
+import kotlin.math.sin
 
 @Composable
 fun Segmented2Tabs(
@@ -121,213 +116,158 @@ private fun Pill(
 }
 
 
-
-
 @Composable
 fun StickersCanvas(
     canvasSize: IntSize,
     stickers: List<Sticker>,
     selectedId: String?,
     onSelect: (String) -> Unit,
-    onBringToFront: (String) -> Unit,
     onMove: (id: String, x: Float, y: Float) -> Unit,
+    onScale: (id: String, scale: Float) -> Unit,
+    onRotate: (id: String, angleDelta: Float) -> Unit,
     onRemove: (id: String) -> Unit,
-    onTransform: (
-        id: String,
-        pan: Offset,
-        zoom: Float?,
-        rotation: Float?,
-    ) -> Unit,
-    edgeOverdrag: Dp = 0.dp,
-    onDragActiveChange: (Boolean) -> Unit = {},
 ) {
     val density = LocalDensity.current
-    val baseSizeDp = 120.dp
-    val baseSizePx = with(density) { baseSizeDp.toPx() }
-    val overPx = with(density) { edgeOverdrag.toPx() }
+    val baseSizePx = with(density) { 120.dp.toPx() }
 
     stickers.forEach { s ->
-        val isSel = s.id == selectedId
-        val currW = baseSizePx * s.scale
-        val currH = baseSizePx * s.scale
-        val halfW = currW / 2f
-        val halfH = currH / 2f
+        key(s.id) {
+            val isSelected = s.id == selectedId
+            val sizePx = baseSizePx * s.scale
+            val sizeDp = with(density) { sizePx.toDp() }
 
-        val minX = halfW - overPx
-        val maxX = canvasSize.width - halfW + overPx
-        val minY = halfH - overPx
-        val maxY = canvasSize.height - halfH + overPx
-
-        val minXState by rememberUpdatedState(minX)
-        val maxXState by rememberUpdatedState(maxX)
-        val minYState by rememberUpdatedState(minY)
-        val maxYState by rememberUpdatedState(maxY)
-
-        Box(
-            modifier = Modifier
-                .graphicsLayer {
-                    translationX = s.x - halfW
-                    translationY = s.y - halfH
-                    scaleX = s.scale
-                    scaleY = s.scale
-                    rotationZ = s.rotation
-                }
-                .size(baseSizeDp * s.scale)
-                .pointerInput(s.id) {
-                    var startX = 0f
-                    var startY = 0f
-                    var accX = 0f
-                    var accY = 0f
-                    detectDragGestures(
-                        onDragStart = {
-                            onSelect(s.id)
-                            onBringToFront(s.id)
-                            startX = s.x
-                            startY = s.y
-                            accX = 0f
-                            accY = 0f
-                            onDragActiveChange(true)
-                        },
-                        onDragEnd = { onDragActiveChange(false) },
-                        onDragCancel = { onDragActiveChange(false) },
-                        onDrag = { change, drag ->
-                            change.consume()
-                            accX += drag.x
-                            accY += drag.y
-                            val nx = (startX + accX).coerceIn(minXState, maxXState)
-                            val ny = (startY + accY).coerceIn(minYState, maxYState)
-                            onMove(s.id, nx, ny)
-                        }
-                    )
-                }
-        ) {
-            when (s) {
-                is BitmapSticker -> Image(
-                    bitmap = s.source.image,
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Fit
-                )
-            }
-
-            if (isSel) {
-                val borderW = 1.dp
-                val delHandleSize = 20.dp
-                val resizeHandleSize = 24.dp
-                val innerBiasDp = 4.dp
-
-                val halfBorderPx = with(density) { (borderW / 2).toPx() }
-                val halfDelPx = with(density) { (delHandleSize / 2).toPx() }
-                val halfResizePx = with(density) { (resizeHandleSize / 2).toPx() }
-                val innerBiasPx = with(density) { innerBiasDp.toPx() }
-
-                Box(
-                    Modifier
-                        .matchParentSize()
-                        .border(borderW, GaeBizTheme.colors.white)
-                )
-
-                var startScale by remember { mutableStateOf(1f) }
-                var startRotation by remember { mutableStateOf(0f) }
-                var startAngle by remember { mutableStateOf(0f) }
-                var lastAngle by remember { mutableStateOf(0f) }
-                Box(
-                    Modifier
-                        .size(resizeHandleSize)
-                        .align(Alignment.BottomEnd)
-                        .offset {
-                            IntOffset(
-                                (halfResizePx + halfBorderPx - innerBiasPx).toInt(),
-                                (halfResizePx + halfBorderPx - innerBiasPx).toInt()
-                            )
-                        }
-                        .background(GaeBizTheme.colors.white, CircleShape)
-                        .pointerInput(s.id) {
-                            detectDragGestures(
-                                onDragStart = { down ->
-                                    onSelect(s.id)
-                                    onBringToFront(s.id)
-
-                                    startScale = s.scale
-                                    startRotation = s.rotation
-
-                                    val center = Offset(s.x, s.y)
-                                    val touch = center + down
-
-                                    startAngle = atan2(
-                                        touch.y - center.y,
-                                        touch.x - center.x
-                                    )
-                                },
-                                onDrag = { change, drag ->
-                                    change.consume()
-
-                                    // 스케일
-                                    val deltaScale = (drag.x + drag.y) / 200f
-                                    val newScale =
-                                        (startScale + deltaScale).coerceAtLeast(0.1f)
-
-                                    // 각도
-                                    val center = Offset(s.x, s.y)
-                                    val touch = center + change.position
-
-                                    val currentAngle = atan2(
-                                        touch.y - center.y,
-                                        touch.x - center.x
-                                    )
-
-
-                                    val ROTATION_SENSITIVITY = 0.5f  // 회전 감도
-                                    val angleDelta =
-                                        -(currentAngle - startAngle) *
-                                                ROTATION_SENSITIVITY *
-                                                180f / PI.toFloat()
-
-
-                                    val newRotation =
-                                        (startRotation + angleDelta).mod(360f)
-
-                                    // 한번에 전달
-                                    onTransform(
-                                        s.id,
-                                        Offset.Zero,
-                                        newScale,
-                                        newRotation
-                                    )
-                                }
-                            )
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.icon_image_resize),
+            val currentOffset by rememberUpdatedState(s.offset)
+            val currentScale by rememberUpdatedState(s.scale)
+            val currentRotation by rememberUpdatedState(s.rotation)
+            Box(
+                modifier = Modifier
+                    .offset {
+                        IntOffset(
+                            (s.offset.x - sizePx / 2f).toInt(),
+                            (s.offset.y - sizePx / 2f).toInt()
+                        )
+                    }
+                    .size(sizeDp)
+                    .graphicsLayer { rotationZ = s.rotation }
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onSelect(s.id)
+                    }
+                    .pointerInput(s.id) {
+                        var startX = 0f
+                        var startY = 0f
+                        var accX = 0f
+                        var accY = 0f
+                        detectDragGestures(
+                            onDragStart = {
+                                onSelect(s.id)
+                                startX = currentOffset.x
+                                startY = currentOffset.y
+                                accX = 0f
+                                accY = 0f
+                            },
+                            onDrag = { change, delta ->
+                                change.consume()
+                                accX += delta.x
+                                accY += delta.y
+                                val nx = (startX + accX)
+                                    .coerceIn(0f, canvasSize.width.toFloat())
+                                val ny = (startY + accY)
+                                    .coerceIn(0f, canvasSize.height.toFloat())
+                                onMove(s.id, nx, ny)
+                            }
+                        )
+                    }
+            ) {
+                when (s.source) {
+                    is StickerSource.Png -> Image(
+                        painter = painterResource(id = s.source.resId),
                         contentDescription = null,
-                        tint = Color.Black,
-                        modifier = Modifier.size(12.dp)
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit
                     )
                 }
 
-                // 좌상단: 삭제
-                Box(
-                    Modifier
-                        .size(delHandleSize)
-                        .align(Alignment.TopStart)
-                        .offset {
-                            IntOffset(
-                                -(halfDelPx + halfBorderPx).toInt(),
-                                -(halfDelPx + halfBorderPx).toInt()
-                            )
-                        }
-                        .background(GaeBizTheme.colors.white, CircleShape)
-                        .clickable { onRemove(s.id) },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.icon_image_delete),
-                        contentDescription = null,
-                        tint = Color.Black,
-                        modifier = Modifier.size(10.dp)
+                if (isSelected) {
+                    val handleSize = 24.dp
+                    val handleOffset = 8.dp
+
+                    // 선택 테두리
+                    Box(
+                        Modifier
+                            .matchParentSize()
+                            .border(1.dp, GaeBizTheme.colors.white)
                     )
+
+                    // 좌상단: 삭제
+                    Box(
+                        Modifier
+                            .size(handleSize)
+                            .align(Alignment.TopStart)
+                            .offset(x = -handleOffset, y = -handleOffset)
+                            .background(GaeBizTheme.colors.white, CircleShape)
+                            .clickable { onRemove(s.id) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_image_delete),
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
+
+                    // 우하단: 리사이즈 + 회전
+                    Box(
+                        Modifier
+                            .size(handleSize)
+                            .align(Alignment.BottomEnd)
+                            .offset(x = handleOffset, y = handleOffset)
+                            .background(GaeBizTheme.colors.white, CircleShape)
+                            .pointerInput(s.id) {
+                                var startScale = 1f
+                                var accRadial = 0f
+                                detectDragGestures(
+                                    onDragStart = {
+                                        startScale = currentScale
+                                        accRadial = 0f
+                                    },
+                                    onDrag = { change, delta ->
+                                        change.consume()
+                                        // 화면 좌표 → 스티커 로컬 좌표 변환 (회전 보정)
+                                        val rot = currentRotation * (PI.toFloat() / 180f)
+                                        val cosR = cos(rot)
+                                        val sinR = sin(rot)
+                                        val localDx = delta.x * cosR + delta.y * sinR
+                                        val localDy = -delta.x * sinR + delta.y * cosR
+
+                                        // 방사형 (NW↔SE): 크기 조절
+                                        val radial = (localDx + localDy) / 2f
+                                        accRadial += radial
+                                        val newScale = (startScale + accRadial / baseSizePx)
+                                            .coerceIn(0.3f, 5f)
+                                        onScale(s.id, newScale)
+
+                                        // 접선형 (수직 방향): 회전
+                                        val tangential = (-localDx + localDy) / 2f
+                                        val halfDiag = baseSizePx * currentScale * 0.7f
+                                        val angleDelta =
+                                            tangential / halfDiag * (180f / PI.toFloat())
+                                        onRotate(s.id, angleDelta)
+                                    }
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.icon_image_resize),
+                            contentDescription = null,
+                            tint = Color.Black,
+                            modifier = Modifier.size(12.dp)
+                        )
+                    }
                 }
             }
         }
@@ -359,13 +299,11 @@ fun StickerPickerGrid(
             ) {
                 when (src) {
                     is StickerSource.Png -> Image(
-                        bitmap = ImageBitmap.imageResource(id = src.resId),
+                        painter = painterResource(id = src.resId),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Fit
                     )
-
-                    else -> {}
                 }
             }
         }
