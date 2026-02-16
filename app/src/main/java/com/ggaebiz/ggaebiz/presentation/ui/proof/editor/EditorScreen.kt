@@ -137,14 +137,15 @@ fun PhotoEditorScreen(
             )
         },
         sheetContent = {
-            Segmented2Tabs(
-                left = "타임 스탬프",
-                right = "스티커",
-                selectedRight = uiState.selectTab == SelectTab.STICKER,
-                onSelectLeft = { processIntent(EditorIntent.ChangeTab(SelectTab.TIME_STAMP)) },
-                onSelectRight = { processIntent(EditorIntent.ChangeTab(SelectTab.STICKER)) },
-                modifier = Modifier.padding(top = 8.dp)
-            )
+            // TODO: 타임스탬프 기능 추가 시 주석 해제
+            // Segmented2Tabs(
+            //     left = "타임 스탬프",
+            //     right = "스티커",
+            //     selectedRight = uiState.selectTab == SelectTab.STICKER,
+            //     onSelectLeft = { processIntent(EditorIntent.ChangeTab(SelectTab.TIME_STAMP)) },
+            //     onSelectRight = { processIntent(EditorIntent.ChangeTab(SelectTab.STICKER)) },
+            //     modifier = Modifier.padding(top = 8.dp)
+            // )
             StickerPickerGrid(
                 sources = uiState.nowSource,
                 onPick = { src ->
