@@ -1,9 +1,7 @@
 package com.ggaebiz.ggaebiz.presentation.ui.proof.editor
 
 import android.content.Context
-import android.content.res.Resources
 import android.net.Uri
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntSize
 import com.ggaebiz.ggaebiz.R
@@ -38,33 +36,27 @@ data class EditorState(
             StickerSource.Png(R.drawable.sticker_17),
             StickerSource.Png(R.drawable.sticker_18)
         ),
-    val timeStampResource : List<StickerSource> = emptyList()
+    val timeStampResource : List<StickerSource> = emptyList(),
 ){
     val nowSource = if (selectTab == SelectTab.STICKER) stickerSources else timeStampResource
 }
 
 sealed interface EditorIntent {
     data class OnLoadImageData(val context: Context, val imageUri: Uri) : EditorIntent
-    data class ClickFinish(val canvasSize: IntSize) : EditorIntent
+    data class ClickFinish(val capturedBitmap: ImageBitmap) : EditorIntent
     data object ClickBack : EditorIntent
     data class ChangeTab(val tab : SelectTab) : EditorIntent
-    data class OnPick(val source : StickerSource, val canvasSize : IntSize, val resource : Resources) :
-        EditorIntent
-    data class OnSelectImage(val selectImageId: String) : EditorIntent
-    data class OnTransform(
-        val id: String,
-        val pan: Offset,
-        val zoom: Float? = null,
-        val rotation: Float? = null
-    ) : EditorIntent
 
+    // 스티커 선택해서 추가
+    data class OnPick(val source : StickerSource, val canvasSize : IntSize) : EditorIntent
+
+    // 현재 핸들링하는 스티커로 선택 + 최상위로 이동
+    data class OnSelectImage(val selectImageId: String) : EditorIntent
     data class OnMove(val id : String, val x : Float, val y : Float): EditorIntent
-    data class OnResize(val id : String , val scale: Float ): EditorIntent
     data class OnRemove(val id : String): EditorIntent
     data class OnRotate(val id : String, val newRotation: Float): EditorIntent
-    data class OnBringToFront(val id : String): EditorIntent
+    data class OnScale(val id: String, val scale: Float) : EditorIntent
 }
-
 
 
 sealed interface EditorEffect {
