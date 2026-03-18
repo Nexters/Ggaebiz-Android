@@ -57,11 +57,11 @@ class ImageRepositoryImpl(
     private fun saveBitmapToGallery(uri: Uri) {
         val resolver = appContext.contentResolver
 
-        val fileName = "ggaebiz_${System.currentTimeMillis()}.jpg"
+        val fileName = "ggaebiz_${System.currentTimeMillis()}.png"
 
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/png")
             put(
                 MediaStore.Images.Media.RELATIVE_PATH,
                 Environment.DIRECTORY_PICTURES + "/GaeBiz"
