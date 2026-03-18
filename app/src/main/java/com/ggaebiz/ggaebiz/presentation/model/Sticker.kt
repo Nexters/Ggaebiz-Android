@@ -2,34 +2,17 @@ package com.ggaebiz.ggaebiz.presentation.model
 
 import androidx.annotation.DrawableRes
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.vector.ImageVector
+import java.util.UUID
 
-sealed interface Sticker {
-    val id: String
-    val x: Float get() = offset.x   // 파생
-    val y: Float get() = offset.y
-    val scale: Float
-    val zIndex: Int
-    val offset: Offset       // 중심 기준
-    val isSelected: Boolean
-    var rotation: Float
+data class Sticker(
+    val id: String = UUID.randomUUID().toString(),
+    val offset: Offset,
+    val scale: Float = 1f,
+    val rotation: Float = 0f,
+    val zIndex: Int = 0,
     val source: StickerSource
-}
-
-data class BitmapSticker(
-    override val id: String = java.util.UUID.randomUUID().toString(),
-    override val x: Float,
-    override val y: Float,
-    override val offset: Offset,
-    override val scale: Float = 1f,
-    override val zIndex: Int = 0,
-    override val isSelected: Boolean = false,
-    override var rotation: Float = 0f,
-    override val source: StickerSource.Bitmap
-) : Sticker
+)
 
 sealed interface StickerSource {
-    data class Png(@DrawableRes val resId: Int): StickerSource
-    data class Bitmap(val image: ImageBitmap) : StickerSource
+    data class Png(@DrawableRes val resId: Int) : StickerSource
 }
