@@ -21,6 +21,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["NATIVE_APP_KEY"] = properties["kakao.native.appkey"] as String
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties["kakao.native.appkey"]}\"")
     }
 
     buildTypes {
@@ -41,6 +44,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -81,6 +85,14 @@ dependencies {
     implementation(libs.koin.androidx.navigation)
 
     implementation (libs.accompanist.systemuicontroller) // 최신 버전 확인
+
+    implementation(libs.kakao.v2.user)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     // Test
     testImplementation(libs.junit)
