@@ -7,6 +7,10 @@
     <string name="splash_subtitle_text1">게으름뱅이들을 위한 타이머, </string>
     <string name="splash_subtitle_text2">깨비즈</string>
 
+    <!-- 로그인 화면-->
+    <string name="login_title_text">환영해요!</string>
+    <string name="login_subtitle_text">간편 로그인 하고\n깨비즈와 게으름 탈출해볼까요?</string>
+
     <!-- 온보딩 화면 -->
     <string name="go_to_next_text">다음으로</string>
     <string name="skip_text">건너뛰기</string>
