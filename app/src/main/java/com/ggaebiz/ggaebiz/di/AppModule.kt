@@ -4,17 +4,22 @@ import android.content.Context
 import android.media.AudioManager
 import com.ggaebiz.ggaebiz.data.datastore.AudioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.ConfigDataStore
+import com.ggaebiz.ggaebiz.data.datastore.AuthDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.audioDataStore
+import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.authDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.configDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject.timerDataStore
 import com.ggaebiz.ggaebiz.data.datastore.OnboardingDataStore
 import com.ggaebiz.ggaebiz.data.datastore.TimerDataStore
+import com.ggaebiz.ggaebiz.data.network.NetworkModule
 import com.ggaebiz.ggaebiz.data.repository.AudioRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.AuthRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ConfigRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ImageRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.OnboardingRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
+import com.ggaebiz.ggaebiz.domain.repository.AuthRepository
 import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.repository.ImageRepository
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
@@ -37,6 +42,8 @@ import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
+import com.ggaebiz.ggaebiz.data.auth.KakaoLoginHandler
+import com.ggaebiz.ggaebiz.presentation.ui.login.LoginViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultViewModel
@@ -57,14 +64,19 @@ val appModule = module {
     single { TimerDataStore(get()) }
     single { ConfigDataStore(get()) }
     single { OnboardingDataStore(get()) }
+    single { androidContext().authDataStore }
+    single { AuthDataStore(get()) }
+    single { NetworkModule.authApi }
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
     single<TimerRepository> { TimerRepositoryImpl(get()) }
     single<ConfigRepository> { ConfigRepositoryImpl(get()) }
     single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
     single<ImageRepository> { ImageRepositoryImpl(appContext = androidContext()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
 
     single { TimerServiceManager(androidContext()) }
+    single { KakaoLoginHandler() }
 
     factory { GetAudioResIdUseCase(get()) }
     factory { SelectCharacterIdxUseCase(get()) }
@@ -84,6 +96,7 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
+    viewModel { LoginViewModel(get(), get()) }
     viewModel { OnboardingViewModel(get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }

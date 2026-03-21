@@ -30,6 +30,10 @@ class NavigatorState(
         navController.navigate(Route.Home(null))
     }
 
+    fun navigateLogin() {
+        navController.navigate(Route.Login)
+    }
+
     fun navigateOnboarding() {
         navController.navigate(Route.Onboarding)
     }
