@@ -1,9 +1,14 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+}
+
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").inputStream().use { load(it) }
 }
 
 android {
@@ -22,8 +27,8 @@ android {
             useSupportLibrary = true
         }
 
-        manifestPlaceholders["NATIVE_APP_KEY"] = properties["kakao.native.appkey"] as String
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${properties["kakao.native.appkey"]}\"")
+        manifestPlaceholders["NATIVE_APP_KEY"] = localProperties["kakao.native.appkey"] as String
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${localProperties["kakao.native.appkey"]}\"")
     }
 
     buildTypes {

@@ -172,4 +172,3 @@ yapp_attendance_keystore
 fastlane/.env
 
 test_key
-gradle.properties
