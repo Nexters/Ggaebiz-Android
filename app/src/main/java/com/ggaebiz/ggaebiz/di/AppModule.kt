@@ -39,6 +39,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.card.ProofCardViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.statistic.StatisticViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
@@ -92,5 +93,6 @@ val appModule = module {
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
     viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
+    viewModel { StatisticViewModel() }
 
 }

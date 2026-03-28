@@ -22,4 +22,6 @@ sealed interface Route  {
     @Serializable data class EditorResult(val uri: String) : Route
 
     @Serializable data object ProofCard : Route
+
+    @Serializable data object Statistic : Route
 }

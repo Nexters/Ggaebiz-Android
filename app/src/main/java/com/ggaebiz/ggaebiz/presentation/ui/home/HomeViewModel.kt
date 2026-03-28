@@ -37,6 +37,7 @@ sealed interface HomeSideEffect {
     data object MoveToGallery : HomeSideEffect
     data class MoveToProof(val uri : Uri) : HomeSideEffect
     data object NavigateToProofCard : HomeSideEffect
+    data object NavigateToStatistic : HomeSideEffect
 }
 
 sealed interface HomeIntent {
@@ -59,6 +60,7 @@ sealed interface HomeIntent {
     data object ClickProofCamera : HomeIntent
     data object ClickProofGallery : HomeIntent
     data object ClickProofCard : HomeIntent
+    data object ClickStatisticButton : HomeIntent
 
     data class FinishGetImage(val uri : Uri?) : HomeIntent
 }
@@ -108,6 +110,9 @@ class HomeViewModel(
             }
             HomeIntent.ClickConfigButton -> {
                postSideEffect(HomeSideEffect.NavigateToConfig)
+            }
+            HomeIntent.ClickStatisticButton -> {
+                postSideEffect(HomeSideEffect.NavigateToStatistic)
             }
             HomeIntent.PressedBack ->{
                 if (uiState.value.backPressedOnce){
