@@ -9,7 +9,7 @@ import com.ggaebiz.ggaebiz.presentation.model.Sticker
 import com.ggaebiz.ggaebiz.presentation.model.StickerSource
 
 data class EditorState(
-    val selectTab : SelectTab = SelectTab.STICKER,
+    val selectTab : SelectTab = SelectTab.TIME_STAMP,
     val imageUri : Uri?,
     val previewBitmap : ImageBitmap? = null,
     val isImageLoadError : Boolean = false,
