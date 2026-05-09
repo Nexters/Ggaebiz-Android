@@ -89,7 +89,7 @@ val appModule = module {
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ConfigViewModel(get()) }
-    viewModel { EditorViewModel(get(), get()) }
+    viewModel { EditorViewModel(get(), get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
     viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
 
