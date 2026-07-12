@@ -16,12 +16,14 @@ import com.ggaebiz.ggaebiz.data.repository.AudioRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.AuthRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ConfigRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ImageRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.NicknameRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.OnboardingRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
 import com.ggaebiz.ggaebiz.domain.repository.AuthRepository
 import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.repository.ImageRepository
+import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
 import com.ggaebiz.ggaebiz.domain.usecase.CreateCachedImageUseCase
@@ -74,6 +76,7 @@ val appModule = module {
     single<OnboardingRepository> { OnboardingRepositoryImpl(get()) }
     single<ImageRepository> { ImageRepositoryImpl(appContext = androidContext()) }
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
+    single<NicknameRepository> { NicknameRepositoryImpl(androidContext(), get(), get()) }
 
     single { TimerServiceManager(androidContext()) }
     single { KakaoLoginHandler() }
@@ -96,11 +99,11 @@ val appModule = module {
     viewModel { HomeViewModel(get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
-    viewModel { LoginViewModel(get(), get()) }
+    viewModel { LoginViewModel(get(), get(), get()) }
     viewModel { OnboardingViewModel(get()) }
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
-    viewModel { ConfigViewModel(get()) }
+    viewModel { ConfigViewModel(get(), get(), get(), get()) }
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
 

@@ -33,6 +33,23 @@ class AuthRepositoryImpl(
         authDataStore.clearAuthInfo()
     }
 
+    override suspend fun withdraw(): Result<Unit> {
+        return try {
+            val token = authDataStore.getAccessToken().firstOrNull()
+                ?: return Result.failure(IllegalStateException("로그인 정보가 없습니다."))
+
+            val response = authApi.withdraw(authorization = "Bearer $token")
+            if (response.isSuccessful) {
+                authDataStore.clearAuthInfo()
+                Result.success(Unit)
+            } else {
+                Result.failure(IllegalStateException("회원 탈퇴 실패 (${response.code()})"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     override suspend fun getAccessToken(): String? {
         return authDataStore.getAccessToken().firstOrNull()
     }

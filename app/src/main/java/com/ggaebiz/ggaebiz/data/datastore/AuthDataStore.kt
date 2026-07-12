@@ -13,6 +13,7 @@ class AuthDataStore(private val dataStore: DataStore<Preferences>) {
 
     private val accessTokenKey = stringPreferencesKey("access_token")
     private val userIdKey = intPreferencesKey("user_id")
+    private val nicknameKey = stringPreferencesKey("nickname")
 
     suspend fun saveAuthInfo(accessToken: String, userId: Int) {
         dataStore.edit { preferences ->
@@ -25,6 +26,19 @@ class AuthDataStore(private val dataStore: DataStore<Preferences>) {
         dataStore.edit { preferences ->
             preferences.remove(accessTokenKey)
             preferences.remove(userIdKey)
+            preferences.remove(nicknameKey)
+        }
+    }
+
+    suspend fun saveNickname(nickname: String) {
+        dataStore.edit { preferences ->
+            preferences[nicknameKey] = nickname
+        }
+    }
+
+    fun getNickname(): Flow<String?> {
+        return dataStore.data.map { preferences ->
+            preferences[nicknameKey]
         }
     }
 

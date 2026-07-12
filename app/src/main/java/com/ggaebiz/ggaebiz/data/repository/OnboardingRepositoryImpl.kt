@@ -34,4 +34,7 @@ class OnboardingRepositoryImpl(
 
     override suspend fun getBatteryPopupViewed(): Boolean =
         onboardingDataStore.getBatteryPopupViewed().firstOrNull() ?: DEFAULT_IS_BATTERY_POPUP_VIEWED
+
+    override suspend fun clearOnboarding() =
+        onboardingDataStore.clearOnboardingInfo()
 }
