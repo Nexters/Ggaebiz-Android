@@ -5,6 +5,8 @@ import kotlinx.serialization.Serializable
 sealed interface Route  {
     @Serializable data object Splash : Route
 
+    @Serializable data object Login : Route
+
     @Serializable data object Onboarding : Route
 
     @Serializable data class Home(val isFromAlarm : Boolean?) : Route

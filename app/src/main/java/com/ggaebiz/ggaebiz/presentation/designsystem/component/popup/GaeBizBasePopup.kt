@@ -34,7 +34,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 enum class GaeBizPopupPosition { Center, Bottom }
 
 @Immutable
-enum class GaeBizButtonStyle { Primary, Secondary }
+enum class GaeBizButtonStyle { Primary, Secondary, Danger }
 
 @Immutable
 data class GaeBizPopupButton(
@@ -67,6 +67,13 @@ private fun popupButtonPalette(style: GaeBizButtonStyle): PopupButtonPalette = w
         container = GaeBizTheme.colors.gray50,
         disabledContent = GaeBizTheme.colors.gray400,
         disabledContainer = GaeBizTheme.colors.gray100,
+    )
+
+    GaeBizButtonStyle.Danger -> PopupButtonPalette(
+        content = GaeBizTheme.colors.white,
+        container = GaeBizTheme.colors.red400,
+        disabledContent = GaeBizTheme.colors.white,
+        disabledContainer = GaeBizTheme.colors.red400.copy(alpha = 0.4f),
     )
 }
 

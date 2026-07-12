@@ -30,6 +30,10 @@ class NavigatorState(
         navController.navigate(Route.Home(null))
     }
 
+    fun navigateLogin() {
+        navController.navigate(Route.Login)
+    }
+
     fun navigateOnboarding() {
         navController.navigate(Route.Onboarding)
     }
@@ -64,6 +68,13 @@ class NavigatorState(
 
     fun navigateStatistic() {
         navController.navigate(Route.Statistic)
+    }
+
+    fun navigateToSplashClearingBackStack() {
+        navController.navigate(Route.Splash) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
     }
 
     // 모든 화면을 제거하고 Home으로

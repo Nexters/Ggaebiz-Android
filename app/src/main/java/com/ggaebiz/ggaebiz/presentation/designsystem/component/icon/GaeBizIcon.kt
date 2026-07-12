@@ -82,4 +82,12 @@ object GaeBizIcon {
     val icSaveImageFinger : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_save_image)
+
+    val icRefresh : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_refresh)
+
+    val icErrorWarning : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_error_warning)
 }

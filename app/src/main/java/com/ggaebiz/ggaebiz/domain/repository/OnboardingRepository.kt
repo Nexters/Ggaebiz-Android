@@ -12,4 +12,6 @@ interface OnboardingRepository {
 
     suspend fun setBatteryPopupViewed(value: Boolean)
     suspend fun getBatteryPopupViewed(): Boolean
+
+    suspend fun clearOnboarding()
 }

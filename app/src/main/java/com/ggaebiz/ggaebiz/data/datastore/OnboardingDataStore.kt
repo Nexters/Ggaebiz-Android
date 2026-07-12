@@ -21,6 +21,15 @@ class OnboardingDataStore(private val dataStore: DataStore<Preferences>) {
         const val DEFAULT_IS_BATTERY_POPUP_VIEWED = false
     }
 
+    suspend fun clearOnboardingInfo() {
+        dataStore.edit { preferences ->
+            preferences.remove(isOnboardingExposed)
+            preferences.remove(isHomeNudgeGuideViewed)
+            preferences.remove(isSettingNudgeGuideViewed)
+            preferences.remove(isBatteryPopupViewed)
+        }
+    }
+
     suspend fun setIsOnboardingExposed(value: Boolean) {
         dataStore.edit { preferences ->
             preferences[isOnboardingExposed] = value

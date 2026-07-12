@@ -11,6 +11,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmScreen
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
+import com.ggaebiz.ggaebiz.presentation.ui.login.LoginScreen
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingScreen
 import com.ggaebiz.ggaebiz.presentation.ui.proof.card.ProofCardScreen
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.StatisticScreen
@@ -64,7 +65,13 @@ fun GaeBizNavHost(
     ) {
         composable<Route.Splash> {
             SplashScreen(
-                navigateHome = { navigator.navigateHome() },
+                navigateLogin = { navigator.navigateLogin() },
+                navigateHome = { navigator.navigateToMainClearingBackStack() },
+            )
+        }
+        composable<Route.Login> {
+            LoginScreen(
+                navigateHome = { navigator.navigateToMainClearingBackStack() },
                 navigateOnboarding = { navigator.navigateOnboarding() },
             )
         }
@@ -102,7 +109,8 @@ fun GaeBizNavHost(
         }
         composable<Route.Config> {
             ConfigScreen(
-                navigateBack = {navigator.popBackStack()}
+                navigateBack = { navigator.popBackStack() },
+                navigateLogin = { navigator.navigateToSplashClearingBackStack() },
             )
         }
         composable<Route.Editor> {
