@@ -2,6 +2,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.login
 
 import com.ggaebiz.ggaebiz.data.auth.KakaoLoginResult
 import com.ggaebiz.ggaebiz.domain.repository.AuthRepository
+import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 
@@ -25,6 +26,7 @@ sealed interface LoginIntent {
 class LoginViewModel(
     private val onboardingRepository: OnboardingRepository,
     private val authRepository: AuthRepository,
+    private val nicknameRepository: NicknameRepository,
 ) : BaseViewModel<LoginState, LoginIntent, LoginSideEffect>(LoginState()) {
 
     init {
@@ -60,12 +62,26 @@ class LoginViewModel(
 
         authRepository.login(kakaoAccessToken)
             .onSuccess {
+                assignRandomNickname()
+            }
+            .onFailure { error ->
+                updateState { it.copy(isLoading = false) }
+                postSideEffect(LoginSideEffect.ShowToast("로그인에 실패했습니다: ${error.message}"))
+            }
+    }
+
+    private suspend fun assignRandomNickname() {
+        val nickname = nicknameRepository.generateRandomNickname()
+
+        nicknameRepository.updateNickname(nickname)
+            .onSuccess {
                 updateState { it.copy(isLoading = false) }
                 navigateNextScreen()
             }
             .onFailure { error ->
                 updateState { it.copy(isLoading = false) }
                 postSideEffect(LoginSideEffect.ShowToast("로그인에 실패했습니다: ${error.message}"))
+                postSideEffect(LoginSideEffect.ShowToast("닉네임 설정에 실패했습니다: ${error.message}"))
             }
     }
 
