@@ -62,6 +62,13 @@ class NavigatorState(
         navController.navigate(Route.EditorResult(uri = uri.toString()))
     }
 
+    fun navigateToSplashClearingBackStack() {
+        navController.navigate(Route.Splash) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+
     // 모든 화면을 제거하고 Home으로
     fun navigateToMainClearingBackStack() {
         navController.navigate(Route.Home(null)) {

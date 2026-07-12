@@ -105,7 +105,8 @@ fun GaeBizNavHost(
         }
         composable<Route.Config> {
             ConfigScreen(
-                navigateBack = {navigator.popBackStack()}
+                navigateBack = { navigator.popBackStack() },
+                navigateLogin = { navigator.navigateToSplashClearingBackStack() },
             )
         }
         composable<Route.Editor> {
