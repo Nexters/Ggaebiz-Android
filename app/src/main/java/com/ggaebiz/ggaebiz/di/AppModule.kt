@@ -50,6 +50,7 @@ import com.ggaebiz.ggaebiz.domain.usecase.SetSettingTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SaveTimerRecordUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SendTimerRecordsUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetTimerTimesUseCase
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
@@ -119,6 +120,7 @@ val appModule = module {
     factory { SaveTimerRecordUseCase(get()) }
     factory { SendTimerRecordsUseCase(get()) }
     factory { GetTopCardDataUseCase(get()) }
+    factory { GetTimerTimesUseCase(get()) }
 
     viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
@@ -131,6 +133,6 @@ val appModule = module {
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
     viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
-    viewModel { StatisticViewModel(get(), get()) }
+    viewModel { StatisticViewModel(get(), get(), get()) }
 
 }
