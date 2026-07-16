@@ -10,6 +10,7 @@ data class GaeBizColors(
     val primaryOrange50: Color,
     val primaryOrange100: Color,
     val primaryOrange600: Color,
+    val yellow: Color,
     val splashStatusBarColor: Color,
     val gradientOrange: List<Color>,
     val gradientLightOrange: List<Color>,
@@ -54,6 +55,7 @@ val LocalGaeBizColor = staticCompositionLocalOf {
         primaryOrange50 = Color.Unspecified,
         primaryOrange100 = Color.Unspecified,
         primaryOrange600 = Color.Unspecified,
+        yellow = Color.Unspecified,
         splashStatusBarColor = Color.Unspecified,
         gradientOrange = listOf(Color.Unspecified, Color.Unspecified),
         gradientLightOrange = listOf(Color.Unspecified, Color.Unspecified),
@@ -98,6 +100,7 @@ val GaeBizColorScheme = GaeBizColors(
     primaryOrange50 = Color(0xFFFFF1EC),
     primaryOrange100 = Color(0xFFFED2C3),
     primaryOrange600 = Color(0xFFE56538),
+    yellow = Color(0xFFFFC640),
 
     splashStatusBarColor = Color( 0xFFFD8258),
     gradientOrange = listOf(
