@@ -5,9 +5,11 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.data.model.CharacterName
+import com.ggaebiz.ggaebiz.domain.model.CalendarMonth
 import com.ggaebiz.ggaebiz.domain.model.TimerTimeRecord
 import com.ggaebiz.ggaebiz.domain.model.TopCardData
 import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
+import com.ggaebiz.ggaebiz.domain.usecase.GetCalendarUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTimerTimesUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
@@ -75,6 +77,8 @@ data class StatisticDateUiModel(
     val isSelected: Boolean,
     val isToday: Boolean,
     val level: StatisticLevel = StatisticLevel.None,
+    val isFeverDay: Boolean = false,
+    val isFuture: Boolean = false,
 )
 
 enum class StatisticLevel { None, Low, Medium, High }
@@ -115,6 +119,7 @@ class StatisticViewModel(
     private val getTopCardDataUseCase: GetTopCardDataUseCase,
     private val nicknameRepository: NicknameRepository,
     private val getTimerTimesUseCase: GetTimerTimesUseCase,
+    private val getCalendarUseCase: GetCalendarUseCase,
 ) : BaseViewModel<StatisticState, StatisticIntent, StatisticSideEffect>(
     initialState = run {
         val now = Calendar.getInstance()
@@ -156,10 +161,12 @@ class StatisticViewModel(
 ) {
 
     private var timerTimes: List<TimerTimeRecord> = emptyList()
+    private var calendarMonths: Map<String, CalendarMonth> = emptyMap()
 
     init {
         loadTopCard()
         loadTimerTimes()
+        loadCalendar(yearMonthKey(uiState.value.calendar.year, uiState.value.calendar.month))
     }
 
     fun processIntent(intent: StatisticIntent) {
@@ -325,12 +332,40 @@ class StatisticViewModel(
                     year = newYear,
                     month = newMonth,
                     yearMonthText = "${newMonth}월",
-                    dates = generateCalendarDates(newYear, newMonth),
+                    dates = calendarDates(newYear, newMonth),
                 ),
                 focusTime = it.focusTime.copy(periodLabel = newPeriodLabel),
                 restTime = it.restTime.copy(periodLabel = newPeriodLabel),
                 characterRank = it.characterRank.copy(periodLabel = newPeriodLabel),
             )
+        }
+        loadCalendar(yearMonthKey(newYear, newMonth))
+    }
+
+    /**
+     * 월 변경마다 호출. 응답(3개월)을 map 에 누적 후 "현재 표시 중인 달"을 다시 그린다.
+     * 연타 시: 표시 월은 shiftMonth 로 이미 갱신됐고, 어떤 응답이 늦게 와도 map 병합 후
+     * 현재 달 기준으로 재구성 → 최종적으로 현재 달 데이터가 반영된다.
+     */
+    private fun loadCalendar(yearMonth: String) = launch {
+        getCalendarUseCase(yearMonth).onSuccess { months ->
+            calendarMonths = calendarMonths + months.associateBy { normalizeYearMonth(it.yearMonth) }
+            updateState {
+                it.copy(calendar = it.calendar.copy(dates = calendarDates(it.calendar.year, it.calendar.month)))
+            }
+        }
+    }
+
+    /** 그 달 그리드 생성 후, 받아둔 데이터로 현재 달 날짜에 레벨/불꽃을 입힌다. */
+    private fun calendarDates(year: Int, month: Int): List<StatisticDateUiModel> {
+        val base = generateCalendarDates(year, month)
+        val monthData = calendarMonths[yearMonthKey(year, month)] ?: return base
+        val prevData = calendarMonths[shiftedYearMonthKey(year, month, -1)]
+        val nextData = calendarMonths[shiftedYearMonthKey(year, month, 1)]
+        return base.map { date ->
+            if (!date.isCurrentMonth) return@map date
+            val (level, isFever) = dayLevel(monthData, date.day, prevData, nextData)
+            date.copy(level = level, isFeverDay = isFever)
         }
     }
 
@@ -371,6 +406,44 @@ private fun formatCompact(seconds: Long): String {
         if (secs > 0) add("${secs}초")
     }
     return parts.joinToString(" ")
+}
+
+private fun yearMonthKey(year: Int, month: Int): String = "%04d-%02d".format(year, month)
+
+private fun shiftedYearMonthKey(year: Int, month: Int, delta: Int): String {
+    val total = year * 12 + (month - 1) + delta
+    return yearMonthKey(total / 12, total % 12 + 1)
+}
+
+private fun normalizeYearMonth(raw: String): String {
+    val parts = raw.split("-")
+    val year = parts.getOrNull(0)?.toIntOrNull()
+    val month = parts.getOrNull(1)?.toIntOrNull()
+    return if (year != null && month != null) yearMonthKey(year, month) else raw
+}
+
+/** 하루의 색 레벨 + 불꽃 여부. 노랑(Low)=고립 기록, 주황(Medium)=2일 이상 연속(앞/뒤 달 경계 포함). */
+private fun dayLevel(
+    month: CalendarMonth,
+    day: Int,
+    prev: CalendarMonth?,
+    next: CalendarMonth?,
+): Pair<StatisticLevel, Boolean> {
+    val hasRecord = month.dayRecord.getOrNull(day - 1) == true
+    if (!hasRecord) return StatisticLevel.None to false
+
+    val prevRecord = if (day > 1) {
+        month.dayRecord.getOrNull(day - 2) == true
+    } else {
+        prev?.dayRecord?.lastOrNull() == true
+    }
+    val nextRecord = if (day < month.dayRecord.size) {
+        month.dayRecord.getOrNull(day) == true
+    } else {
+        next?.dayRecord?.firstOrNull() == true
+    }
+    val level = if (prevRecord || nextRecord) StatisticLevel.Medium else StatisticLevel.Low
+    return level to (month.feverDay == day)
 }
 
 /** lastAttendanceDate("yyyy-MM-dd")로부터 오늘까지의 경과 일수. 파싱 실패/없음이면 null. */
@@ -423,11 +496,15 @@ private fun generateCalendarDates(year: Int, month: Int): List<StatisticDateUiMo
     }
 
     for (d in 1..daysInMonth) {
+        val isFuture = year > todayYear ||
+            (year == todayYear && month > todayMonth) ||
+            (year == todayYear && month == todayMonth && d > todayDay)
         dates.add(StatisticDateUiModel(
             day = d,
             isCurrentMonth = true,
             isSelected = false,
             isToday = year == todayYear && month == todayMonth && d == todayDay,
+            isFuture = isFuture,
         ))
     }
 
