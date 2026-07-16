@@ -202,8 +202,35 @@ class StatisticViewModel(
     private fun loadTopCard() = launch {
         val nickname = nicknameRepository.getNickname().orEmpty()
         getTopCardDataUseCase()
-            .onSuccess { data -> updateState { it.copy(topCard = buildTopCard(data, nickname)) } }
+            .onSuccess { data ->
+                updateState {
+                    it.copy(
+                        topCard = buildTopCard(data, nickname),
+                        characterRank = buildCharacterRank(data.selectionCountList, it.characterRank),
+                    )
+                }
+            }
             .onFailure { updateState { it.copy(topCard = fallbackTopCard(nickname)) } }
+    }
+
+    /** 서버 리스트(KIKI,BOBO,NANA,CHACHA,BOOBOO 순 카운트)를 내림차순 정렬해 1~5위 배치. 동점은 서버 순서 유지. */
+    private fun buildCharacterRank(
+        counts: List<Int>,
+        current: StatisticCharacterRankState,
+    ): StatisticCharacterRankState {
+        val ranked = CharacterName.entries
+            .mapIndexed { index, character -> character to (counts.getOrNull(index) ?: 0) }
+            .sortedByDescending { it.second } // 안정 정렬 → 동점은 enum(서버 리스트) 순서
+        val items = ranked.mapIndexed { index, (character, count) ->
+            StatisticCharacterRankItemState(
+                rank = index + 1,
+                iconRes = character.rankIconRes(),
+                name = character.koreanName(),
+                countText = "$count 회",
+            )
+        }
+        val topCharacterName = ranked.firstOrNull()?.first?.koreanName() ?: current.ctaCharacterName
+        return current.copy(items = items, ctaCharacterName = topCharacterName)
     }
 
     /** 판정 트리: 신규 > 연속(streakDays≥2) > 복귀(2≤O<7) > 그외(빈도 있음/없음). */
@@ -336,7 +363,6 @@ class StatisticViewModel(
                 ),
                 focusTime = it.focusTime.copy(periodLabel = newPeriodLabel),
                 restTime = it.restTime.copy(periodLabel = newPeriodLabel),
-                characterRank = it.characterRank.copy(periodLabel = newPeriodLabel),
             )
         }
         loadCalendar(yearMonthKey(newYear, newMonth))
@@ -474,6 +500,15 @@ private fun CharacterName.koreanName(): String = when (this) {
     CharacterName.NANA -> "나나"
     CharacterName.CHACHA -> "차차"
     CharacterName.BOOBOO -> "부부"
+}
+
+@DrawableRes
+private fun CharacterName.rankIconRes(): Int = when (this) {
+    CharacterName.KIKI -> R.drawable.ic_kiki_level1
+    CharacterName.BOBO -> R.drawable.ic_bobo_level1
+    CharacterName.NANA -> R.drawable.ic_nana_level1
+    CharacterName.CHACHA -> R.drawable.ic_chacha_level1
+    CharacterName.BOOBOO -> R.drawable.ic_booboo_level1
 }
 
 private fun generateCalendarDates(year: Int, month: Int): List<StatisticDateUiModel> {
