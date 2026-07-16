@@ -2,6 +2,7 @@ package com.ggaebiz.ggaebiz.data.repository
 
 import android.util.Log
 import com.ggaebiz.ggaebiz.data.network.StatisticApi
+import com.ggaebiz.ggaebiz.domain.model.TimerTimeRecord
 import com.ggaebiz.ggaebiz.domain.model.TopCardInfo
 import com.ggaebiz.ggaebiz.domain.repository.StatisticRepository
 
@@ -25,6 +26,21 @@ class StatisticRepositoryImpl(
         Result.success(statisticApi.getCharacterFrequency().selectionCountList)
     } catch (e: Exception) {
         Log.e(TAG, "Error fetching character frequency", e)
+        Result.failure(e)
+    }
+
+    override suspend fun getTimerTimes(): Result<List<TimerTimeRecord>> = try {
+        val records = statisticApi.getTimerTimes().result.map {
+            TimerTimeRecord(
+                mode = it.mode,
+                concentrateType = it.concentrateType,
+                timeType = it.timeType,
+                time = it.time,
+            )
+        }
+        Result.success(records)
+    } catch (e: Exception) {
+        Log.e(TAG, "Error fetching timer times", e)
         Result.failure(e)
     }
 }
