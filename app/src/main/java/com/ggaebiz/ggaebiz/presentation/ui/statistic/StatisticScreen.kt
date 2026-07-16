@@ -19,7 +19,7 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.component.header.GaeBizText
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.component.StatisticCalendarSectionCard
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.component.StatisticCharacterRankCard
-import com.ggaebiz.ggaebiz.presentation.ui.statistic.component.StatisticSummaryCard
+import com.ggaebiz.ggaebiz.presentation.ui.statistic.component.StatisticTopCard
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.component.StatisticTimeCard
 import org.koin.androidx.compose.koinViewModel
 
@@ -75,7 +75,7 @@ fun StatisticContent(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
-                StatisticSummaryCard(state = state.summaryCard)
+                StatisticTopCard(state = state.topCard)
             }
             item {
                 StatisticTimeCard(

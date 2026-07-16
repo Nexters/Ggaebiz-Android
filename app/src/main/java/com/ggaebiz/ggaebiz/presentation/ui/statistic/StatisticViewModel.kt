@@ -1,24 +1,40 @@
 package com.ggaebiz.ggaebiz.presentation.ui.statistic
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.data.model.CharacterName
+import com.ggaebiz.ggaebiz.domain.model.TopCardData
+import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
+import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @Immutable
 data class StatisticState(
-    val summaryCard: StatisticSummaryCardState = StatisticSummaryCardState(),
+    val topCard: TopCardState = TopCardState(),
     val focusTime: StatisticTimeCardState = StatisticTimeCardState(title = "집중 시간"),
     val restTime: StatisticTimeCardState = StatisticTimeCardState(title = "휴식 시간"),
     val calendar: StatisticCalendarState = StatisticCalendarState(),
     val characterRank: StatisticCharacterRankState = StatisticCharacterRankState(),
 )
 
+enum class TopCardCase { LOADING, NEW, STREAK, RETURN, FLOATING_ACTIVE, FLOATING_EMPTY }
+
 @Immutable
-data class StatisticSummaryCardState(
-    val title: String = "캐릭터 성장 2단계",
-    val description: String = "추후 추가 예정인\n테스트용입니다\n빈자리를 비우지 마세요",
+data class TopCardState(
+    val case: TopCardCase = TopCardCase.LOADING,
+    val nickname: String = "",
+    @StringRes val subtitleRes: Int? = null,
+    val subtitleArg: Int? = null,
+    @StringRes val bodyRes: Int? = null,
+    val bodyArg: Int? = null,
+    @DrawableRes val characterIconRes: Int = R.drawable.ic_positive_kiki,
+    val fromName: String? = null,
 )
 
 @Immutable
@@ -93,7 +109,10 @@ sealed interface StatisticIntent {
     data object ClickStartTimer : StatisticIntent
 }
 
-class StatisticViewModel : BaseViewModel<StatisticState, StatisticIntent, StatisticSideEffect>(
+class StatisticViewModel(
+    private val getTopCardDataUseCase: GetTopCardDataUseCase,
+    private val nicknameRepository: NicknameRepository,
+) : BaseViewModel<StatisticState, StatisticIntent, StatisticSideEffect>(
     initialState = run {
         val now = Calendar.getInstance()
         val year = now.get(Calendar.YEAR)
@@ -133,6 +152,10 @@ class StatisticViewModel : BaseViewModel<StatisticState, StatisticIntent, Statis
     }
 ) {
 
+    init {
+        loadTopCard()
+    }
+
     fun processIntent(intent: StatisticIntent) {
         when (intent) {
             StatisticIntent.ClickBack -> postSideEffect(StatisticSideEffect.NavigateBack)
@@ -163,6 +186,86 @@ class StatisticViewModel : BaseViewModel<StatisticState, StatisticIntent, Statis
         }
     }
 
+    private fun loadTopCard() = launch {
+        val nickname = nicknameRepository.getNickname().orEmpty()
+        getTopCardDataUseCase()
+            .onSuccess { data -> updateState { it.copy(topCard = buildTopCard(data, nickname)) } }
+            .onFailure { updateState { it.copy(topCard = fallbackTopCard(nickname)) } }
+    }
+
+    /** 판정 트리: 신규 > 연속(streakDays≥2) > 복귀(2≤O<7) > 그외(빈도 있음/없음). */
+    private fun buildTopCard(data: TopCardData, nickname: String): TopCardState {
+        val counts = data.selectionCountList
+        val hasFrequency = counts.sum() > 0
+        val favoriteIdx = if (hasFrequency) counts.indices.maxByOrNull { counts[it] } ?: -1 else -1
+        val favorite = favoriteIdx.takeIf { it in CharacterName.entries.indices }
+            ?.let { CharacterName.entries[it] }
+        val restDays = daysSince(data.lastAttendanceDate)
+
+        return when {
+            // 1. 신규 — 기록이 아예 없음
+            data.streakDays == 0 && data.lastAttendanceDate == null -> TopCardState(
+                case = TopCardCase.NEW,
+                nickname = nickname,
+                subtitleRes = R.string.statistic_top_card_new_subtitle,
+                bodyRes = R.string.statistic_top_card_new_body,
+                characterIconRes = CharacterName.KIKI.iconRes(),
+                fromName = CharacterName.KIKI.koreanName(),
+            )
+
+            // 2. 연속 — 이번 달 2일 이상 연속
+            data.streakDays >= STREAK_THRESHOLD -> {
+                val character = favorite ?: CharacterName.KIKI
+                TopCardState(
+                    case = TopCardCase.STREAK,
+                    nickname = nickname,
+                    bodyRes = R.string.statistic_top_card_streak_body,
+                    bodyArg = data.streakDays,
+                    characterIconRes = character.iconRes(),
+                    fromName = character.koreanName(),
+                )
+            }
+
+            // 3. 복귀 — 2일 이상 쉬고 일주일 미만
+            restDays != null && restDays in RETURN_MIN_DAYS until RETURN_MAX_DAYS -> {
+                val character = favorite ?: CharacterName.KIKI
+                TopCardState(
+                    case = TopCardCase.RETURN,
+                    nickname = nickname,
+                    subtitleRes = R.string.statistic_top_card_return_subtitle,
+                    subtitleArg = restDays,
+                    bodyRes = R.string.statistic_top_card_return_body,
+                    bodyArg = restDays,
+                    characterIconRes = character.iconRes(),
+                    fromName = character.koreanName(),
+                )
+            }
+
+            // 4-A. 그 외 — 캐릭터 빈도 데이터 있음
+            hasFrequency && favorite != null -> TopCardState(
+                case = TopCardCase.FLOATING_ACTIVE,
+                nickname = nickname,
+                subtitleRes = R.string.statistic_top_card_floating_active_subtitle,
+                bodyRes = R.string.statistic_top_card_floating_active_body,
+                bodyArg = counts[favoriteIdx],
+                characterIconRes = favorite.iconRes(),
+                fromName = favorite.koreanName(),
+            )
+
+            // 4-B. 그 외 — 캐릭터 빈도 데이터 없음
+            else -> fallbackTopCard(nickname)
+        }
+    }
+
+    private fun fallbackTopCard(nickname: String) = TopCardState(
+        case = TopCardCase.FLOATING_EMPTY,
+        nickname = nickname,
+        subtitleRes = R.string.statistic_top_card_floating_empty_subtitle,
+        bodyRes = R.string.statistic_top_card_floating_empty_body,
+        characterIconRes = CharacterName.KIKI.iconRes(),
+        fromName = null,
+    )
+
     private fun shiftMonth(delta: Int) {
         val cal = uiState.value.calendar
         val total = cal.year * 12 + (cal.month - 1) + delta
@@ -183,6 +286,42 @@ class StatisticViewModel : BaseViewModel<StatisticState, StatisticIntent, Statis
             )
         }
     }
+
+    companion object {
+        private const val STREAK_THRESHOLD = 2
+        private const val RETURN_MIN_DAYS = 2
+        private const val RETURN_MAX_DAYS = 7
+    }
+}
+
+/** lastAttendanceDate("yyyy-MM-dd")로부터 오늘까지의 경과 일수. 파싱 실패/없음이면 null. */
+private fun daysSince(dateStr: String?): Int? {
+    if (dateStr.isNullOrBlank()) return null
+    return try {
+        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val last = formatter.parse(dateStr) ?: return null
+        val today = formatter.parse(formatter.format(Date())) ?: return null
+        ((today.time - last.time) / (1000L * 60 * 60 * 24)).toInt()
+    } catch (e: Exception) {
+        null
+    }
+}
+
+@DrawableRes
+private fun CharacterName.iconRes(): Int = when (this) {
+    CharacterName.KIKI -> R.drawable.ic_positive_kiki
+    CharacterName.BOBO -> R.drawable.ic_positive_bobo
+    CharacterName.NANA -> R.drawable.ic_positive_nana
+    CharacterName.CHACHA -> R.drawable.ic_positive_chacha
+    CharacterName.BOOBOO -> R.drawable.ic_positive_booboo
+}
+
+private fun CharacterName.koreanName(): String = when (this) {
+    CharacterName.KIKI -> "키키"
+    CharacterName.BOBO -> "보보"
+    CharacterName.NANA -> "나나"
+    CharacterName.CHACHA -> "차차"
+    CharacterName.BOOBOO -> "부부"
 }
 
 private fun generateCalendarDates(year: Int, month: Int): List<StatisticDateUiModel> {
