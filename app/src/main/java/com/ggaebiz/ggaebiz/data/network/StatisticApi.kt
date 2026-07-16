@@ -1,6 +1,7 @@
 package com.ggaebiz.ggaebiz.data.network
 
 import com.ggaebiz.ggaebiz.data.network.dto.CharacterFrequencyResponse
+import com.ggaebiz.ggaebiz.data.network.dto.TimerTimesResponse
 import com.ggaebiz.ggaebiz.data.network.dto.TopCardResponse
 import retrofit2.http.GET
 
@@ -11,4 +12,7 @@ interface StatisticApi {
 
     @GET("api/statistic/character-frequency")
     suspend fun getCharacterFrequency(): CharacterFrequencyResponse
+
+    @GET("api/statistic/timer-times")
+    suspend fun getTimerTimes(): TimerTimesResponse
 }
