@@ -8,12 +8,18 @@ import com.google.gson.annotations.SerializedName
  *       서버와 문자열 계약 확정 필요.
  */
 data class TimerRecordRequest(
-    @SerializedName("gaebiz") val gaebiz: String,
-    @SerializedName("time") val time: Long,
-    @SerializedName("mode") val mode: String,
-    @SerializedName("concentrateType") val concentrateType: String?,
-    @SerializedName("playAt") val playAt: String,
-    @SerializedName("restLevel") val restLevel: Int,
+    @SerializedName("gaebiz")
+    val gaebiz: String,
+    @SerializedName("time")
+    val time: Long,
+    @SerializedName("mode")
+    val mode: String,
+    @SerializedName("concentrateType")
+    val concentrateType: String?,
+    @SerializedName("playAt")
+    val playAt: String,
+    @SerializedName("restLevel")
+    val restLevel: Int,
 )
 
 fun TimerRecord.toRequest(): TimerRecordRequest = TimerRecordRequest(

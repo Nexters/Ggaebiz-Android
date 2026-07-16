@@ -31,4 +31,5 @@ object NetworkModule {
 
     fun provideAuthApi(retrofit: Retrofit): AuthApi = retrofit.create(AuthApi::class.java)
     fun provideTimerApi(retrofit: Retrofit): TimerApi = retrofit.create(TimerApi::class.java)
+    fun provideStatisticApi(retrofit: Retrofit): StatisticApi = retrofit.create(StatisticApi::class.java)
 }
