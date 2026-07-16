@@ -21,6 +21,7 @@ import com.ggaebiz.ggaebiz.data.repository.ConfigRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.ImageRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.NicknameRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.OnboardingRepositoryImpl
+import com.ggaebiz.ggaebiz.data.repository.StatisticRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRecordRepositoryImpl
 import com.ggaebiz.ggaebiz.data.repository.TimerRepositoryImpl
 import com.ggaebiz.ggaebiz.domain.repository.AudioRepository
@@ -29,6 +30,7 @@ import com.ggaebiz.ggaebiz.domain.repository.ConfigRepository
 import com.ggaebiz.ggaebiz.domain.repository.ImageRepository
 import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
+import com.ggaebiz.ggaebiz.domain.repository.StatisticRepository
 import com.ggaebiz.ggaebiz.domain.repository.TimerRecordRepository
 import com.ggaebiz.ggaebiz.domain.repository.TimerRepository
 import com.ggaebiz.ggaebiz.domain.usecase.CreateCachedImageUseCase
@@ -47,6 +49,7 @@ import com.ggaebiz.ggaebiz.domain.usecase.SetIsRestCompletedUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SetSettingTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SaveTimerRecordUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SendTimerRecordsUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
 import com.ggaebiz.ggaebiz.presentation.service.TimerServiceManager
 import com.ggaebiz.ggaebiz.presentation.ui.alarm.AlarmViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigViewModel
@@ -84,6 +87,7 @@ val appModule = module {
     single { NetworkModule.provideRetrofit(get()) }
     single { NetworkModule.provideAuthApi(get()) }
     single { NetworkModule.provideTimerApi(get()) }
+    single { NetworkModule.provideStatisticApi(get()) }
 
     single<AudioRepository> { AudioRepositoryImpl(get()) }
     single<TimerRepository> { TimerRepositoryImpl(get()) }
@@ -92,6 +96,7 @@ val appModule = module {
     single<ImageRepository> { ImageRepositoryImpl(appContext = androidContext()) }
     single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<TimerRecordRepository> { TimerRecordRepositoryImpl(get(), get()) }
+    single<StatisticRepository> { StatisticRepositoryImpl(get()) }
     single<NicknameRepository> { NicknameRepositoryImpl(androidContext(), get(), get()) }
 
     single { TimerServiceManager(androidContext()) }
@@ -113,6 +118,7 @@ val appModule = module {
     factory { SaveImageToGalleryUseCase(imageRepository = get()) }
     factory { SaveTimerRecordUseCase(get()) }
     factory { SendTimerRecordsUseCase(get()) }
+    factory { GetTopCardDataUseCase(get()) }
 
     viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
@@ -125,6 +131,6 @@ val appModule = module {
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
     viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
-    viewModel { StatisticViewModel() }
+    viewModel { StatisticViewModel(get(), get()) }
 
 }
