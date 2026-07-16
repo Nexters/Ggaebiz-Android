@@ -132,7 +132,8 @@ fun GaeBizNavHost(
         }
         composable<Route.Statistic> {
             StatisticScreen(
-                navigateBack = { navigator.popBackStack() }
+                navigateBack = { navigator.popBackStack() },
+                navigateSetting = { navigator.navigateSettingFromStatistic() },
             )
         }
     }

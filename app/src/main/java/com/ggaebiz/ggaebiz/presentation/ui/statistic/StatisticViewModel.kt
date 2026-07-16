@@ -12,6 +12,7 @@ import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
 import com.ggaebiz.ggaebiz.domain.usecase.GetCalendarUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTimerTimesUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -102,7 +103,7 @@ data class StatisticCharacterRankItemState(
 
 sealed interface StatisticSideEffect {
     data object NavigateBack : StatisticSideEffect
-    data object NavigateToTimer : StatisticSideEffect
+    data object NavigateToSetting : StatisticSideEffect
 }
 
 sealed interface StatisticIntent {
@@ -120,6 +121,7 @@ class StatisticViewModel(
     private val nicknameRepository: NicknameRepository,
     private val getTimerTimesUseCase: GetTimerTimesUseCase,
     private val getCalendarUseCase: GetCalendarUseCase,
+    private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
 ) : BaseViewModel<StatisticState, StatisticIntent, StatisticSideEffect>(
     initialState = run {
         val now = Calendar.getInstance()
@@ -162,6 +164,7 @@ class StatisticViewModel(
 
     private var timerTimes: List<TimerTimeRecord> = emptyList()
     private var calendarMonths: Map<String, CalendarMonth> = emptyMap()
+    private var ctaCharacterIndex: Int = 0
 
     init {
         loadTopCard()
@@ -195,7 +198,7 @@ class StatisticViewModel(
                 it.copy(restTime = buildRestCard(it.restTime.copy(selectedPeriod = intent.period)))
             }
 
-            StatisticIntent.ClickStartTimer -> postSideEffect(StatisticSideEffect.NavigateToTimer)
+            StatisticIntent.ClickStartTimer -> startTimerWithTopCharacter()
         }
     }
 
@@ -229,8 +232,19 @@ class StatisticViewModel(
                 countText = "$count 회",
             )
         }
-        val topCharacterName = ranked.firstOrNull()?.first?.koreanName() ?: current.ctaCharacterName
-        return current.copy(items = items, ctaCharacterName = topCharacterName)
+
+        val topCharacter = ranked.firstOrNull()?.first
+        ctaCharacterIndex = topCharacter?.ordinal ?: 0
+        return current.copy(
+            items = items,
+            ctaCharacterName = topCharacter?.koreanName() ?: current.ctaCharacterName,
+        )
+    }
+
+    /** CTA "○○랑 타이머 시작": 최애 캐릭터를 선택 저장 후 타이머 설정 화면으로 이동. */
+    private fun startTimerWithTopCharacter() = launch {
+        selectCharacterIdxUseCase(ctaCharacterIndex)
+        postSideEffect(StatisticSideEffect.NavigateToSetting)
     }
 
     /** 판정 트리: 신규 > 연속(streakDays≥2) > 복귀(2≤O<7) > 그외(빈도 있음/없음). */

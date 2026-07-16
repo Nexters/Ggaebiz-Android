@@ -135,6 +135,6 @@ val appModule = module {
     viewModel { EditorViewModel(get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
     viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
-    viewModel { StatisticViewModel(get(), get(), get(), get()) }
+    viewModel { StatisticViewModel(get(), get(), get(), get(), get()) }
 
 }

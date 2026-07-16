@@ -27,13 +27,14 @@ import org.koin.androidx.compose.koinViewModel
 fun StatisticScreen(
     viewModel: StatisticViewModel = koinViewModel(),
     navigateBack: () -> Unit,
+    navigateSetting: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.sideEffects.collectSideEffectWithLifecycle { effect ->
         when (effect) {
             StatisticSideEffect.NavigateBack -> navigateBack()
-            StatisticSideEffect.NavigateToTimer -> Unit
+            StatisticSideEffect.NavigateToSetting -> navigateSetting()
         }
     }
 

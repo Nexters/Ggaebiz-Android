@@ -70,6 +70,12 @@ class NavigatorState(
         navController.navigate(Route.Statistic)
     }
 
+    fun navigateSettingFromStatistic() {
+        navController.navigate(Route.Setting) {
+            popUpTo(Route.Statistic) { inclusive = true }
+        }
+    }
+
     fun navigateToSplashClearingBackStack() {
         navController.navigate(Route.Splash) {
             popUpTo(0) { inclusive = true }
