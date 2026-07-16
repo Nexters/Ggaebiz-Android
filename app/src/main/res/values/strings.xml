@@ -286,4 +286,21 @@
 
 
     <string name="statistic_title_text">통계</string>
+
+    <!-- 통계 상단 카드 -->
+    <string name="statistic_top_card_from">from. %1$s</string>
+    <!-- 1. 신규 -->
+    <string name="statistic_top_card_new_subtitle">집중 스따또!</string>
+    <string name="statistic_top_card_new_body">안녕! 나는 키키야. 혼자 하면 힘들 수도\n있지만, 내가 옆에서 지켜보고 도와줄게!\n금방 친해질 수 있을 거야. 마이쮸 주까?</string>
+    <!-- 2. 연속 -->
+    <string name="statistic_top_card_streak_body">이번 달에 벌써 %1$d일 연속으로 집중했어!\n정말 대단해!! 우리 이제 제법 호흡이\n척척 맞는 것 같지 않아? 오늘도 힘내보자!</string>
+    <!-- 3. 복귀 -->
+    <string name="statistic_top_card_return_subtitle">%1$d일만의 복귀</string>
+    <string name="statistic_top_card_return_body">%1$d일 동안 안 보여서 내가 얼마나 심심했는지 알아? 그래도 다시 와줘서 봐준다.\n푹 쉰 만큼 오늘은 완전 열심히 하겠지?</string>
+    <!-- 4-A. 그 외(빈도 있음) -->
+    <string name="statistic_top_card_floating_active_subtitle">집중력 예열 중</string>
+    <string name="statistic_top_card_floating_active_body">나를 %1$d번이나 불렀더라고? 내가 너의\n최애 깨비인가봐! 우히히 &gt;&lt; 앞으로도\n나랑만 놀아줘! (다른 애들한텐 비밀이야)</string>
+    <!-- 4-B. 그 외(빈도 없음) -->
+    <string name="statistic_top_card_floating_empty_subtitle">집중력 예열 필요!!</string>
+    <string name="statistic_top_card_floating_empty_body">내가 너의 최애 깨비가 되어줄게!\n앞으로도 잘해보자구!</string>
 </resources>
