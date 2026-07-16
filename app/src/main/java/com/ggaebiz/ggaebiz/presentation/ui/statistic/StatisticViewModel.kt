@@ -5,8 +5,10 @@ import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.data.model.CharacterName
+import com.ggaebiz.ggaebiz.domain.model.TimerTimeRecord
 import com.ggaebiz.ggaebiz.domain.model.TopCardData
 import com.ggaebiz.ggaebiz.domain.repository.NicknameRepository
+import com.ggaebiz.ggaebiz.domain.usecase.GetTimerTimesUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import java.text.SimpleDateFormat
@@ -112,6 +114,7 @@ sealed interface StatisticIntent {
 class StatisticViewModel(
     private val getTopCardDataUseCase: GetTopCardDataUseCase,
     private val nicknameRepository: NicknameRepository,
+    private val getTimerTimesUseCase: GetTimerTimesUseCase,
 ) : BaseViewModel<StatisticState, StatisticIntent, StatisticSideEffect>(
     initialState = run {
         val now = Calendar.getInstance()
@@ -152,8 +155,11 @@ class StatisticViewModel(
     }
 ) {
 
+    private var timerTimes: List<TimerTimeRecord> = emptyList()
+
     init {
         loadTopCard()
+        loadTimerTimes()
     }
 
     fun processIntent(intent: StatisticIntent) {
@@ -175,11 +181,11 @@ class StatisticViewModel(
             }
 
             is StatisticIntent.ClickFocusPeriod -> updateState {
-                it.copy(focusTime = it.focusTime.copy(selectedPeriod = intent.period))
+                it.copy(focusTime = buildFocusCard(it.focusTime.copy(selectedPeriod = intent.period)))
             }
 
             is StatisticIntent.ClickRestPeriod -> updateState {
-                it.copy(restTime = it.restTime.copy(selectedPeriod = intent.period))
+                it.copy(restTime = buildRestCard(it.restTime.copy(selectedPeriod = intent.period)))
             }
 
             StatisticIntent.ClickStartTimer -> postSideEffect(StatisticSideEffect.NavigateToTimer)
@@ -266,6 +272,47 @@ class StatisticViewModel(
         fromName = null,
     )
 
+    private fun loadTimerTimes() = launch {
+        getTimerTimesUseCase().onSuccess { records ->
+            timerTimes = records
+            updateState {
+                it.copy(
+                    focusTime = buildFocusCard(it.focusTime),
+                    restTime = buildRestCard(it.restTime),
+                )
+            }
+        }
+    }
+
+    /** 집중 카드: 선택 기간의 NORMAL+STUDY+EXERCISE 합을 총합으로, 각 타입을 breakdown 으로. */
+    private fun buildFocusCard(card: StatisticTimeCardState): StatisticTimeCardState {
+        val timeType = card.selectedPeriod.toTimeType()
+        val normal = timerTimes.concentrateTime("NORMAL", timeType)
+        val study = timerTimes.concentrateTime("STUDY", timeType)
+        val exercise = timerTimes.concentrateTime("EXERCISE", timeType)
+        val total = normal + study + exercise
+        return card.copy(
+            hour = hourText(total),
+            minute = minuteText(total),
+            second = secondText(total),
+            breakdown = listOf(
+                StatisticModeBreakdownState(iconRes = null, label = "일반모드", timeText = formatCompact(normal)),
+                StatisticModeBreakdownState(iconRes = R.drawable.ic_pencil, label = "공부모드", timeText = formatCompact(study)),
+                StatisticModeBreakdownState(iconRes = R.drawable.ic_basketball, label = "운동모드", timeText = formatCompact(exercise)),
+            ),
+        )
+    }
+
+    /** 휴식 카드: 선택 기간의 REST 총 시간(모드별 breakdown 없음). */
+    private fun buildRestCard(card: StatisticTimeCardState): StatisticTimeCardState {
+        val restSeconds = timerTimes.restTime(card.selectedPeriod.toTimeType())
+        return card.copy(
+            hour = hourText(restSeconds),
+            minute = minuteText(restSeconds),
+            second = secondText(restSeconds),
+        )
+    }
+
     private fun shiftMonth(delta: Int) {
         val cal = uiState.value.calendar
         val total = cal.year * 12 + (cal.month - 1) + delta
@@ -292,6 +339,38 @@ class StatisticViewModel(
         private const val RETURN_MIN_DAYS = 2
         private const val RETURN_MAX_DAYS = 7
     }
+}
+
+private fun StatisticPeriod.toTimeType(): String = when (this) {
+    StatisticPeriod.Month -> "month"
+    StatisticPeriod.Week -> "week"
+    StatisticPeriod.Day -> "day"
+}
+
+// 스펙 오타 "CONCENRATE" 와 코드 컨벤션 "CONCENTRATE" 모두 허용.
+private fun TimerTimeRecord.isConcentrate(): Boolean = mode == "CONCENTRATE" || mode == "CONCENRATE"
+
+private fun List<TimerTimeRecord>.concentrateTime(type: String, timeType: String): Long =
+    firstOrNull { it.timeType == timeType && it.isConcentrate() && it.concentrateType == type }?.time ?: 0L
+
+private fun List<TimerTimeRecord>.restTime(timeType: String): Long =
+    firstOrNull { it.timeType == timeType && it.mode == "REST" }?.time ?: 0L
+
+private fun hourText(seconds: Long): String = "%02d".format(seconds / 3600)
+private fun minuteText(seconds: Long): String = "%02d".format((seconds % 3600) / 60)
+private fun secondText(seconds: Long): String = "%02d".format(seconds % 60)
+
+private fun formatCompact(seconds: Long): String {
+    if (seconds <= 0L) return "0초"
+    val hours = seconds / 3600
+    val minutes = (seconds % 3600) / 60
+    val secs = seconds % 60
+    val parts = buildList {
+        if (hours > 0) add("${hours}시간")
+        if (minutes > 0) add("${minutes}분")
+        if (secs > 0) add("${secs}초")
+    }
+    return parts.joinToString(" ")
 }
 
 /** lastAttendanceDate("yyyy-MM-dd")로부터 오늘까지의 경과 일수. 파싱 실패/없음이면 null. */
