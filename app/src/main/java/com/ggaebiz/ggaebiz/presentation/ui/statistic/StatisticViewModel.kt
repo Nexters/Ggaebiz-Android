@@ -1,8 +1,5 @@
 package com.ggaebiz.ggaebiz.presentation.ui.statistic
 
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.compose.runtime.Immutable
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.data.model.CharacterName
 import com.ggaebiz.ggaebiz.domain.model.CalendarMonth
@@ -14,107 +11,7 @@ import com.ggaebiz.ggaebiz.domain.usecase.GetTimerTimesUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.GetTopCardDataUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Date
-import java.util.Locale
-
-@Immutable
-data class StatisticState(
-    val topCard: TopCardState = TopCardState(),
-    val focusTime: StatisticTimeCardState = StatisticTimeCardState(title = "집중 시간"),
-    val restTime: StatisticTimeCardState = StatisticTimeCardState(title = "휴식 시간"),
-    val calendar: StatisticCalendarState = StatisticCalendarState(),
-    val characterRank: StatisticCharacterRankState = StatisticCharacterRankState(),
-)
-
-enum class TopCardCase { LOADING, NEW, STREAK, RETURN, FLOATING_ACTIVE, FLOATING_EMPTY }
-
-@Immutable
-data class TopCardState(
-    val case: TopCardCase = TopCardCase.LOADING,
-    val nickname: String = "",
-    @StringRes val subtitleRes: Int? = null,
-    val subtitleArg: Int? = null,
-    @StringRes val bodyRes: Int? = null,
-    val bodyArg: Int? = null,
-    @DrawableRes val characterIconRes: Int = R.drawable.ic_positive_kiki,
-    val fromName: String? = null,
-)
-
-@Immutable
-data class StatisticTimeCardState(
-    val title: String,
-    val periodLabel: String = "",
-    val selectedPeriod: StatisticPeriod = StatisticPeriod.Day,
-    val hour: String = "00",
-    val minute: String = "00",
-    val second: String = "00",
-    val breakdown: List<StatisticModeBreakdownState> = emptyList(),
-)
-
-enum class StatisticPeriod { Month, Week, Day }
-
-@Immutable
-data class StatisticModeBreakdownState(
-    @DrawableRes val iconRes: Int?,
-    val label: String,
-    val timeText: String,
-)
-
-@Immutable
-data class StatisticCalendarState(
-    val year: Int = Calendar.getInstance().get(Calendar.YEAR),
-    val month: Int = Calendar.getInstance().get(Calendar.MONTH) + 1,
-    val yearMonthText: String = "${Calendar.getInstance().get(Calendar.MONTH) + 1}월",
-    val dayOfWeeks: List<String> = listOf("일", "월", "화", "수", "목", "금", "토"),
-    val dates: List<StatisticDateUiModel> = emptyList(),
-)
-
-@Immutable
-data class StatisticDateUiModel(
-    val day: Int,
-    val isCurrentMonth: Boolean,
-    val isSelected: Boolean,
-    val isToday: Boolean,
-    val level: StatisticLevel = StatisticLevel.None,
-    val isFeverDay: Boolean = false,
-    val isFuture: Boolean = false,
-)
-
-enum class StatisticLevel { None, Low, Medium, High }
-
-@Immutable
-data class StatisticCharacterRankState(
-    val title: String = "캐릭터 사용 빈도",
-    val periodLabel: String = "",
-    val description: String = "집중과 휴식 타이머 모두 포함된 기록이에요",
-    val items: List<StatisticCharacterRankItemState> = emptyList(),
-    val ctaCharacterName: String = "캐릭터",
-)
-
-@Immutable
-data class StatisticCharacterRankItemState(
-    val rank: Int,
-    @DrawableRes val iconRes: Int,
-    val name: String,
-    val countText: String,
-)
-
-sealed interface StatisticSideEffect {
-    data object NavigateBack : StatisticSideEffect
-    data object NavigateToSetting : StatisticSideEffect
-}
-
-sealed interface StatisticIntent {
-    data object ClickBack : StatisticIntent
-    data object ClickPreviousMonth : StatisticIntent
-    data object ClickNextMonth : StatisticIntent
-    data class ClickDate(val date: StatisticDateUiModel) : StatisticIntent
-    data class ClickFocusPeriod(val period: StatisticPeriod) : StatisticIntent
-    data class ClickRestPeriod(val period: StatisticPeriod) : StatisticIntent
-    data object ClickStartTimer : StatisticIntent
-}
 
 class StatisticViewModel(
     private val getTopCardDataUseCase: GetTopCardDataUseCase,
@@ -216,37 +113,6 @@ class StatisticViewModel(
             .onFailure { updateState { it.copy(topCard = fallbackTopCard(nickname)) } }
     }
 
-    /** 서버 리스트(KIKI,BOBO,NANA,CHACHA,BOOBOO 순 카운트)를 내림차순 정렬해 1~5위 배치. 동점은 서버 순서 유지. */
-    private fun buildCharacterRank(
-        counts: List<Int>,
-        current: StatisticCharacterRankState,
-    ): StatisticCharacterRankState {
-        val ranked = CharacterName.entries
-            .mapIndexed { index, character -> character to (counts.getOrNull(index) ?: 0) }
-            .sortedByDescending { it.second } // 안정 정렬 → 동점은 enum(서버 리스트) 순서
-        val items = ranked.mapIndexed { index, (character, count) ->
-            StatisticCharacterRankItemState(
-                rank = index + 1,
-                iconRes = character.rankIconRes(),
-                name = character.koreanName(),
-                countText = "$count 회",
-            )
-        }
-
-        val topCharacter = ranked.firstOrNull()?.first
-        ctaCharacterIndex = topCharacter?.ordinal ?: 0
-        return current.copy(
-            items = items,
-            ctaCharacterName = topCharacter?.koreanName() ?: current.ctaCharacterName,
-        )
-    }
-
-    /** CTA "○○랑 타이머 시작": 최애 캐릭터를 선택 저장 후 타이머 설정 화면으로 이동. */
-    private fun startTimerWithTopCharacter() = launch {
-        selectCharacterIdxUseCase(ctaCharacterIndex)
-        postSideEffect(StatisticSideEffect.NavigateToSetting)
-    }
-
     /** 판정 트리: 신규 > 연속(streakDays≥2) > 복귀(2≤O<7) > 그외(빈도 있음/없음). */
     private fun buildTopCard(data: TopCardData, nickname: String): TopCardState {
         val counts = data.selectionCountList
@@ -319,6 +185,37 @@ class StatisticViewModel(
         characterIconRes = CharacterName.KIKI.iconRes(),
         fromName = null,
     )
+
+    /** 서버 리스트(KIKI,BOBO,NANA,CHACHA,BOOBOO 순 카운트)를 내림차순 정렬해 1~5위 배치. 동점은 서버 순서 유지. */
+    private fun buildCharacterRank(
+        counts: List<Int>,
+        current: StatisticCharacterRankState,
+    ): StatisticCharacterRankState {
+        val ranked = CharacterName.entries
+            .mapIndexed { index, character -> character to (counts.getOrNull(index) ?: 0) }
+            .sortedByDescending { it.second }
+        val items = ranked.mapIndexed { index, (character, count) ->
+            StatisticCharacterRankItemState(
+                rank = index + 1,
+                iconRes = character.rankIconRes(),
+                name = character.koreanName(),
+                countText = "$count 회",
+            )
+        }
+
+        val topCharacter = ranked.firstOrNull()?.first
+        ctaCharacterIndex = topCharacter?.ordinal ?: 0
+        return current.copy(
+            items = items,
+            ctaCharacterName = topCharacter?.koreanName() ?: current.ctaCharacterName,
+        )
+    }
+
+    /** CTA "○○랑 타이머 시작": 최애 캐릭터를 선택 저장 후 타이머 설정 화면으로 이동. */
+    private fun startTimerWithTopCharacter() = launch {
+        selectCharacterIdxUseCase(ctaCharacterIndex)
+        postSideEffect(StatisticSideEffect.NavigateToSetting)
+    }
 
     private fun loadTimerTimes() = launch {
         getTimerTimesUseCase().onSuccess { records ->
@@ -414,153 +311,4 @@ class StatisticViewModel(
         private const val RETURN_MIN_DAYS = 2
         private const val RETURN_MAX_DAYS = 7
     }
-}
-
-private fun StatisticPeriod.toTimeType(): String = when (this) {
-    StatisticPeriod.Month -> "month"
-    StatisticPeriod.Week -> "week"
-    StatisticPeriod.Day -> "day"
-}
-
-// 스펙 오타 "CONCENRATE" 와 코드 컨벤션 "CONCENTRATE" 모두 허용.
-private fun TimerTimeRecord.isConcentrate(): Boolean = mode == "CONCENTRATE" || mode == "CONCENRATE"
-
-private fun List<TimerTimeRecord>.concentrateTime(type: String, timeType: String): Long =
-    firstOrNull { it.timeType == timeType && it.isConcentrate() && it.concentrateType == type }?.time ?: 0L
-
-private fun List<TimerTimeRecord>.restTime(timeType: String): Long =
-    firstOrNull { it.timeType == timeType && it.mode == "REST" }?.time ?: 0L
-
-private fun hourText(seconds: Long): String = "%02d".format(seconds / 3600)
-private fun minuteText(seconds: Long): String = "%02d".format((seconds % 3600) / 60)
-private fun secondText(seconds: Long): String = "%02d".format(seconds % 60)
-
-private fun formatCompact(seconds: Long): String {
-    if (seconds <= 0L) return "0초"
-    val hours = seconds / 3600
-    val minutes = (seconds % 3600) / 60
-    val secs = seconds % 60
-    val parts = buildList {
-        if (hours > 0) add("${hours}시간")
-        if (minutes > 0) add("${minutes}분")
-        if (secs > 0) add("${secs}초")
-    }
-    return parts.joinToString(" ")
-}
-
-private fun yearMonthKey(year: Int, month: Int): String = "%04d-%02d".format(year, month)
-
-private fun shiftedYearMonthKey(year: Int, month: Int, delta: Int): String {
-    val total = year * 12 + (month - 1) + delta
-    return yearMonthKey(total / 12, total % 12 + 1)
-}
-
-private fun normalizeYearMonth(raw: String): String {
-    val parts = raw.split("-")
-    val year = parts.getOrNull(0)?.toIntOrNull()
-    val month = parts.getOrNull(1)?.toIntOrNull()
-    return if (year != null && month != null) yearMonthKey(year, month) else raw
-}
-
-/** 하루의 색 레벨 + 불꽃 여부. 노랑(Low)=고립 기록, 주황(Medium)=2일 이상 연속(앞/뒤 달 경계 포함). */
-private fun dayLevel(
-    month: CalendarMonth,
-    day: Int,
-    prev: CalendarMonth?,
-    next: CalendarMonth?,
-): Pair<StatisticLevel, Boolean> {
-    val hasRecord = month.dayRecord.getOrNull(day - 1) == true
-    if (!hasRecord) return StatisticLevel.None to false
-
-    val prevRecord = if (day > 1) {
-        month.dayRecord.getOrNull(day - 2) == true
-    } else {
-        prev?.dayRecord?.lastOrNull() == true
-    }
-    val nextRecord = if (day < month.dayRecord.size) {
-        month.dayRecord.getOrNull(day) == true
-    } else {
-        next?.dayRecord?.firstOrNull() == true
-    }
-    val level = if (prevRecord || nextRecord) StatisticLevel.Medium else StatisticLevel.Low
-    return level to (month.feverDay == day)
-}
-
-/** lastAttendanceDate("yyyy-MM-dd")로부터 오늘까지의 경과 일수. 파싱 실패/없음이면 null. */
-private fun daysSince(dateStr: String?): Int? {
-    if (dateStr.isNullOrBlank()) return null
-    return try {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val last = formatter.parse(dateStr) ?: return null
-        val today = formatter.parse(formatter.format(Date())) ?: return null
-        ((today.time - last.time) / (1000L * 60 * 60 * 24)).toInt()
-    } catch (e: Exception) {
-        null
-    }
-}
-
-@DrawableRes
-private fun CharacterName.iconRes(): Int = when (this) {
-    CharacterName.KIKI -> R.drawable.ic_positive_kiki
-    CharacterName.BOBO -> R.drawable.ic_positive_bobo
-    CharacterName.NANA -> R.drawable.ic_positive_nana
-    CharacterName.CHACHA -> R.drawable.ic_positive_chacha
-    CharacterName.BOOBOO -> R.drawable.ic_positive_booboo
-}
-
-private fun CharacterName.koreanName(): String = when (this) {
-    CharacterName.KIKI -> "키키"
-    CharacterName.BOBO -> "보보"
-    CharacterName.NANA -> "나나"
-    CharacterName.CHACHA -> "차차"
-    CharacterName.BOOBOO -> "부부"
-}
-
-@DrawableRes
-private fun CharacterName.rankIconRes(): Int = when (this) {
-    CharacterName.KIKI -> R.drawable.ic_kiki_level1
-    CharacterName.BOBO -> R.drawable.ic_bobo_level1
-    CharacterName.NANA -> R.drawable.ic_nana_level1
-    CharacterName.CHACHA -> R.drawable.ic_chacha_level1
-    CharacterName.BOOBOO -> R.drawable.ic_booboo_level1
-}
-
-private fun generateCalendarDates(year: Int, month: Int): List<StatisticDateUiModel> {
-    val today = Calendar.getInstance()
-    val todayYear = today.get(Calendar.YEAR)
-    val todayMonth = today.get(Calendar.MONTH) + 1
-    val todayDay = today.get(Calendar.DAY_OF_MONTH)
-
-    val cal = Calendar.getInstance().apply { set(year, month - 1, 1) }
-    val firstDayOfWeek = cal.get(Calendar.DAY_OF_WEEK) - 1
-    val daysInMonth = cal.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-    val prevCal = Calendar.getInstance().apply { set(year, month - 2, 1) }
-    val daysInPrevMonth = prevCal.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-    val dates = mutableListOf<StatisticDateUiModel>()
-
-    for (d in (daysInPrevMonth - firstDayOfWeek + 1)..daysInPrevMonth) {
-        dates.add(StatisticDateUiModel(day = d, isCurrentMonth = false, isSelected = false, isToday = false))
-    }
-
-    for (d in 1..daysInMonth) {
-        val isFuture = year > todayYear ||
-            (year == todayYear && month > todayMonth) ||
-            (year == todayYear && month == todayMonth && d > todayDay)
-        dates.add(StatisticDateUiModel(
-            day = d,
-            isCurrentMonth = true,
-            isSelected = false,
-            isToday = year == todayYear && month == todayMonth && d == todayDay,
-            isFuture = isFuture,
-        ))
-    }
-
-    val remaining = (7 - dates.size % 7) % 7
-    for (d in 1..remaining) {
-        dates.add(StatisticDateUiModel(day = d, isCurrentMonth = false, isSelected = false, isToday = false))
-    }
-
-    return dates
 }

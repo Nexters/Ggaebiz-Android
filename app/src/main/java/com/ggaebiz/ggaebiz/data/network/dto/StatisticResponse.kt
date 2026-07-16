@@ -22,10 +22,6 @@ data class CharacterFrequencyResponse(
     val selectionCountList: List<Int> = emptyList(),
 )
 
-/**
- * TODO: 응답 envelope(result 래핑) 미확정. 서버 확정 시 조정.
- * TODO: mode 값 스펙 표기는 "CONCENRATE"(오타) — 클라는 "CONCENTRATE"/"CONCENRATE" 모두 허용.
- */
 data class TimerTimesResponse(
     @SerializedName("result")
     val result: List<TimerTimeDto> = emptyList(),
