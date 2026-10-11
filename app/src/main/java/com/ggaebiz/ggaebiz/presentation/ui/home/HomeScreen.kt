@@ -75,7 +75,8 @@ fun HomeScreen(
     navigateAlarm: () -> Unit,
     navigateConfig: () -> Unit,
     navigateEditor: (Uri) -> Unit,
-    navigateProofCard: () -> Unit
+    navigateProofCard: () -> Unit,
+    navigateStatistic: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val timerServiceManager: TimerServiceManager by getKoin().inject()
@@ -171,6 +172,7 @@ fun HomeScreen(
             HomeSideEffect.NavigateToProofCard -> {
                 navigateProofCard()
             }
+            HomeSideEffect.NavigateToStatistic -> navigateStatistic()
         }
     }
 
@@ -206,7 +208,8 @@ fun HomeContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             GaeBizLogoRightIconAppBar(
-                clickRightIcon = { processIntent(HomeIntent.ClickConfigButton) },
+                clickFirstRightIcon = { processIntent(HomeIntent.ClickConfigButton) },
+                clickSecondRightIcon = { processIntent(HomeIntent.ClickStatisticButton) },
                 iconEnable = uiState.homeClickEnable
             )
             Spacer(modifier = Modifier.weight(58f))
@@ -363,7 +366,8 @@ fun GreetingPreview2() {
             navigateSetting = {},
             navigateConfig = {},
             navigateEditor = {},
-            navigateProofCard = {}
+            navigateProofCard = {},
+            navigateStatistic = {}
         )
     }
 }

@@ -62,15 +62,25 @@ class NavigatorState(
         navController.navigate(Route.EditorResult(uri = uri.toString()))
     }
 
+    fun navigateProofCard() {
+        navController.navigate(Route.ProofCard)
+    }
+
+    fun navigateStatistic() {
+        navController.navigate(Route.Statistic)
+    }
+
+    fun navigateSettingFromStatistic() {
+        navController.navigate(Route.Setting) {
+            popUpTo(Route.Statistic) { inclusive = true }
+        }
+    }
+
     fun navigateToSplashClearingBackStack() {
         navController.navigate(Route.Splash) {
             popUpTo(0) { inclusive = true }
             launchSingleTop = true
         }
-    }
-
-    fun navigateProofCard() {
-        navController.navigate(Route.ProofCard)
     }
 
     // 모든 화면을 제거하고 Home으로

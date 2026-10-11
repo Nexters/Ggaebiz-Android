@@ -9,6 +9,11 @@ sealed interface TimerMode {
     fun isRestTimer(): Boolean = this is Rest
     fun isConcentrateTimer(): Boolean = this is Concentrate
 
+    fun toRecordFields(): Pair<String, String?> = when (this) {
+        is Rest -> "REST" to null
+        is Concentrate -> "CONCENTRATE" to type.name
+    }
+
     data class Rest(val type: RestType) : TimerMode {
 
         override val maxHour: Int

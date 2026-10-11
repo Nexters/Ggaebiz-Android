@@ -3,7 +3,9 @@ package com.ggaebiz.ggaebiz.presentation.designsystem.component.header
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +26,8 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 fun GaeBizLogoRightIconAppBar(
     modifier: Modifier = Modifier,
     logoDrawable: Int = R.drawable.ggaebiz_kor,
-    clickRightIcon: () -> Unit,
+    clickFirstRightIcon: () -> Unit,
+    clickSecondRightIcon: () -> Unit,
     iconEnable : Boolean = true
 ) {
     Box(
@@ -39,24 +42,31 @@ fun GaeBizLogoRightIconAppBar(
             painter = painterResource(id = logoDrawable),
             contentDescription = stringResource(R.string.logo_img_description),
         )
-        Image(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(
-                    CircleShape
-                )
-                .clickable(
-                    enabled = iconEnable
-                ) {
-                    clickRightIcon()
-                }
-                .background(GaeBizTheme.colors.gray50)
-                .padding(14.dp)
-                .align(Alignment.CenterEnd),
-            painter = painterResource(id = R.drawable.icon_setting),
-            contentDescription = "Clickable Image"
-        )
-
+        Row(
+            modifier = Modifier.align(Alignment.CenterEnd),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable(enabled = iconEnable) { clickSecondRightIcon() }
+                    .background(GaeBizTheme.colors.gray50)
+                    .padding(14.dp),
+                painter = painterResource(id = R.drawable.ic_statistic),
+                contentDescription = "Clickable Image"
+            )
+            Image(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable(enabled = iconEnable) { clickFirstRightIcon() }
+                    .background(GaeBizTheme.colors.gray50)
+                    .padding(14.dp),
+                painter = painterResource(id = R.drawable.icon_setting),
+                contentDescription = "Clickable Image"
+            )
+        }
     }
 }
 
@@ -65,6 +75,7 @@ fun GaeBizLogoRightIconAppBar(
 private fun GaeBizLogoAppBarPreview() {
     GaeBizLogoRightIconAppBar(
         logoDrawable = R.drawable.ggaebiz_kor,
-        clickRightIcon = {}
+        clickFirstRightIcon = {},
+        clickSecondRightIcon = {}
     )
 }
