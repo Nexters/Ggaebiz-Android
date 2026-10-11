@@ -1,4 +1,4 @@
-name: Android CI/CD
+시name: Android CI/CD
 
 on:
   pull_request:
