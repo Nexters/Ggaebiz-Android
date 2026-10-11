@@ -3,7 +3,7 @@ package com.ggaebiz.ggaebiz.presentation.ui.statistic
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Immutable
-import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.data.model.CharacterName
 import java.util.Calendar
 
 @Immutable
@@ -25,8 +25,7 @@ data class TopCardState(
     val subtitleArg: Int? = null,
     @StringRes val bodyRes: Int? = null,
     val bodyArg: Int? = null,
-    @DrawableRes val characterIconRes: Int = R.drawable.ic_positive_kiki,
-    val fromName: String? = null,
+    val character: CharacterName = CharacterName.KIKI,
 )
 
 @Immutable

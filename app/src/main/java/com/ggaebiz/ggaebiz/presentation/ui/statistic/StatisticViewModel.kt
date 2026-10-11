@@ -129,37 +129,28 @@ class StatisticViewModel(
                 nickname = nickname,
                 subtitleRes = R.string.statistic_top_card_new_subtitle,
                 bodyRes = R.string.statistic_top_card_new_body,
-                characterIconRes = CharacterName.KIKI.iconRes(),
-                fromName = CharacterName.KIKI.koreanName(),
+                character = CharacterName.KIKI,
             )
 
             // 2. 연속 — 이번 달 2일 이상 연속
-            data.streakDays >= STREAK_THRESHOLD -> {
-                val character = favorite ?: CharacterName.KIKI
-                TopCardState(
-                    case = TopCardCase.STREAK,
-                    nickname = nickname,
-                    bodyRes = R.string.statistic_top_card_streak_body,
-                    bodyArg = data.streakDays,
-                    characterIconRes = character.iconRes(),
-                    fromName = character.koreanName(),
-                )
-            }
+            data.streakDays >= STREAK_THRESHOLD -> TopCardState(
+                case = TopCardCase.STREAK,
+                nickname = nickname,
+                bodyRes = R.string.statistic_top_card_streak_body,
+                bodyArg = data.streakDays,
+                character = favorite ?: CharacterName.KIKI,
+            )
 
             // 3. 복귀 — 2일 이상 쉬고 일주일 미만
-            restDays != null && restDays in RETURN_MIN_DAYS until RETURN_MAX_DAYS -> {
-                val character = favorite ?: CharacterName.KIKI
-                TopCardState(
-                    case = TopCardCase.RETURN,
-                    nickname = nickname,
-                    subtitleRes = R.string.statistic_top_card_return_subtitle,
-                    subtitleArg = restDays,
-                    bodyRes = R.string.statistic_top_card_return_body,
-                    bodyArg = restDays,
-                    characterIconRes = character.iconRes(),
-                    fromName = character.koreanName(),
-                )
-            }
+            restDays != null && restDays in RETURN_MIN_DAYS until RETURN_MAX_DAYS -> TopCardState(
+                case = TopCardCase.RETURN,
+                nickname = nickname,
+                subtitleRes = R.string.statistic_top_card_return_subtitle,
+                subtitleArg = restDays,
+                bodyRes = R.string.statistic_top_card_return_body,
+                bodyArg = restDays,
+                character = favorite ?: CharacterName.KIKI,
+            )
 
             // 4-A. 그 외 — 캐릭터 빈도 데이터 있음
             hasFrequency && favorite != null -> TopCardState(
@@ -168,8 +159,7 @@ class StatisticViewModel(
                 subtitleRes = R.string.statistic_top_card_floating_active_subtitle,
                 bodyRes = R.string.statistic_top_card_floating_active_body,
                 bodyArg = counts[favoriteIdx],
-                characterIconRes = favorite.iconRes(),
-                fromName = favorite.koreanName(),
+                character = favorite,
             )
 
             // 4-B. 그 외 — 캐릭터 빈도 데이터 없음
@@ -182,8 +172,7 @@ class StatisticViewModel(
         nickname = nickname,
         subtitleRes = R.string.statistic_top_card_floating_empty_subtitle,
         bodyRes = R.string.statistic_top_card_floating_empty_body,
-        characterIconRes = CharacterName.KIKI.iconRes(),
-        fromName = null,
+        character = CharacterName.KIKI,
     )
 
     /** 서버 리스트(KIKI,BOBO,NANA,CHACHA,BOOBOO 순 카운트)를 내림차순 정렬해 1~5위 배치. 동점은 서버 순서 유지. */

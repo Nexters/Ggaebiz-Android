@@ -1,12 +1,14 @@
 package com.ggaebiz.ggaebiz.presentation.ui.statistic.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -21,10 +23,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -36,23 +39,27 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlin.math.roundToInt
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.data.model.CharacterName
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.TopCardCase
 import com.ggaebiz.ggaebiz.presentation.ui.statistic.TopCardState
+import com.ggaebiz.ggaebiz.presentation.ui.statistic.iconRes
+import com.ggaebiz.ggaebiz.presentation.ui.statistic.koreanName
 
-private val CHAR_TOP_MARGIN = 40.dp
-private val CHAR_SIZE = 180.dp
+private val CARD_SHAPE = RoundedCornerShape(24.dp)
+private val CHAR_SIZE = 150.dp
 private val HEADER_END_PADDING = 120.dp
+private val HEADER_MIN_HEIGHT = 140.dp
 private val UNDERLINE_GAP = 8.dp
+private val UNDERLINE_HEIGHT = 6.dp
 
 @Composable
 fun StatisticTopCard(
     state: TopCardState,
     modifier: Modifier = Modifier,
 ) {
-    val lineImage = ImageBitmap.imageResource(R.drawable.img_top_card_line)
-
     val nicknameStyle = GaeBizTheme.typography.titleSemiBold.copy(
         fontSize = 28.sp,
         lineHeight = 39.2.sp,
@@ -71,59 +78,51 @@ fun StatisticTopCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp)),
+            .shadow(elevation = 3.dp, shape = CARD_SHAPE)
+            .clip(CARD_SHAPE)
+            .background(GaeBizTheme.colors.white),
     ) {
         Image(
-            painter = painterResource(R.drawable.img_top_card_bg),
+            painter = painterResource(state.character.iconRes()),
             contentDescription = null,
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize(),
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 6.dp, end = 4.dp)
+                .size(CHAR_SIZE),
         )
 
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-                .padding(top = CHAR_TOP_MARGIN, bottom = 24.dp),
+                .padding(start = 28.dp, end = 28.dp, top = 28.dp, bottom = 20.dp),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(CHAR_SIZE),
+                    .heightIn(min = HEADER_MIN_HEIGHT),
             ) {
-                Image(
-                    painter = painterResource(state.characterIconRes),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .size(CHAR_SIZE),
-                )
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .padding(end = HEADER_END_PADDING),
-                ) {
+                Column(modifier = Modifier.padding(end = HEADER_END_PADDING)) {
                     if (state.nickname.isNotEmpty()) {
                         Text(
-                            text = state.nickname,
+                            text = stringResource(R.string.statistic_top_card_to, state.nickname),
                             style = nicknameStyle,
-                            color = GaeBizTheme.colors.white,
+                            color = GaeBizTheme.colors.black,
                         )
                     }
                     state.subtitleRes?.let { subtitleRes ->
-                        Spacer(modifier = Modifier.height(6.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Image(
                                 painter = painterResource(R.drawable.ic_top_card_fire),
                                 contentDescription = null,
-                                modifier = Modifier.size(20.dp),
+                                colorFilter = ColorFilter.tint(GaeBizTheme.colors.primaryOrange),
+                                modifier = Modifier.size(18.dp),
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
                                 text = formatText(subtitleRes, state.subtitleArg),
                                 style = GaeBizTheme.typography.body2Medium,
-                                color = GaeBizTheme.colors.white,
+                                color = GaeBizTheme.colors.black.copy(alpha = 0.7f),
                             )
                         }
                     }
@@ -133,18 +132,18 @@ fun StatisticTopCard(
             state.bodyRes?.let { bodyRes ->
                 WavyUnderlineText(
                     text = formatText(bodyRes, state.bodyArg),
-                    lineImage = lineImage,
                     style = bodyStyle,
-                    color = GaeBizTheme.colors.white,
+                    textColor = GaeBizTheme.colors.black,
+                    waveColor = GaeBizTheme.colors.gray150,
                 )
             }
 
-            state.fromName?.let { fromName ->
+            if (state.bodyRes != null) {
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
-                    text = stringResource(R.string.statistic_top_card_from, fromName),
+                    text = stringResource(R.string.statistic_top_card_from, state.character.koreanName()),
                     style = GaeBizTheme.typography.body2Medium,
-                    color = GaeBizTheme.colors.white,
+                    color = GaeBizTheme.colors.black.copy(alpha = 0.6f),
                     modifier = Modifier.align(Alignment.End),
                 )
             }
@@ -159,16 +158,18 @@ private fun formatText(resId: Int, arg: Int?): String =
 @Composable
 private fun WavyUnderlineText(
     text: String,
-    lineImage: ImageBitmap,
     style: TextStyle,
-    color: Color,
+    textColor: Color,
+    waveColor: Color,
     modifier: Modifier = Modifier,
 ) {
+    val lineImage = ImageBitmap.imageResource(R.drawable.img_top_card_line)
+    val tint = remember(waveColor) { ColorFilter.tint(waveColor) }
     var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
     Text(
         text = text,
         style = style,
-        color = color,
+        color = textColor,
         onTextLayout = { layout = it },
         modifier = modifier
             .fillMaxWidth()
@@ -180,28 +181,38 @@ private fun WavyUnderlineText(
                     val left = result.getLineLeft(line)
                     val right = result.getLineRight(line)
                     val y = result.getLineTop(line) + glyphBottomFromLineTop + UNDERLINE_GAP.toPx()
-                    tileLine(lineImage, left, right, y)
+                    tileLine(lineImage, left, right, y, tint)
                 }
             },
     )
 }
 
-private fun DrawScope.tileLine(image: ImageBitmap, startX: Float, endX: Float, y: Float) {
-    val imageWidth = image.width
-    val imageHeight = image.height
-    if (imageWidth <= 0 || endX <= startX) return
-
-    var x = startX
-    while (x < endX) {
-        val tileWidth = minOf(imageWidth.toFloat(), endX - x).toInt().coerceAtLeast(1)
+private fun DrawScope.tileLine(
+    image: ImageBitmap,
+    left: Float,
+    right: Float,
+    centerY: Float,
+    tint: ColorFilter,
+) {
+    val lineWidth = right - left
+    if (lineWidth <= 0f) return
+    val tileH = UNDERLINE_HEIGHT.toPx()
+    val tileW = image.width * (tileH / image.height)
+    if (tileW <= 0f || tileH <= 0f) return
+    val top = (centerY - tileH / 2f).roundToInt()
+    var x = left
+    while (x < right) {
+        val drawW = minOf(tileW, right - x)
+        val srcW = (image.width * (drawW / tileW)).roundToInt().coerceIn(1, image.width)
         drawImage(
             image = image,
             srcOffset = IntOffset.Zero,
-            srcSize = IntSize(tileWidth, imageHeight),
-            dstOffset = IntOffset(x.toInt(), y.toInt()),
-            dstSize = IntSize(tileWidth, imageHeight),
+            srcSize = IntSize(srcW, image.height),
+            dstOffset = IntOffset(x.roundToInt(), top),
+            dstSize = IntSize(drawW.roundToInt(), tileH.roundToInt()),
+            colorFilter = tint,
         )
-        x += imageWidth
+        x += tileW
     }
 }
 
@@ -215,8 +226,7 @@ private fun StatisticTopCardStreakPreview() {
                 nickname = "깨비집사",
                 bodyRes = R.string.statistic_top_card_streak_body,
                 bodyArg = 12,
-                characterIconRes = R.drawable.ic_positive_kiki,
-                fromName = "키키",
+                character = CharacterName.KIKI,
             ),
             modifier = Modifier.padding(20.dp),
         )
@@ -235,8 +245,7 @@ private fun StatisticTopCardReturnPreview() {
                 subtitleArg = 3,
                 bodyRes = R.string.statistic_top_card_return_body,
                 bodyArg = 3,
-                characterIconRes = R.drawable.ic_positive_booboo,
-                fromName = "부부",
+                character = CharacterName.BOOBOO,
             ),
             modifier = Modifier.padding(20.dp),
         )
@@ -253,7 +262,7 @@ private fun StatisticTopCardEmptyPreview() {
                 nickname = "깨비집사",
                 subtitleRes = R.string.statistic_top_card_floating_empty_subtitle,
                 bodyRes = R.string.statistic_top_card_floating_empty_body,
-                characterIconRes = R.drawable.ic_positive_kiki,
+                character = CharacterName.KIKI,
             ),
             modifier = Modifier.padding(20.dp),
         )
@@ -270,27 +279,7 @@ private fun StatisticTopCardNewPreview() {
                 nickname = "깨비집사",
                 subtitleRes = R.string.statistic_top_card_new_subtitle,
                 bodyRes = R.string.statistic_top_card_new_body,
-                characterIconRes = R.drawable.ic_positive_kiki,
-                fromName = "키키",
-            ),
-            modifier = Modifier.padding(20.dp),
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun StatisticTopCardFloatingActivePreview() {
-    GaeBizTheme {
-        StatisticTopCard(
-            state = TopCardState(
-                case = TopCardCase.FLOATING_ACTIVE,
-                nickname = "깨비집사",
-                subtitleRes = R.string.statistic_top_card_floating_active_subtitle,
-                bodyRes = R.string.statistic_top_card_floating_active_body,
-                bodyArg = 24,
-                characterIconRes = R.drawable.ic_positive_nana,
-                fromName = "나나",
+                character = CharacterName.KIKI,
             ),
             modifier = Modifier.padding(20.dp),
         )
