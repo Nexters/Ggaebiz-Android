@@ -1,9 +1,14 @@
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlin.serialization)
+}
+
+val localProperties = Properties().apply {
+    rootProject.file("local.properties").inputStream().use { load(it) }
 }
 
 val releaseKeystorePath = System.getenv("ANDROID_KEYSTORE_PATH")
@@ -32,12 +37,15 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["NATIVE_APP_KEY"] = localProperties["kakao.native.appkey"] as String
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${localProperties["kakao.native.appkey"]}\"")
     }
 
     signingConfigs {
         if (hasReleaseSigningConfig) {
             create("release") {
-                storeFile = file(releaseKeystorePath!!)
+                storeFile = file(requireNotNull(releaseKeystorePath))
                 storePassword = releaseKeystorePassword
                 keyAlias = releaseKeyAlias
                 keyPassword = releaseKeyPassword
@@ -66,6 +74,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -106,6 +115,14 @@ dependencies {
     implementation(libs.koin.androidx.navigation)
 
     implementation (libs.accompanist.systemuicontroller) // 최신 버전 확인
+
+    implementation(libs.kakao.v2.user)
+
+    // Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     // Test
     testImplementation(libs.junit)

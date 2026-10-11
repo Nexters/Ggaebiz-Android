@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,10 +29,92 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ggaebiz.ggaebiz.R
+import com.ggaebiz.ggaebiz.presentation.designsystem.component.icon.GaeBizIcon
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.slider.GaeBizSlider
 import com.ggaebiz.ggaebiz.presentation.designsystem.component.switch.GaeBizSwitch
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.PretendardFont
+
+@Composable
+fun ConfigProfileCard(
+    nickname: String,
+    onClickEdit: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
+            .clickable { onClickEdit() }
+            .background(GaeBizTheme.colors.white)
+            .padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.nickname_label),
+                style = GaeBizTheme.typography.label3,
+                color = GaeBizTheme.colors.gray200,
+            )
+            Text(
+                text = nickname,
+                style = GaeBizTheme.typography.titleBold,
+                color = GaeBizTheme.colors.gray800,
+            )
+        }
+        Spacer(Modifier.width(12.dp))
+        Icon(
+            modifier = Modifier.size(24.dp),
+            imageVector = GaeBizIcon.icPencil,
+            contentDescription = null,
+            tint = GaeBizTheme.colors.gray200,
+        )
+    }
+}
+
+@Composable
+fun ConfigAuthLinks(
+    onClickLogout: () -> Unit,
+    onClickWithdraw: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(GaeBizTheme.colors.gray75),
+        )
+        Spacer(Modifier.height(20.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                modifier = Modifier.clickable { onClickLogout() },
+                text = stringResource(R.string.config_logout),
+                style = GaeBizTheme.typography.body2Medium,
+                color = GaeBizTheme.colors.gray400,
+            )
+            Text(
+                modifier = Modifier.padding(horizontal = 8.dp),
+                text = stringResource(R.string.config_link_divider),
+                style = GaeBizTheme.typography.body2Medium,
+                color = GaeBizTheme.colors.gray400,
+            )
+            Text(
+                modifier = Modifier.clickable { onClickWithdraw() },
+                text = stringResource(R.string.config_withdraw),
+                style = GaeBizTheme.typography.body2Medium,
+                color = GaeBizTheme.colors.gray400,
+            )
+        }
+    }
+}
 
 @Composable
 fun ConfigSliderSection(

@@ -16,12 +16,13 @@ import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
 fun FullScreen(
     modifier: Modifier = Modifier,
     backGroundImage: Int? = null,
+    backgroundColor: Color? = null,
     backGroundGradient: List<Color>? = null,
     content: @Composable () -> Unit,
 ) {
     Box(
         modifier = modifier
-            .background(GaeBizTheme.colors.primaryOrange)
+            .background(backgroundColor ?: GaeBizTheme.colors.primaryOrange)
             .fillMaxSize(),
     ) {
         if (backGroundImage != null) {

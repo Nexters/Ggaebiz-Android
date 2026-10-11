@@ -4,6 +4,8 @@ import android.app.Application
 import com.ggaebiz.ggaebiz.data.datastore.AudioDataStore
 import com.ggaebiz.ggaebiz.data.datastore.DataStoreObject
 import com.ggaebiz.ggaebiz.di.appModule
+import com.kakao.sdk.common.KakaoSdk
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -24,5 +26,7 @@ class GgaeBizApp : Application() {
             val audioDataStore: AudioDataStore = getKoin().get()
             DataStoreObject.initialize(this@GgaeBizApp, audioDataStore)
         }
+
+        KakaoSdk.init(this, BuildConfig.KAKAO_NATIVE_APP_KEY)
     }
 }

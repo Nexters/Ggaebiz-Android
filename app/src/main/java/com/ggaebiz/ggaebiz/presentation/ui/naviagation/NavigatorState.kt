@@ -30,6 +30,10 @@ class NavigatorState(
         navController.navigate(Route.Home(null))
     }
 
+    fun navigateLogin() {
+        navController.navigate(Route.Login)
+    }
+
     fun navigateOnboarding() {
         navController.navigate(Route.Onboarding)
     }
@@ -56,6 +60,13 @@ class NavigatorState(
 
     fun navigateEditorResult(uri: Uri) {
         navController.navigate(Route.EditorResult(uri = uri.toString()))
+    }
+
+    fun navigateToSplashClearingBackStack() {
+        navController.navigate(Route.Splash) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
     }
 
     fun navigateProofCard() {

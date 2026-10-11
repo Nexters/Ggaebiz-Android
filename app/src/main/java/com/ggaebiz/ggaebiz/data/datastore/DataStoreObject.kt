@@ -16,6 +16,9 @@ object DataStoreObject {
     private const val CONFIG_DATASTORE_NAME = "config_preferences"
     val Context.configDataStore by preferencesDataStore(CONFIG_DATASTORE_NAME)
 
+    private const val AUTH_DATASTORE_NAME = "auth_preferences"
+    val Context.authDataStore by preferencesDataStore(AUTH_DATASTORE_NAME)
+
     // 최초 1회 호출.
     suspend fun initialize(context: Context, audioDataStore: AudioDataStore) {
         val existingData = audioDataStore.getAudioMap().firstOrNull()

@@ -12,6 +12,7 @@ data class GaeBizColors(
     val primaryOrange600: Color,
     val splashStatusBarColor: Color,
     val gradientOrange: List<Color>,
+    val gradientLightOrange: List<Color>,
 
     val white: Color,
     val white8: Color,
@@ -43,6 +44,7 @@ data class GaeBizColors(
     val gray800: Color,
     val gray900: Color,
 
+    val red400 : Color,
     val red600 : Color
 )
 
@@ -54,6 +56,7 @@ val LocalGaeBizColor = staticCompositionLocalOf {
         primaryOrange600 = Color.Unspecified,
         splashStatusBarColor = Color.Unspecified,
         gradientOrange = listOf(Color.Unspecified, Color.Unspecified),
+        gradientLightOrange = listOf(Color.Unspecified, Color.Unspecified),
 
         white = Color.Unspecified,
         white8 = Color.Unspecified,
@@ -85,6 +88,7 @@ val LocalGaeBizColor = staticCompositionLocalOf {
         gray800 = Color.Unspecified,
         gray900 = Color.Unspecified,
 
+        red400 = Color.Unspecified,
         red600 = Color.Unspecified
     )
 }
@@ -99,6 +103,10 @@ val GaeBizColorScheme = GaeBizColors(
     gradientOrange = listOf(
         Color(0xFFFF9A76).copy(alpha = 0.5f),
         Color(0xFFFF4646).copy(alpha = 0.5f),
+    ),
+    gradientLightOrange = listOf(
+        Color(0xFFFD8C64).copy(alpha = 0.2f),
+        Color(0xFFFEFBF4).copy(alpha = 0.2f),
     ),
     white = Color(0xFFFFFFFF),
     white8 = Color(0x14FFFFFF),
@@ -130,5 +138,6 @@ val GaeBizColorScheme = GaeBizColors(
     gray800 = Color(0xFF3E3F44),
     gray900 = Color(0xFF2F3034),
 
+    red400 = Color(0xFFF7554F),
     red600 = Color(0xFFE41D17)
 )
