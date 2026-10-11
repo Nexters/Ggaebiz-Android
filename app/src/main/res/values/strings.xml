@@ -288,6 +288,7 @@
     <string name="statistic_title_text">통계</string>
 
     <!-- 통계 상단 카드 -->
+    <string name="statistic_top_card_to">To. %1$s</string>
     <string name="statistic_top_card_from">from. %1$s</string>
     <!-- 1. 신규 -->
     <string name="statistic_top_card_new_subtitle">집중 스따또!</string>
