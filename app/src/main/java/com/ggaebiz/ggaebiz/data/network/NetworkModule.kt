@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object NetworkModule {
-    private const val BASE_URL = "http://13.124.253.247:8080/"
+    private const val BASE_URL = "http://52.79.157.140:8080/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
