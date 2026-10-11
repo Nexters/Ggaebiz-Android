@@ -24,12 +24,12 @@ val hasReleaseSigningConfig = listOf(
 
 android {
     namespace = "com.ggaebiz.ggaebiz"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.ggaebiz.ggaebiz"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1000700
         versionName = "1.0.7"
 
