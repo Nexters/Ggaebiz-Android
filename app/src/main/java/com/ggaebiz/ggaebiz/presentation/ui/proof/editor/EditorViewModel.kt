@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.lifecycle.SavedStateHandle
 import com.ggaebiz.ggaebiz.domain.usecase.CreateCachedImageUseCase
+import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import com.ggaebiz.ggaebiz.presentation.model.Sticker
 import com.ggaebiz.ggaebiz.presentation.ui.proof.loadBitmapFromUri
@@ -13,12 +14,20 @@ import kotlinx.coroutines.withContext
 
 class EditorViewModel(
     savedStateHandle: SavedStateHandle,
-    private val createCachedImageUseCase: CreateCachedImageUseCase
+    private val createCachedImageUseCase: CreateCachedImageUseCase,
+    private val getCurrentTimerUseCase: GetCurrentTimerUseCase,
 ) : BaseViewModel<EditorState, EditorIntent, EditorEffect>(
     EditorState(
-        imageUri = savedStateHandle.get<String>("uri")?.let(Uri::parse)
+        imageUri = savedStateHandle.get<String>("uri")?.let(Uri::parse),
     )
 ) {
+    init {
+        launch {
+            val (_, hour, minute, _) = getCurrentTimerUseCase()
+            updateState { it.copy(timeStampResource = generateTimeStampSources(hour, minute)) }
+        }
+    }
+
     fun processIntent(intent: EditorIntent) {
         when (intent) {
             is EditorIntent.OnLoadImageData -> loadImageData(intent)
