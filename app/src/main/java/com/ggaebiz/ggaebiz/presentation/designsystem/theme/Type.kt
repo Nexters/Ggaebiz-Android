@@ -64,6 +64,22 @@ val ZuumeFont = FontFamily(
     Font(R.font.zuume_bold, FontWeight.Bold)
 )
 
+val PoppinsFont = FontFamily(
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_semibold, FontWeight.SemiBold),
+    Font(R.font.poppins_bold, FontWeight.Bold))
+
+val DigitalNumbersFont = FontFamily(
+    Font(R.font.digital_numbers_regular, FontWeight.SemiBold))
+
+val TimeLineFont = FontFamily(
+    Font(R.font.timeline_bold, FontWeight.Bold)
+)
+
+val AgbalumoFont = FontFamily(
+    Font(R.font.agbalumo_regular, FontWeight.Medium)
+)
+
 val Typography = GaeBizTypography(
     titleBold = TextStyle(
         fontFamily = PretendardFont,

@@ -2,9 +2,11 @@ package com.ggaebiz.ggaebiz.presentation.ui.home
 
 import android.media.AudioManager
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.domain.repository.OnboardingRepository
+import com.ggaebiz.ggaebiz.domain.usecase.GetCurrentTimerUseCase
 import com.ggaebiz.ggaebiz.domain.usecase.SelectCharacterIdxUseCase
 import com.ggaebiz.ggaebiz.presentation.common.base.BaseViewModel
 import kotlinx.coroutines.delay
@@ -17,7 +19,7 @@ data class HomeState(
     val isNudgeGuideViewed : Boolean = false,
     val isBatteryPopupShow : Boolean = false,
     val nudgeGuideIdx : Int = 1,
-    val isProofPopupShow : Boolean = false, // 테스트를 위해선 이부분을 ture로 바꾸어주세욥
+    val isProofPopupShow : Boolean = false,
     val isChoiceWayPopup : Boolean = false,
     val proofImageUri : Uri? = null
 ){
@@ -34,6 +36,7 @@ sealed interface HomeSideEffect {
     data object MoveToCamera : HomeSideEffect
     data object MoveToGallery : HomeSideEffect
     data class MoveToProof(val uri : Uri) : HomeSideEffect
+    data object NavigateToProofCard : HomeSideEffect
 }
 
 sealed interface HomeIntent {
@@ -65,10 +68,20 @@ class HomeViewModel(
     savedStateHandle: SavedStateHandle,
     private val selectCharacterIdxUseCase: SelectCharacterIdxUseCase,
     private val audioManager: AudioManager,
-    private val onboardingRepository: OnboardingRepository
-) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState(
-    isProofPopupShow = savedStateHandle.get<Boolean>("isFromAlarm") ?: false
-)) {
+    private val onboardingRepository: OnboardingRepository,
+    private val getCurrentTimerUseCase: GetCurrentTimerUseCase
+) : BaseViewModel<HomeState, HomeIntent, HomeSideEffect>(HomeState()) {
+
+    init {
+        if (savedStateHandle.get<Boolean>("isFromAlarm") == true) {
+            launch {
+                val (_, _, _, timerMode) = getCurrentTimerUseCase()
+                if (timerMode.isConcentrateTimer()) {
+                    updateState { it.copy(isProofPopupShow = true) }
+                }
+            }
+        }
+    }
 
     private val deviceVolume get() = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
 
@@ -146,7 +159,10 @@ class HomeViewModel(
             HomeIntent.ClickProofMoveButton -> { updateState { it.copy(isProofPopupShow = false, isChoiceWayPopup = true) } }
             HomeIntent.ClickProofCamera -> { postSideEffect(HomeSideEffect.MoveToCamera) }
             HomeIntent.ClickProofGallery -> { postSideEffect(HomeSideEffect.MoveToGallery)}
-            HomeIntent.ClickProofCard -> { }
+            HomeIntent.ClickProofCard -> {
+                updateState { it.copy(isChoiceWayPopup = false) }
+                postSideEffect(HomeSideEffect.NavigateToProofCard)
+            }
             is HomeIntent.FinishGetImage -> {
                 updateState { it.copy(isChoiceWayPopup = false) }
                 intent.uri?.let {  postSideEffect(HomeSideEffect.MoveToProof(it))}

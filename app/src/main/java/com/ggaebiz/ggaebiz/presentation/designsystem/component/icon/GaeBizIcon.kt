@@ -86,4 +86,8 @@ object GaeBizIcon {
     val icErrorWarning : ImageVector
         @Composable
         get() = ImageVector.vectorResource(R.drawable.ic_error_warning)
+
+    val icSaveImageFinger : ImageVector
+        @Composable
+        get() = ImageVector.vectorResource(R.drawable.ic_save_image)
 }

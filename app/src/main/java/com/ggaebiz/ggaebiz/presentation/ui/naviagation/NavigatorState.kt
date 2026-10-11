@@ -69,6 +69,10 @@ class NavigatorState(
         }
     }
 
+    fun navigateProofCard() {
+        navController.navigate(Route.ProofCard)
+    }
+
     // 모든 화면을 제거하고 Home으로
     fun navigateToMainClearingBackStack() {
         navController.navigate(Route.Home(null)) {

@@ -13,6 +13,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.config.ConfigScreen
 import com.ggaebiz.ggaebiz.presentation.ui.home.HomeScreen
 import com.ggaebiz.ggaebiz.presentation.ui.login.LoginScreen
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingScreen
+import com.ggaebiz.ggaebiz.presentation.ui.proof.card.ProofCardScreen
 import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorScreen
 import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultScreen
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingScreen
@@ -83,7 +84,8 @@ fun GaeBizNavHost(
                 navigateSetting = { navigator.navigateSetting() },
                 navigateAlarm = { navigator.navigateAlarm() },
                 navigateConfig = { navigator.navigateConfig()},
-                navigateEditor  = { uri -> navigator.navigateEditor(uri) }
+                navigateEditor  = { uri -> navigator.navigateEditor(uri) },
+                navigateProofCard = { navigator.navigateProofCard() }
             )
         }
         composable<Route.Setting> {
@@ -119,6 +121,11 @@ fun GaeBizNavHost(
             EditorResultScreen(
                 navigateBack = {navigator.popBackStack()},
                 navigateHome = {navigator.navigateToMainClearingBackStack()}
+            )
+        }
+        composable<Route.ProofCard> {
+            ProofCardScreen(
+                navigateBack = {navigator.popBackStack()}
             )
         }
     }

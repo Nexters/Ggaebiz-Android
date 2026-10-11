@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ggaebiz.ggaebiz.R
 import com.ggaebiz.ggaebiz.presentation.designsystem.theme.GaeBizTheme
@@ -37,12 +38,14 @@ fun ImagePopup(
     image: Painter? = null,
     contentScale: ContentScale = ContentScale.Crop,
     position: GaeBizPopupPosition = GaeBizPopupPosition.Center,
+    horizontalPadding: Dp = 16.dp,
     buttons: List<GaeBizPopupButton>,
 ) {
     GaeBizBasePopup(
         visible = visible,
         onDismissRequest = onDismissRequest,
         position = position,
+        horizontalPadding = horizontalPadding,
         title = {
             Text(
                 text = titleText,

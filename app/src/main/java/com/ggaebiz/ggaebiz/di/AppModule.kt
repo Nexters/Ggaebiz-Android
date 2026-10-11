@@ -47,6 +47,7 @@ import com.ggaebiz.ggaebiz.presentation.ui.home.HomeViewModel
 import com.ggaebiz.ggaebiz.data.auth.KakaoLoginHandler
 import com.ggaebiz.ggaebiz.presentation.ui.login.LoginViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.onboarding.OnboardingViewModel
+import com.ggaebiz.ggaebiz.presentation.ui.proof.card.ProofCardViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.editor.EditorViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.proof.finish.EditorResultViewModel
 import com.ggaebiz.ggaebiz.presentation.ui.setting.SettingViewModel
@@ -96,7 +97,7 @@ val appModule = module {
     factory { CreateCachedImageUseCase(get()) }
     factory { SaveImageToGalleryUseCase(imageRepository = get()) }
 
-    viewModel { HomeViewModel(get(), get(), get(), get()) }
+    viewModel { HomeViewModel(get(), get(), get(), get(), get()) }
     viewModel { SettingViewModel(get(), get(), get(), get(), get()) }
     viewModel { SplashViewModel(get()) }
     viewModel { LoginViewModel(get(), get(), get()) }
@@ -104,7 +105,8 @@ val appModule = module {
     viewModel { TimerViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { AlarmViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
     viewModel { ConfigViewModel(get(), get(), get(), get()) }
-    viewModel { EditorViewModel(get(), get()) }
+    viewModel { EditorViewModel(get(), get(), get()) }
     viewModel { EditorResultViewModel(get(), get()) }
+    viewModel { ProofCardViewModel(get(), get(), get(), get(), get()) }
 
 }
